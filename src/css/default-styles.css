@@ -1343,7 +1343,6 @@ td {
 
 #image-preview-container{
   position: relative;
-  background-color: #182768;
   width: 100px;
   height: 100px;
 }
@@ -1356,7 +1355,6 @@ td {
 }
 
 .profile-image-preview{
-  background-color: red;
   width: 100px;
   height: 100px;
 }

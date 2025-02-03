@@ -5,7 +5,7 @@ return `
                         <div class="profile-details">
                                 <div id="image-preview-container">
                                     <div class="profile-image-preview">
-                                            <img id="image-preview" src="#"/>
+                                            <img id="image-preview" class="image-preview-profile" src=""/>
                                     </div>
                                     <div class="profile-field profile-image-field">
                                         <label id="label-profile-image" for="profile-image"><span class='icon-edit'></span></label>
@@ -119,6 +119,13 @@ function renderGoals() {
         }
         tbody.appendChild(row);
     });
+
+    const userSession = JSON.parse(sessionStorage.getItem('userSession'));
+    if (userSession && userSession.photo) {
+        const imagePreview = document.getElementById('image-preview');
+        imagePreview.src = userSession.photo;
+        imagePreview.style.display = 'block';
+    }
 }
 
 export function initializeProfile() {

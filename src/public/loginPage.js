@@ -1,4 +1,4 @@
-import { Router } from '../auth/router.js';
+import { loadAppHTML } from "../scripts/index.js";
 export const LoginPage = function() {
     const app = document.getElementById('app');
     const style = document.createElement('style');
@@ -83,9 +83,20 @@ export const LoginPage = function() {
         `;
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault();
-            // Aquí iría la lógica de autenticación
-            sessionStorage.setItem('userSession', 'true');
-            Router.navigate('/app');
+            const nicknameOrEmail = document.getElementById('nicknameOrEmail').value;
+            const password = document.getElementById('password').value;
+
+            // Simulate authentication logic
+            const storedUser = JSON.parse(sessionStorage.getItem('userSession'));
+            if (storedUser && storedUser.nicknameOrEmail === nicknameOrEmail && storedUser.password === password) {
+            console.log('Login successful');
+            sessionStorage.setItem('isLoggedIn', 'true');
+            loadAppHTML()
+            window.location.reload();
+            } else {
+            console.log('Invalid credentials');
+            alert('Invalid nickname/email or password. Please try again.');
+            }
         });
 
         document.getElementById('showRegisterForm').addEventListener('click', function(event) {
@@ -133,10 +144,28 @@ export const LoginPage = function() {
 
         document.getElementById('registerForm').addEventListener('submit', function(event) {
             event.preventDefault();
-            // Aquí iría la lógica de registro
-            console.log('Registering user...');
-            sessionStorage.setItem('userSession', 'true');
-            Router.navigate('/app');
+            const nickname = document.getElementById('nickname').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const repeatPassword = document.getElementById('repeatPassword').value;
+
+            if (password !== repeatPassword) {
+            alert('Passwords do not match. Please try again.');
+            return;
+            }
+
+            const newUser = {
+            photo: '../src/assets/icon/avatar-boy-svgrepo-com.svg',
+            nicknameOrEmail: nickname,
+            email: email,
+            password: password
+            };
+
+            sessionStorage.setItem('userSession', JSON.stringify(newUser));
+            console.log('User registered successfully');
+            // loadAppHTML();
+            alert('Registration successful. You can now log in.');
+            createLoginForm();
         });
 
         document.getElementById('showLoginForm').addEventListener('click', function(event) {

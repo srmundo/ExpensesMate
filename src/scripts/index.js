@@ -1,7 +1,32 @@
 import { Router } from '../auth/router.js';
 import { LoginPage } from '../public/loginPage.js';
 
-function loadAppHTML() {
+if (!sessionStorage.getItem('isLoggedIn')) {
+    sessionStorage.setItem('isLoggedIn', 'false');
+}
+
+function checkLoginStatus() {
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+    if (isLoggedIn) {
+        loadAppHTML();
+    } else {
+        LoginPage();
+    }
+}
+
+function logout() {
+    localStorage.removeItem('isLoggedIn');
+    LoginPage();
+}
+
+let init = checkLoginStatus;
+
+// function init() {
+//     // LoginPage()
+      
+// }
+
+export function loadAppHTML() {
     console.log("🔵 Cargando app.html...");
 
         fetch('./src/app.html')
@@ -67,41 +92,6 @@ function loadAppScripts() {
         document.body.appendChild(script);
     });
 }
-
-
-function init() {
-    Router.config({ mode: 'history' })
-    .add(/login/, () => {
-        if (!sessionStorage.getItem('userSession')) {
-            LoginPage();
-        } else {
-            Router.navigate('/app'); // Redirige a app si ya hay sesión
-        }
-    })
-    .add(/app/, () => {
-        if (sessionStorage.getItem('userSession')) {
-            loadAppHTML();  // Cargar app.html cuando la ruta es /app
-        } else {
-            Router.navigate('/login'); // Si no hay sesión, redirigir a login
-        }
-    })
-    .listen();
-
-    if (!sessionStorage.getItem('userSession')) {
-        console.log('No hay sesión de usuario');
-        Router.navigate('/login');  // Redirige a login si no hay sesión
-    } else {
-        Router.navigate('/app');  // Redirige a app si ya hay sesión
-        console.log('Hay sesión de usuario');
-    }
-
-    // // Esto se asegura de que haya un hash en la URL, redirige a login si no hay
-    // if (!location.hash) {
-    //     location.replace('#login');  // O cualquier ruta inicial que desees
-    // }
-}
-
-
 
 
 globalThis.addEventListener('DOMContentLoaded', init);
