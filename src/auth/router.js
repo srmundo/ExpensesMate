@@ -1,16 +1,13 @@
-// router.js
-
 export const Router = {
     routes: [],
     mode: null,
     root: '/',
-
     config: function(options) {
+        // Usamos history.pushState en lugar de hash si está disponible
         this.mode = options && options.mode && options.mode === 'history' && !!history.pushState ? 'history' : 'hash';
         this.root = options && options.root ? '/' + this.clearSlashes(options.root) + '/' : '/';
         return this;
     },
-
     getFragment: function() {
         let fragment = '';
         if (this.mode === 'history') {
@@ -23,50 +20,27 @@ export const Router = {
         }
         return this.clearSlashes(fragment);
     },
-
     clearSlashes: function(path) {
         return path.toString().replace(/\/$/, '').replace(/^\//, '');
     },
-
     add: function(path, callback) {
-        console.log(path);
         this.routes.push({ path, callback });
         return this;
     },
-
-    remove: function(path) {
-        for (let i = 0; i < this.routes.length; i++) {
-            if (this.routes[i].path === path) {
-                this.routes.splice(i, 1);
-                return this;
-            }
-        }
-        return this;
-    },
-
-    flush: function() {
-        this.routes = [];
-        this.mode = null;
-        this.root = '/';
-        return this;
-    },
-
-    check: function () {
+    check: function() {
         const current = this.getFragment();
         if (current === this.last) return; // 🚀 PREVENIR LLAMADAS REPETIDAS
-        
         this.last = current;
         this.routes.some(route => {
             const match = current.match(route.path);
             if (match) {
                 match.shift();
-                route.callback.apply({}, match); // Aquí usamos `callback`, no `handler`
+                route.callback.apply({}, match);
                 return true;
             }
             return false;
         });
     },
-
     listen: function() {
         let self = this;
         let current = self.getFragment();
@@ -80,20 +54,16 @@ export const Router = {
         this.interval = setInterval(fn, 50);
         return this;
     },
-
-    navigate: function (path = '') {
+    navigate: function(path = '') {
         path = this.clearSlashes(path);
-    
         if (this.mode === 'history') {
             const currentPath = this.getFragment();
-            if (currentPath === path) return; // 🚀 PREVENIR BUCLE INFINITO
-            
-            history.pushState(null, null, this.root + path);
+            if (currentPath === path) return;
+            history.pushState(null, null, this.root + path); // Esto cambia la URL sin recargar
         } else {
-            if (window.location.hash === '#' + path) return; // 🚀 PREVENIR BUCLE INFINITO
+            if (window.location.hash === '#' + path) return;
             window.location.hash = path;
         }
-    
         this.check();
         return this;
     }
