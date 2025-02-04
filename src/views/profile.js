@@ -1,3 +1,5 @@
+import { supabase } from '../auth/supabase.js';
+
 export function profile() {
 return `
                 <div class="container-profile">
@@ -126,6 +128,69 @@ function renderGoals() {
         imagePreview.src = userSession.photo;
         imagePreview.style.display = 'block';
     }
+
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+
+    if (userSession) {
+        nameInput.value = userSession.name || '';
+        emailInput.value = userSession.email || '';
+    }
+
+    document.querySelector('.profile-fields button[type="submit"]').addEventListener('click', async (event) => {
+        event.preventDefault();
+        const updatedName = nameInput.value;
+        const updatedEmail = emailInput.value;
+        const profileImageInput = document.getElementById('profile-image');
+        let updatedPhoto = userSession.photo;
+
+        if (profileImageInput.files.length > 0) {
+            const file = profileImageInput.files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                updatedPhoto = reader.result;
+                userSession.photo = updatedPhoto;
+                sessionStorage.setItem('userSession', JSON.stringify(userSession));
+                updateUserInSupabase(updatedName, updatedEmail, updatedPhoto);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            updateUserInSupabase(updatedName, updatedEmail, updatedPhoto);
+        }
+    });
+
+    async function updateUserInSupabase(updatedName, updatedEmail, updatedPhoto) {
+        const { data, error } = await supabase
+            .from('users')
+            .update({
+                name: updatedName,
+                email: updatedEmail,
+                photo: updatedPhoto
+            })
+            .eq('id', userSession.id);
+
+        if (error) {
+            console.error('Error updating user:', error);
+        } else {
+            console.log('User updated successfully', data);
+        }
+    }
+        
+    // const { data, error } = await supabase
+    //     .from('users')
+    //     .update({
+    //         name: updatedName,
+    //         email: updatedEmail,
+    //         photo: userSession.photo
+    //     })
+    //     .eq('id', userSession.id);
+
+    // if (error) {
+    //     console.error('Error updating user:', error);
+    // } else {
+    //     console.log('User updated successfully', data);
+    // }
+    // });
 }
 
 export function initializeProfile() {

@@ -11,7 +11,7 @@ let exampleStorage = ["default-style"];
 export function main() {
   const userSession = JSON.parse(sessionStorage.getItem("userSession"));
   const avatarNavApp = document.querySelector(".avatar-nav-app");
-  
+  // Añadir el menú flotante al contenedor .cont-btn-profile-nav
   if (userSession && userSession.photo) {
     avatarNavApp.src = userSession.photo;
   }
