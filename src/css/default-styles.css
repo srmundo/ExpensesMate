@@ -14,9 +14,9 @@ ul {
   list-style-type: none;
 }
 .main-app {
-  max-width: 80%;
-  max-height: 90%;
-  width: 70%;
+  max-width: 90%;
+  max-height: 95%;
+  width: 90%;
   height: 100%;
   border-radius: 10px;
   display: flex;
@@ -31,13 +31,13 @@ ul {
   justify-content: space-between;
   height: 40px;
   width: 100%;
-  border-radius: 10px;
+  border-radius: 10px 10px 0px 0px;
 }
 .cont-btn-profile-nav {
   position: relative;
 }
 .main-app .nav-app .title-app {
-  margin-left: 20px;
+  margin-left: 18px;
   font-family: poppins-medium;
 }
 
@@ -52,7 +52,7 @@ ul {
   cursor: pointer;
   border: none;
   background: none;
-  font-size: 24px;
+  font-size: 20px;
   outline: none;
 }
 .main-app .nav-app .menu-nav-app .btn-nav-app:first-child {
@@ -69,22 +69,22 @@ ul {
 
 .main-app .nav-app .menu-nav-app .btn-nav-app img {
   display: block;
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
   background-color: #ffffff;
-  border: 1px solid #f2f2f2;
   padding: 1px;
 }
 .aside-section-app {
   height: 85.3%;
-  width: 98%;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 .aside-section-app .aside-app {
   display: block;
-  width: 20%;
+  width: 22%;
   height: 100%;
   display: flex;
   align-items: center;
@@ -97,13 +97,13 @@ ul {
   );
 }
 .aside-section-app .aside-app ul {
-  width: 100%;
+  width: 95%;
   height: 70%;
 }
 .aside-section-app .aside-app ul li {
   display: block;
   width: 99%;
-  margin: 0px auto;
+  margin: 10px auto;
 }
 .aside-section-app .aside-app ul li button {
   display: flex;
@@ -111,7 +111,7 @@ ul {
   justify-content: space-between;
   width: 99%;
   margin: auto;
-  height: 30px;
+  height: 40px;
   font-size: 15px;
   font-family: poppins-regular;
   cursor: pointer;
@@ -119,9 +119,11 @@ ul {
   border: none;
   color: #f2f2f2;
   transition: all 0.1s;
+  border-radius: 10px;
+  padding: 10px;
 }
 .aside-section-app .aside-app ul li button:hover {
-  background-color: #55d976;
+  background-color: #5eca79;
   color: #000;
 }
 
@@ -151,7 +153,7 @@ ul {
   justify-content: space-around;
   height: 40px;
   width: 100%;
-  border-radius: 10px;
+  border-radius: 0px 0px 10px 10px;
   font-size: 12px;
   font-family: poppins-regular;
 }
@@ -164,131 +166,83 @@ ul {
 
 .container-home {
   width: 100%;
-  height: 100%;
+  height: 90%;
   overflow-y: scroll;
+  padding: 20px;
 }
 
 .container-home .container-data .income-expenses {
   display: flex;
-  width: 98%;
-  margin: 50px auto;
-  min-height: 200px;
+  flex-wrap: wrap;
+  width: 100%;
+  margin: 20px auto;
+  gap: 20px;
 }
+
 .container-home .container-data .income-expenses .data-expenses .cont-expenses {
   display: flex;
   justify-content: space-around;
-  width: 110%;
-  height: 100%;
-}
-.container-home
-  .container-data
-  .income-expenses
-  .data-expenses
-  .cont-expenses
-  table {
   width: 100%;
   height: 100%;
 }
 
 .container-home .container-data .income-expenses .income-data {
-  margin-left: 20px;
-  width: 35%;
-}
-.container-home .container-data .income-expenses .income-data table {
-  width: 95%;
-  height: 100%;
+  width: 100%;
 }
 
 .container-home table {
   font-family: poppins-regular;
   font-size: 12px;
   border-collapse: collapse;
-  border-spacing: 0;
   width: 100%;
   border-radius: 10px;
-  border: 1px solid #333;
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
 }
-/* Estilos para las celdas */
+
 .container-home table th,
-td {
-  padding: 15px;
+.container-home table td {
+  padding: 10px;
   border: 1px solid #ddd;
   text-align: left;
 }
 
-/* Opcional: quitar borde a las celdas en los bordes */
-.container-home table th:first-child,
-td:first-child {
-  border-left: none;
-}
-.container-home table th:last-child,
-td:last-child {
-  border-right: none;
-}
-.container-home table tr:first-child th {
-  border-top: none;
-}
-.container-home table tr:last-child td {
-  border-bottom: none;
-}
-.container-home table td,
 .container-home table th {
-  padding: 5px;
+  background-color: #643df2;
+  color: #fff;
+  font-family: poppins-bold;
 }
+
+.container-home table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.container-home table tr:hover {
+  background-color: #f1f1f1;
+}
+
 .container-home h3 {
   font-family: poppins-medium;
-  font-size: 14px;
-  margin-bottom: 5px;
-}
-.categories-budget {
-  display: flex;
-  justify-content: space-around;
+  font-size: 16px;
+  margin-bottom: 10px;
 }
 
-.categories-budget div {
-  min-height: 200px;
-  display: flex;
-  justify-content: top;
-  width: 48%;
-  flex-direction: column;
-}
-
-.categories-budget div table {
-  height: 100%;
-}
-.saving-tables {
-  display: flex;
-  flex-direction: column;
-  justify-content: top;
-  width: 98%;
-  margin: auto;
-  min-height: 200px;
-}
-.tracking {
-  display: flex;
-  flex-direction: column;
-  justify-content: top;
-  width: 98%;
-  margin: auto;
-  min-height: 200px;
-}
+.categories-budget,
+.saving-tables,
+.tracking,
 .summary-cashflow {
   display: flex;
-  align-items: center;
-  justify-content: space-around;
-}
-.summary-cashflow div {
-  min-height: 200px;
-  display: flex;
-  justify-content: top;
-  width: 48%;
-  flex-direction: column;
-}
-.data {
-  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 20px;
 }
 
-/* Contenedor de la barra de progreso */
+.categories-budget div,
+.summary-cashflow div {
+  flex: 1;
+  min-width: 300px;
+}
+
 .summary-cat .bar-container {
   background-color: #e0e0e0;
   border-radius: 5px;
@@ -297,7 +251,6 @@ td:last-child {
   width: 100%;
 }
 
-/* Barra de progreso */
 .summary-cat .bar-progress {
   height: 100%;
   border-radius: 5px;
@@ -305,7 +258,7 @@ td:last-child {
   font-size: 12px;
   font-weight: bold;
   display: flex;
-  color: rgb(255, 255, 255);
+  color: #fff;
   align-items: center;
   background-color: #643df2;
   justify-content: center;
@@ -313,68 +266,56 @@ td:last-child {
 
 .container-summary {
   display: flex;
-  justify-content: space-between;
-  min-height: 240px;
+  flex-wrap: wrap;
+  gap: 20px;
   padding: 10px;
 }
 
 .container-summary .container-summary-cat {
-  width: 70%;
-}
-.container-summary .container-summary-cat table {
-  border: none;
-}
-.container-summary .container-summary-cat table td:first-child {
-  width: 40%;
-}
-.container-summary .container-summary-cat table td:nth-child(2) {
-  width: 20%;
+  flex: 2;
+  min-width: 300px;
 }
 
 .container-summary .container-summary-exp-inc {
+  flex: 1;
+  min-width: 300px;
   display: flex;
-  justify-content: space-between;
   flex-direction: column;
-  width: 29%;
-  height: 100%;
+  gap: 10px;
 }
+
 .container-summary .container-summary-exp-inc .summary {
   font-family: poppins-regular;
-  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 10px;
 }
 
 .container-summary .container-summary-exp-inc .summary .title {
-  display: block;
   font-family: poppins-bold;
   font-size: 16px;
   color: #130938b7;
+  margin-bottom: 5px;
 }
+
 .container-summary .container-summary-exp-inc .summary .cont-value-cash {
   padding-left: 20px;
 }
-.container-summary
-  .container-summary-exp-inc
-  .summary
-  .data-summary-balance
-  .cont-value-cash {
+
+.container-summary .container-summary-exp-inc .summary .data-summary-balance .cont-value-cash {
   color: #101aa0;
 }
-.container-summary
-  .container-summary-exp-inc
-  .summary
-  .data-summary-expenses
-  .cont-value-cash {
+
+.container-summary .container-summary-exp-inc .summary .data-summary-expenses .cont-value-cash {
   color: #6b0b0b;
 }
-.container-summary
-  .container-summary-exp-inc
-  .summary
-  .data-summary-income
-  .cont-value-cash {
+
+.container-summary .container-summary-exp-inc .summary .data-summary-income .cont-value-cash {
   color: #1f7a13;
 }
+
 .container-summary-cat .title-summary-cat {
-  display: block;
   font-family: poppins-bold;
   font-size: 16px;
   color: #130938b7;
@@ -383,6 +324,8 @@ td:last-child {
 
 .container-summary-health-finance {
   display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
   align-items: center;
   justify-content: space-around;
 }
@@ -413,6 +356,8 @@ td:last-child {
 .cont-btn-new-trans {
   display: flex;
   padding: 5px;
+  margin: auto;
+  width: 95%;
 }
 
 .cont-btn-new-trans button {
@@ -421,16 +366,24 @@ td:last-child {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 5px;
+  padding: 10px 20px;
   cursor: pointer;
-  background-color: #fff;
-  border: 1px solid #b6b6b6;
-  transition: all 0.2s;
+  background-color: #643df2;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.cont-btn-new-trans button:hover {
+  background-color: #4b2dbf;
+  transform: translateY(-1px);
 }
 
 .cont-btn-new-trans button:hover {
   background-color: #55d976;
-  border: 1px solid #5ca16e;
+  /* border: 1px solid #5ca16e; */
 }
 
 .cont-btn-new-trans button span {
@@ -461,47 +414,53 @@ td:last-child {
   flex-direction: column;
   width: 40%;
   height: 85%;
-  padding: 10px;
-  background-color: #f2f2f2;
+  padding: 20px;
+  background-color: #fff;
   justify-content: space-around;
-  box-shadow: 0px 0px 5px #0000007a;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
   position: relative;
 }
 
 .body-transactions .nav-transactions .div-cont {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   justify-content: space-between;
   align-items: center;
   display: flex;
   width: 80%;
-  font-size: 12px;
+  font-size: 14px;
   font-family: poppins-regular;
 }
+
 .body-transactions .nav-transactions input,
 select {
   padding-left: 10px;
   display: block;
-  width: 60%;
-  height: 25px;
-  background-color: #fff;
-  border: 1px solid #b6b6b6;
+  width: 70%;
+  height: 35px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
   transition: all 0.2s;
   outline: none;
 }
+
 .body-transactions .nav-transactions select {
   cursor: pointer;
 }
+
 .body-transactions .nav-transactions input:focus,
 select:focus,
 .body-transactions .nav-transactions textarea:focus {
-  border: 1px solid #24135f;
+  border: 1px solid #643df2;
 }
+
 .body-transactions .nav-transactions .cont-input-category label {
-  text-wrap: nowrap;
   display: block;
   width: 100%;
   margin-bottom: 5px;
 }
+
 .body-transactions
   .nav-transactions
   .cont-input-amount
@@ -518,9 +477,11 @@ select:focus,
   -moz-appearance: textfield;
   appearance: none;
 }
+
 .body-transactions .nav-transactions .cont-input-category {
   flex-direction: column;
 }
+
 .body-transactions .nav-transactions .cont-input-category .input-category {
   display: flex;
   width: 100%;
@@ -531,48 +492,53 @@ select:focus,
   .cont-input-category
   .input-category
   button {
-  padding: 2px;
-  text-wrap: nowrap;
+  padding: 5px 10px;
   margin-left: 5px;
   font-size: 12px;
-  color: #000;
-  background-color: #9f88f2;
-  border: 1px solid #24135f;
+  white-space: nowrap;
+  color: #fff;
+  background-color: #643df2;
+  border: none;
+  border-radius: 5px;
   font-family: poppins-medium;
   cursor: pointer;
   transition: all 0.2s;
 }
+
 .body-transactions
   .nav-transactions
   .cont-input-category
   .input-category
   button:hover {
-  background-color: #643df2;
-  color: #fff;
+  background-color: #4b2dbf;
 }
+
 .body-transactions .nav-transactions .cont-btn-add-cancel {
   width: 100%;
   display: flex;
   margin-top: 20px;
   justify-content: space-around;
 }
+
 .body-transactions .nav-transactions .cont-btn-add-cancel button {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 5px;
+  padding: 10px 20px;
   outline: none;
-  background-color: #fff;
-  border: 1px solid #24135f;
+  background-color: #643df2;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
   transition: all 0.2s;
   cursor: pointer;
 }
+
 .body-transactions
   .nav-transactions
   .cont-btn-add-cancel
   button:first-child:hover {
   background-color: #55d976;
-  border: 1px solid #1f7a13;
 }
 
 .body-transactions
@@ -580,8 +546,6 @@ select:focus,
   .cont-btn-add-cancel
   button:nth-child(2):hover {
   background-color: #b14040;
-  border: 1px solid #4b0909;
-  color: #fff;
 }
 
 .body-transactions .nav-transactions .cont-btn-add-cancel button span {
@@ -590,14 +554,16 @@ select:focus,
 
 .body-transactions .nav-transactions textarea {
   display: block;
-  padding: 5px;
-  height: 60px;
+  padding: 10px;
+  height: 80px;
+  width: 79%;
   resize: none;
-  font-size: 12px;
+  font-size: 14px;
   font-family: poppins-regular;
   outline: none;
-  background-color: #fff;
-  border: 1px solid #b6b6b6;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
 }
 .title-add-trans {
   display: block;
@@ -753,158 +719,117 @@ select:focus,
 }
 
 .container-transactions .cont-transaction-list {
-  width: 100%;
+  width: 95%;
+  margin: auto;
   height: 100%;
 }
 
 .container-transactions .cont-transaction-list .content-filter {
   display: flex;
   align-items: center;
+  gap: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .container-transactions .cont-transaction-list .content-filter .list-filter {
   display: flex;
   align-items: center;
+  gap: 10px;
 }
 
-.container-transactions
-  .cont-transaction-list
-  .content-filter
-  .list-filter
-  li
-  label,
-.container-transactions
-  .cont-transaction-list
-  .content-filter
-  .list-filter
-  li
-  button {
-  background-color: #fff;
-  box-shadow: 0px -1px 3px #000 inset;
-  border: 1px solid #24135f;
-  padding: 5px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.container-transactions
-  .cont-transaction-list
-  .content-filter
-  .list-filter
-  li
-  label {
-  height: 15px;
-  width: 50px;
-}
-.container-transactions
-  .cont-transaction-list
-  .content-filter
-  .list-filter
-  li
-  input {
-  background-color: rgb(255, 255, 255);
-  margin-left: 5px;
-  height: 24px;
-  border: 1px solid #24135f;
-  border-radius: 5px;
-  font-size: 12px;
-  font-family: poppins-regular;
-  padding-left: 5px;
-}
-.container-transactions
-  .cont-transaction-list
-  .content-filter
-  .list-filter
-  #filter-date-list {
-  overflow: hidden;
-  flex-wrap: nowrap;
-}
 .container-transactions .cont-transaction-list .content-filter .list-filter li {
   position: relative;
   font-size: 12px;
   font-family: poppins-regular;
-  margin-left: 5px;
-  height: 30px;
   display: flex;
   align-items: center;
+  gap: 5px;
 }
 
-.container-transactions
-  .cont-transaction-list
-  .content-filter
-  .list-filter
-  li
-  ul {
-  background-color: rgb(255, 255, 255);
+.container-transactions .cont-transaction-list .content-filter .list-filter li label,
+.container-transactions .cont-transaction-list .content-filter .list-filter li button {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.container-transactions .cont-transaction-list .content-filter .list-filter li label:hover,
+.container-transactions .cont-transaction-list .content-filter .list-filter li button:hover {
+  background-color: #e0e0e0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.container-transactions .cont-transaction-list .content-filter .list-filter li input {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 12px;
+  font-family: poppins-regular;
+  padding: 5px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.container-transactions .cont-transaction-list .content-filter .list-filter li input:focus {
+  border-color: #643df2;
+}
+
+.container-transactions .cont-transaction-list .content-filter .list-filter li ul {
+  background-color: #fff;
   padding: 10px;
   position: absolute;
   top: 100%;
-  left: 0%;
-  border: 1px solid #00000025;
-  box-shadow: 0px 2px 4px #00000018;
+  left: 0;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
   display: none;
-  overflow: hidden;
+  z-index: 1000;
 }
 
-.container-transactions
-  .cont-transaction-list
-  .content-filter
-  .list-filter
-  li
-  ul
-  li
-  a {
+.container-transactions .cont-transaction-list .content-filter .list-filter li ul li a {
   text-decoration: none;
-  color: #000;
+  color: #333;
   display: block;
-  padding: 4px;
-  width: 100%;
+  padding: 5px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
 }
 
-.container-transactions
-  .cont-transaction-list
-  .content-filter
-  .list-filter
-  li
-  ul
-  li
-  a:hover {
-  background-color: #24135f17;
-}
-
-.container-transactions
-  .cont-transaction-list
-  .content-filter
-  .content-search
-  input {
-  font-size: 12px;
-  font-family: poppins-regular;
-  width: 95%;
-  border: none;
-  outline: none;
-  padding-left: 5px;
+.container-transactions .cont-transaction-list .content-filter .list-filter li ul li a:hover {
+  background-color: #f0f0f0;
 }
 
 .container-transactions .cont-transaction-list .content-filter .content-search {
-  background-color: rgb(255, 255, 255);
-  margin-left: 5px;
-  height: 24px;
-  border: 1px solid #24135f;
+  background-color: #fff;
+  border: 1px solid #ddd;
   border-radius: 5px;
   display: flex;
   align-items: center;
+  padding: 5px;
+  gap: 5px;
 }
 
-.container-transactions
-  .cont-transaction-list
-  .content-filter
-  .content-search
-  span {
+.container-transactions .cont-transaction-list .content-filter .content-search input {
+  font-size: 12px;
+  font-family: poppins-regular;
+  border: none;
+  outline: none;
+  width: 100%;
+}
+
+.container-transactions .cont-transaction-list .content-filter .content-search span {
   display: flex;
   align-items: center;
-  width: 20px;
   justify-content: center;
+  color: #666;
 }
 
 .cont-list-transaction-section {
@@ -918,116 +843,146 @@ select:focus,
   width: 100%;
   border-collapse: collapse;
   font-size: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
 }
 .cont-list-transaction-section th {
   background-color: #4caf50;
   color: white;
-  padding: 8px;
+  padding: 12px;
   font-family: poppins-medium;
   position: sticky;
-  top: -1%;
+  top: 0;
+  text-align: left;
 }
 .cont-list-transaction-section td {
-  text-align: center;
-  padding: 4px;
+  text-align: left;
+  padding: 12px;
   font-family: poppins-regular;
   max-width: 100px;
-  overflow: auto;
-  text-wrap: wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .cont-list-transaction-section td button {
-  padding: 4px;
+  padding: 6px 12px;
   cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  font-family: poppins-medium;
+  font-size: 10px;
+  transition: background-color 0.3s;
 }
 .cont-list-transaction-section td button:first-child {
   background-color: #4930a3;
-  border: none;
-  border-radius: 5px;
   color: #fff;
-  font-family: poppins-medium;
-  font-size: 10px;
 }
 .cont-list-transaction-section td button:first-child:hover {
   background-color: #24135f;
 }
 .cont-list-transaction-section td button:nth-child(2) {
   background-color: #800808;
-  border: none;
-  border-radius: 5px;
   color: #fff;
-  font-family: poppins-medium;
-  font-size: 10px;
 }
 .cont-list-transaction-section td button:nth-child(2):hover {
   background-color: #991c1c;
 }
 .cont-list-transaction-section th,
 td {
-  border: 1px solid rgba(0, 0, 0, 0.075);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.075);
 }
 .cont-list-transaction-section tr:hover td {
   cursor: pointer;
-  background-color: #ebd3f5; /* Cambia el color de fondo al pasar el cursor */
+  background-color: #f1f1f1;
+}
+.btn-report-generate {
+  background-color: #f9f9f9;
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, transform 0.3s;
 }
 
-.btn-report-generate {
-  background-color: rgb(233, 233, 233);
-  padding: 4px;
-}
 .btn-report-generate button {
-  padding: 4px;
+  padding: 6px 12px;
   font-size: 12px;
   font-family: poppins-medium;
   background-color: #fff;
   border: 1px solid #24135f;
   cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s, transform 0.3s;
 }
 
 .btn-report-generate button:hover {
   background-color: #55d976;
   border: 1px solid #5ca16e;
+  transform: translateY(-1px);
 }
+
 .cont-report-table h2 {
   font-family: poppins-bold;
-  font-size: 14px;
+  font-size: 16px;
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
 .cont-report-table table {
   font-family: poppins-regular;
   font-size: 12px;
   margin: 10px auto;
   border-collapse: collapse;
-  width: 90%;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
+
 .cont-report-table th,
 .cont-report-table td {
-  padding: 5px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
 }
 
 .cont-report-table th {
-  background-color: #d1d1d1;
+  background-color: #643df2;
+  color: #fff;
+  font-family: poppins-bold;
+}
+
+.cont-report-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.cont-report-table tr:hover {
+  background-color: #f1f1f1;
 }
 
 .body-reports {
   width: 100%;
   height: 95%;
   display: block;
-  height: 70%;
   overflow-y: scroll;
   position: relative;
 }
+
 .container-reports {
   overflow-y: scroll;
 }
+
 .title-reports {
   position: sticky;
-  top: 0%;
+  top: 0;
+  background-color: #9f88f2;
+  padding: 5px;
 }
+
 .cont-report-table h3 {
   margin-top: 20px;
   font-family: poppins-medium;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .cont-report-table p,
@@ -1047,11 +1002,11 @@ td {
   width: 90%;
   min-height: 70%;
 }
+
 .cont-non-report {
   display: flex;
   min-height: 300px;
   width: 100%;
-  display: flex;
   justify-content: center;
   align-items: center;
 }
@@ -1064,7 +1019,6 @@ td {
   display: block;
   height: 100%;
   width: 100%;
-  overflow: hidden;
 }
 
 .container-goals .title-goals {
@@ -1081,76 +1035,76 @@ td {
 }
 
 #goal-form {
+  width: 90%;
   display: flex;
   padding: 10px;
-  background-color: #f2f2f2;
-  border: 1px solid #b6b6b6;
-  margin: 10px 0;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin: 10px auto;
   gap: 10px;
+  align-items: center;
 }
 
 #goal-form .form-group {
   margin-bottom: 10px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  width: 100%;
 }
 
 #goal-form .form-group label {
   font-family: poppins-regular;
   font-size: 12px;
-  text-align: left;
-  width: 100%;
+  margin-bottom: 5px;
 }
 
 #goal-form .form-group input {
   padding: 5px;
   font-size: 12px;
   font-family: poppins-regular;
-  border: 1px solid #b6b6b6;
+  border: 1px solid #ddd;
+  border-radius: 5px;
   outline: none;
+  transition: border-color 0.3s;
 }
 
-#goal-form .form-group #goal-amount{
-  width: 100px;
-  height: 18px;
+#goal-form .form-group input:focus {
+  border-color: #643df2;
 }
 
-#goal-form .form-group #goal-name{
-  width: 90%;
-  height: 18px;
-}
-
-#goal-form .form-group #goal-date{
-  width: 90%;
-  height: 18px;
-}
-
-#goal-form #cont-btn-goal{
+#goal-form #cont-btn-goal {
   display: flex;
   justify-content: center;
-  align-items: center;padding-top: 4px;
+  align-items: center;
+  padding-top: 4px;
 }
-
+#cont-btn-goal{
+  height: 40px;
+}
 #goal-form button {
   font-size: 12px;
   font-family: poppins-regular;
-  padding: 5px;
-  height: 29px;
   cursor: pointer;
-  background-color: #fff;
-  border: 1px solid #b6b6b6;
-  transition: all 0.2s;
+  padding: 10px 10px;
+  white-space: nowrap;
+  background-color: #643df2;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  margin-top: 7px;
+  transition: background-color 0.3s, transform 0.3s;
 }
 
 #goal-form button:hover {
-  background-color: #55d976;
-  border: 1px solid #5ca16e;
+  background-color: #4b2dbf;
+  transform: translateY(-1px);
 }
 
 #goal-list {
-  width: 100%;
-  height: 100%;
+  width: 95%;
+  height: 70%;
+  margin: auto;
   overflow-y: scroll;
 }
 
@@ -1159,38 +1113,44 @@ td {
   border-collapse: collapse;
   font-size: 12px;
   font-family: poppins-regular;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .goal-table th {
   background-color: #4caf50;
   color: white;
-  padding: 8px;
+  padding: 12px;
   font-family: poppins-medium;
   position: sticky;
   top: 0;
+  text-align: left;
 }
 
 .goal-table td {
-  text-align: center;
-  padding: 4px;
+  text-align: left;
+  padding: 12px;
   font-family: poppins-regular;
   max-width: 100px;
-  overflow: auto;
-  word-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .goal-table td button {
-  padding: 4px;
+  padding: 6px 12px;
   cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  font-family: poppins-medium;
+  font-size: 10px;
+  transition: background-color 0.3s;
 }
 
 .goal-table td button:first-child {
   background-color: #4930a3;
-  border: none;
-  border-radius: 5px;
   color: #fff;
-  font-family: poppins-medium;
-  font-size: 10px;
 }
 
 .goal-table td button:first-child:hover {
@@ -1199,11 +1159,7 @@ td {
 
 .goal-table td button:nth-child(2) {
   background-color: #800808;
-  border: none;
-  border-radius: 5px;
   color: #fff;
-  font-family: poppins-medium;
-  font-size: 10px;
 }
 
 .goal-table td button:nth-child(2):hover {
@@ -1211,12 +1167,12 @@ td {
 }
 
 .goal-table th, td {
-  border: 1px solid rgba(0, 0, 0, 0.075);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.075);
 }
 
 .goal-table tr:hover td {
   cursor: pointer;
-  background-color: #ebd3f5;
+  background-color: #f1f1f1;
 }
 
 .container-settings {
@@ -1507,10 +1463,11 @@ td {
 .menuFloatOptions .profile-name {
   font-family: poppins-medium;
   font-size: 14px;
+  color: #666;
   margin: 0;
 }
 
-.menuFloatOptions .profile-email {
+.menuFloatOptions .profile-nick {
   font-family: poppins-regular;
   font-size: 12px;
   color: #666;

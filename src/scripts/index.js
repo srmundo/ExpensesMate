@@ -91,7 +91,6 @@ export function loadAppHTML() {
                     </div>
                 </div>
                 <div class="profile-actions">
-                    <button id="btnProfile">Profile</button>
                     <button id="btnLogout">Logout</button>
                 </div>
                 </div>

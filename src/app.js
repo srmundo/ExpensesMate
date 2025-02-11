@@ -43,11 +43,6 @@ export function main() {
     });
   });
 
-  document.getElementById('btnProfile').addEventListener('click', ()=>{
-    loadView("profile", containerView);
-    initializeProfile();
-  })
-
   function bntAside() {
     buttonsAside.forEach((button, index) => {
       if (index === getActiveButton()) {
