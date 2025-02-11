@@ -1,5 +1,5 @@
 import { loadAppHTML } from "../scripts/index.js";
-import { loginUser, registerUser } from "../auth/supabase.js";
+import { registerSessionData, loginSession } from "../auth/auth.js";
 export const LoginPage = function() {
     const app = document.getElementById('app');
     const style = document.createElement('style');
@@ -102,9 +102,10 @@ export const LoginPage = function() {
 
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault();
-            const email = document.getElementById('nicknameOrEmail').value;
+            const name = document.getElementById('nicknameOrEmail').value;
             const password = document.getElementById('password').value;
-            loginUser(email, password);
+
+            loginSession(name, password);
         });
 
         document.getElementById('showRegisterForm').addEventListener('click', function(event) {
@@ -179,7 +180,6 @@ export const LoginPage = function() {
         document.getElementById('registerForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const name = document.getElementById('nickname').value;
-            const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const repeatPassword = document.getElementById('repeatPassword').value;
             const photo = '../src/assets/icon/avatar-boy-svgrepo-com.svg'; // Imagen por defecto
@@ -188,8 +188,9 @@ export const LoginPage = function() {
                 alert('Las contraseñas no coinciden.');
                 return;
             }
+
+            registerSessionData(name, password);
         
-            registerUser(name, email, password, photo);
             createLoginForm();
         });
         

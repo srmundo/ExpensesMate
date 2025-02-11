@@ -9,7 +9,7 @@ import { useState } from "./scripts/useState.js";
 let exampleStorage = ["default-style"];
 
 export function main() {
-  const userSession = JSON.parse(sessionStorage.getItem("userSession"));
+  const userSession = JSON.parse(sessionStorage.getItem("session"));
   const avatarNavApp = document.querySelector(".avatar-nav-app");
   // Añadir el menú flotante al contenedor .cont-btn-profile-nav
   if (userSession && userSession.photo) {
@@ -42,6 +42,11 @@ export function main() {
       bntAside();
     });
   });
+
+  document.getElementById('btnProfile').addEventListener('click', ()=>{
+    loadView("profile", containerView);
+    initializeProfile();
+  })
 
   function bntAside() {
     buttonsAside.forEach((button, index) => {
@@ -82,7 +87,7 @@ export function main() {
   
 }
 
-function loadView(view, containerView) {
+export function loadView(view, containerView) {
   switch (view) {
     case "home":
       containerView.innerHTML = home();

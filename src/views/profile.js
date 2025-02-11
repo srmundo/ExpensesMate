@@ -1,5 +1,5 @@
-import { supabase } from '../auth/supabase.js';
 
+import { loadView } from "../app.js";
 export function profile() {
 return `
                 <div class="container-profile">
@@ -18,10 +18,6 @@ return `
                                     <div class="profile-field">
                                         <label for="name">Nombre:</label>
                                         <input type="text" id="name" name="name" placeholder="Ingresa tu nombre">
-                                    </div>
-                                    <div class="profile-field">
-                                            <label for="email">Correo electrónico:</label>
-                                            <input type="email" id="email" name="email" placeholder="Ingresa tu correo electrónico">
                                     </div>
                                     <button type="submit">Guardar cambios</button>
                                 </div>
@@ -122,25 +118,25 @@ function renderGoals() {
         tbody.appendChild(row);
     });
 
-    const userSession = JSON.parse(sessionStorage.getItem('userSession'));
+    const userSession = JSON.parse(sessionStorage.getItem('session'));
     if (userSession && userSession.photo) {
         const imagePreview = document.getElementById('image-preview');
+        const imgProfile = document.querySelector('.profile-photo');
+
+        imgProfile.src = userSession.photo;
         imagePreview.src = userSession.photo;
         imagePreview.style.display = 'block';
     }
 
     const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
 
     if (userSession) {
         nameInput.value = userSession.name || '';
-        emailInput.value = userSession.email || '';
     }
 
     document.querySelector('.profile-fields button[type="submit"]').addEventListener('click', async (event) => {
         event.preventDefault();
         const updatedName = nameInput.value;
-        const updatedEmail = emailInput.value;
         const profileImageInput = document.getElementById('profile-image');
         let updatedPhoto = userSession.photo;
 
@@ -151,46 +147,28 @@ function renderGoals() {
                 updatedPhoto = reader.result;
                 userSession.photo = updatedPhoto;
                 sessionStorage.setItem('userSession', JSON.stringify(userSession));
-                updateUserInSupabase(updatedName, updatedEmail, updatedPhoto);
+                updateUserInSessionStorage(updatedName, updatedPhoto);
             };
             reader.readAsDataURL(file);
         } else {
-            updateUserInSupabase(updatedName, updatedEmail, updatedPhoto);
+            updateUserInSessionStorage(updatedName, updatedPhoto);
         }
     });
 
-    async function updateUserInSupabase(updatedName, updatedEmail, updatedPhoto) {
-        const { data, error } = await supabase
-            .from('users')
-            .update({
-                name: updatedName,
-                email: updatedEmail,
-                photo: updatedPhoto
-            })
-            .eq('id', userSession.id);
+    const containerView = document.querySelector(".section-app");
 
-        if (error) {
-            console.error('Error updating user:', error);
-        } else {
-            console.log('User updated successfully', data);
-        }
+    function updateUserInSessionStorage(name, photo) {
+        const userSession = JSON.parse(sessionStorage.getItem('session')) || {};
+        userSession.name = name;
+        userSession.photo = photo;
+        sessionStorage.setItem('session', JSON.stringify(userSession));
+        window.location.reload();
+        globalThis.addEventListener('load', () => {
+            loadView("profile", containerView);
+            initializeProfile();
+        });
     }
-        
-    // const { data, error } = await supabase
-    //     .from('users')
-    //     .update({
-    //         name: updatedName,
-    //         email: updatedEmail,
-    //         photo: userSession.photo
-    //     })
-    //     .eq('id', userSession.id);
 
-    // if (error) {
-    //     console.error('Error updating user:', error);
-    // } else {
-    //     console.log('User updated successfully', data);
-    // }
-    // });
 }
 
 export function initializeProfile() {

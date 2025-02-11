@@ -1,6 +1,6 @@
 /** @format */
 
-import { Router } from '../auth/router.js';
+// import { Router } from '../auth/router.js';
 import { LoginPage } from '../public/loginPage.js';
 // import { logoutUser } from '../auth/supabase.js';
 
@@ -25,6 +25,8 @@ function logoutUser() {
     sessionStorage.setItem('isLoggedIn', 'false');
     logout();
 }
+
+
 let init = checkLoginStatus;
 
 // function init() {
@@ -84,8 +86,8 @@ export function loadAppHTML() {
                     <div class="profile-header">
                     <img src="" alt="User Photo" class="profile-photo">
                     <div class="profile-info">
-                        <p class="profile-name">John Doe</p>
-                        <p class="profile-email">john.doe@example.com</p>
+                        <p class="profile-name"></p>
+                        <p class="profile-nick"></p>
                     </div>
                 </div>
                 <div class="profile-actions">
@@ -128,6 +130,22 @@ export function loadAppHTML() {
             });
             });
 
+			const userSession = JSON.parse(sessionStorage.getItem('session'));
+    		if (userSession && userSession.photo) {
+    		    const imgProfile = document.querySelector('.profile-photo');
+    		    imgProfile.src = userSession.photo;
+    		}
+
+			if(userSession && userSession.name){
+				const nameProfile = document.querySelector('.profile-name');
+    		    nameProfile.innerHTML = userSession.name;
+			}
+
+			if(userSession && userSession.nickname){
+				const nickProfile = document.querySelector('.profile-nick');
+    		    nickProfile.innerHTML = userSession.nickname;
+			}
+
 
 		})
 		.catch((error) => console.error('Error loading app.html:', error));
@@ -149,4 +167,4 @@ function loadAppScripts() {
 	});
 }
 
-globalThis.addEventListener('DOMContentLoaded', init);
+globalThis.addEventListener('DOMContentLoaded', init());
