@@ -1,7 +1,6 @@
-
 import { loadView } from "../app.js";
 export function profile() {
-return `
+    return `
                 <div class="container-profile">
                         <h1>Profile</h1>
                         <div class="profile-details">
@@ -16,10 +15,10 @@ return `
                                 </div>
                                 <div class="profile-fields">
                                     <div class="profile-field">
-                                        <label for="name">Nombre:</label>
-                                        <input type="text" id="name" name="name" placeholder="Ingresa tu nombre">
+                                        <label for="name">Name:</label>
+                                        <input type="text" id="name" name="name" placeholder="Enter your name">
                                     </div>
-                                    <button type="submit">Guardar cambios</button>
+                                    <button type="submit">Save changes</button>
                                 </div>
                         </div>
                         <div class="about-profile">
@@ -66,7 +65,6 @@ return `
                 </div>
         `;
 }
-
 
 function previewImage(event) {
     const reader = new FileReader();
