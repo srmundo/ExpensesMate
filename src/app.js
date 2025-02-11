@@ -20,6 +20,9 @@ export function main() {
   // jsPDFScript.onload = () => {
   // };
   window.jsPDF = window.jspdf.jsPDF;
+  if (!window.jsPDF) {
+    location.reload();
+  }
 
   // document.head.appendChild(jsPDFScript);
   const [getActiveButton, setActiveButton] = useState(0);

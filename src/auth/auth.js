@@ -18,6 +18,7 @@ export function loginSession(nickname, password) {
         if (session && session.nickname === nickname && session.password === password) {
             console.log('Login successful');
             sessionStorage.setItem('isLoggedIn', true);
+            window.location.reload();
             return true;
         } else {
             console.log('Invalid nickname or password');
