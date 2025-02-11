@@ -1509,3 +1509,83 @@ td {
 .menuFloatOptions .profile-actions button:hover {
   background-color: #4b2dbf;
 }
+
+@media (max-width: 768px) {
+  body {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .main-app {
+    width: 100%;
+    height: auto;
+  }
+
+  .main-app .nav-app {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .main-app .nav-app .menu-nav-app {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .aside-section-app {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .aside-section-app .aside-app {
+    width: 100%;
+    height: auto;
+  }
+
+  .aside-section-app .section-app {
+    width: 100%;
+    height: auto;
+  }
+
+  .footer-app {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .container-home {
+    height: auto;
+    padding: 10px;
+  }
+
+  .container-home .container-data .income-expenses {
+    flex-direction: column;
+  }
+
+  .container-summary {
+    flex-direction: column;
+  }
+
+  .container-summary .container-summary-cat,
+  .container-summary .container-summary-exp-inc {
+    width: 100%;
+  }
+
+  .container-transactions,
+  .container-reports,
+  .container-goals,
+  .container-settings,
+  .container-profile {
+    height: auto;
+  }
+
+  .profile-details {
+    flex-direction: column;
+  }
+
+  .profile-fields {
+    width: 100%;
+  }
+
+  .about-profile table {
+    font-size: 10px;
+  }
+}
