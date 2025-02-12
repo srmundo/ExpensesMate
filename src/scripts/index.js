@@ -2,6 +2,7 @@
 
 // import { Router } from '../auth/router.js';
 import { LoginPage } from '../public/loginPage.js';
+import { openDatabase, insertCategory } from '../data/storage.js';
 // import { logoutUser } from '../auth/supabase.js';
 
 if (!sessionStorage.getItem('isLoggedIn')) {
@@ -12,6 +13,56 @@ function checkLoginStatus() {
 	const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
 	if (isLoggedIn) {
 		loadAppHTML();
+		openDatabase();
+		const categories = {
+			Income: [
+				"Salary",
+				"Additional income",
+				"Other income"
+			],
+			Expense: [
+				"Rent or Mortgage",
+				"Utilities",
+				"Internet and phone",
+				"Insurance",
+				"Taxes",
+				"Transportation",
+				"Education",
+				"Subscriptions",
+				"Food",
+				"Health and wellness",
+				"Clothing and accessories",
+				"Entertainment",
+				"Gifts and celebrations",
+				"Travel and vacations",
+				"Pets",
+				"Personal expenses",
+				"Personal loan payments",
+				"Credit card debt",
+				"Student loans",
+				"Other debts",
+				"Donations and charity",
+				"Unexpected expenses",
+				"Emergency savings",
+				"Savings for specific goals",
+				"Investments"
+			]
+		};
+
+		async function insertCategories() {
+			for (const type in categories) {
+				for (const name of categories[type]) {
+					try {
+						await insertCategory(name, type);
+						console.log(``);
+					} catch (error) {
+						console.log('');
+					}
+				}
+			}
+		}
+
+		insertCategories();
 	} else {
 		LoginPage();
 	}

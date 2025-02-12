@@ -1,3 +1,4 @@
+import { insertTransaction, getTransactions, deleteTransaction, getCategories } from "../data/storage.js";
 export function transactions() {
   return `
     <div class="container-transactions">
@@ -24,6 +25,13 @@ export function transactions() {
               <label for="input-date">Date:</label>
               <input id="input-date" type="date" placeholder="Insert a date" />
             </div>
+            <div class="cont-type-transactions div-cont">
+              <label for="options-type">Select a type:</label>
+              <select id="options-type" name="options-type">
+                <option value="Income">Income</option>
+                <option value="Expense">Expense</option>
+              </select>
+            </div>
             <div class="cont-input-category div-cont">
               <label for="options-category">Select a category:</label>
               <div class="input-category">
@@ -34,13 +42,7 @@ export function transactions() {
                 <button id="btn-new-category">New category</button>
               </div>
             </div>
-            <div class="cont-type-transactions div-cont">
-              <label for="options-type">Select a type:</label>
-              <select id="options-type" name="options-type">
-                <option value="income">Income</option>
-                <option value="expense">Expense</option>
-              </select>
-            </div>
+            
             <textarea
               id="input-note"
               placeholder="Add a note or description (optional)"
@@ -152,6 +154,7 @@ export function transactions() {
           </div>
           <div class="cont-list-transaction-section">
             <table class="cont-table-transaction">
+                <thead>
                 <tr class="head-table-transaction">
                 <th>Amount</th>
                 <th>Date</th>
@@ -160,8 +163,10 @@ export function transactions() {
                 <th>Description</th>
                 <th>Action</th>
                 </tr>
+                </thead>
 
-                <tr class="row-table-transaction">
+                <tbody id="body-table-transaction">
+                  <tr class="row-table-transaction">
                   <td class="col-table-transaction" data-label="Amount">$$ 1,350</td>
                   <td class="col-table-transaction" data-label="Date">12/05/2024</td>
                   <td class="col-table-transaction" data-label="Category">Transportation</td>
@@ -172,6 +177,7 @@ export function transactions() {
                     <button id="btn-remove-transaction">Remove</button></div>
                   </td>
                 </tr>
+                </tbody>
             </table>
           </div>
         </div>
@@ -185,6 +191,45 @@ export function funcTransactions() {
   const containerCategoryTransactions = document.querySelector(
     ".cont-categories-list"
   );
+
+  const transactionsTableBody = document.getElementById("body-table-transaction");
+
+  getTransactions().then(transactions => {
+    console.log("Transactions:", transactions);
+}).catch(error => {
+    console.error(error);
+});
+
+  async function renderTransactions() {
+    try {
+      const transactions = await getTransactions();
+      transactionsTableBody.innerHTML = "";
+      transactions.forEach(transaction => {
+        const row = document.createElement("tr");
+        row.className = "row-table-transaction";
+        row.setAttribute("data-id", transaction.id);
+        row.innerHTML = `
+          <td class="col-table-transaction" data-label="Amount">$$ ${transaction.amount}</td>
+          <td class="col-table-transaction" data-label="Date">${transaction.date}</td>
+          <td class="col-table-transaction" data-label="Category">${transaction.categoryId}</td>
+          <td class="col-table-transaction" data-label="Type">${transaction.type}</td>
+          <td class="col-table-transaction" data-label="Description">${transaction.note}</td>
+          <td class="col-table-transaction col-btn" data-label="Action">
+            <div class="col-btn">
+              <button id="btn-edit-transaction">Edit</button>
+              <button id="btn-remove-transaction">Remove</button>
+            </div>
+          </td>
+        `;
+        transactionsTableBody.appendChild(row);
+      });
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+    }
+  }
+
+  renderTransactions();
+
   const containerBoxEditCategory = document.querySelector(".box-edit-category");
 
   containerCategoryTransactions.style.display = "none";
@@ -200,6 +245,7 @@ export function funcTransactions() {
     const btnCancelTransaction = document.getElementById(
       "btn-cancel-transaction"
     );
+
     const btnNewCategory = document.getElementById("btn-new-category");
     btnCancelTransaction.addEventListener("click", () => {
       if (containerNewTransactions.style.display === "flex") {
@@ -235,5 +281,55 @@ export function funcTransactions() {
         });
       }
     });
+    const btnAddTransaction = document.getElementById("btn-add-transactions");
+    btnAddTransaction.addEventListener("click", () => {
+      const amount = document.getElementById("input-amount").value;
+      const date = document.getElementById("input-date").value;
+      const category = document.getElementById("options-category").value;
+      const type = document.getElementById("options-type").value;
+      const note = document.getElementById("input-note").value;
+      insertTransaction(amount, date, category, type, note);
+      console.log(amount, date, category, type, note);
+      containerNewTransactions.style.display = "none";
+      renderTransactions();
+    });
   });
+
+  const btnRemoveTransaction = document.getElementById("btn-remove-transaction");
+  transactionsTableBody.addEventListener("click", async (event) => {
+    if (event.target && event.target.id === "btn-remove-transaction") {
+      const row = event.target.closest("tr");
+      const transactionId = row.getAttribute("data-id");
+      console.log("Transaction ID to remove:", Number(transactionId));
+      try {
+        await deleteTransaction(Number(transactionId));
+        row.remove();
+      } catch (error) {
+        console.error("Error deleting transaction:", error);
+      }
+    }
+  });
+
+  async function renderCategories() {
+    try {
+      const categories = await getCategories();
+      const optionsCategory = document.getElementById("options-category");
+      const type = document.getElementById("options-type").value;
+      optionsCategory.innerHTML = "";
+      categories.forEach(category => {
+        if (category.type === type) {
+          const option = document.createElement("option");
+          option.value = category.name;
+          option.textContent = category.name;
+          optionsCategory.appendChild(option);
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  }
+
+  document.getElementById("options-type").addEventListener("change", renderCategories);
+  renderCategories();
+  
 }
