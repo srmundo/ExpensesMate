@@ -70,7 +70,17 @@ export function transactions() {
                     id="input-add-cat"
                     placeholder="Write your category"
                   />
-                  <button id="btn-add-category">Add category</button>
+
+                  <div class='cont-type-btn'>
+                    <div class="cont-type-transactions div-cont">
+                    <select id="options-type" name="options-type">
+                      <option value="Income">Income</option>
+                      <option value="Expense">Expense</option>
+                    </select>
+                    </div>
+                  
+                    <button id="btn-add-category">Add</button>
+                  </div>
                 </div>
               </div>
               <div class="box-edit-category">
@@ -167,11 +177,11 @@ export function transactions() {
 
                 <tbody id="body-table-transaction">
                   <tr class="row-table-transaction">
-                  <td class="col-table-transaction" data-label="Amount">$$ 1,350</td>
-                  <td class="col-table-transaction" data-label="Date">12/05/2024</td>
-                  <td class="col-table-transaction" data-label="Category">Transportation</td>
-                  <td class="col-table-transaction" data-label="Type">Exponses variable</td>
-                  <td class="col-table-transaction" data-label="Description">Alquiler para las despensas</td>
+                  <td class="col-table-transaction" data-label="Amount">$ 0,00</td>
+                  <td class="col-table-transaction" data-label="Date">00/00/0000</td>
+                  <td class="col-table-transaction" data-label="Category">----------</td>
+                  <td class="col-table-transaction" data-label="Type">----------</td>
+                  <td class="col-table-transaction" data-label="Description">------------</td>
                   <td class="col-table-transaction col-btn" data-label="Action">
                     <div class="col-btn"><button id="btn-edit-transaction">Edit</button>
                     <button id="btn-remove-transaction">Remove</button></div>
