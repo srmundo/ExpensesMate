@@ -141,25 +141,27 @@ export function transactions() {
         </div>
         <div class="cont-transaction-list">
           <div class="content-filter">
+            <button id="btn-show-filter"><span class="icon-filter"></span></button>
             <div class="content-search">
               <span class="icon-search"></span>
               <input type="search" name="search" id="filter-search" placeholder="Search by category, description, or transaction type"/>
             </div>
-            <ul class="list-filter">
+            <ul class="list-filter-hidden">
               <li><button id="filter-all">All</button></li>
               <li id="filter-date-list"><label for="filter-date">By date</label><input type="date" id="filter-date"/></li>
+              <li><button id="filter-transaction">By type</button>
+                <select id="options-type" name="options-type">
+                <option value="Income">Income</option>
+                <option value="Expense">Expense</option>
+              </select>
+              </li>
               <li><button id="filter-category">By category</button>
-                <ul class="filter-list-category">
-                  <li><a href="#">Housting</a></li>
-                  <li><a href="#">Transportation</a></li>
-                </ul>
+                <select id="options-category" name="options-category">
+                  <option value="housting">Housting</option>
+                  <option value="transportation">Transportation</option>
+                </select>
               </li>
-              <li><button id="filter-transaction">By transaction type</button>
-                <ul class="filter-list-transaction">
-                  <li><a href="#">Income</a></li>
-                  <li><a href="#">Expenses</a></li>
-                </ul>
-              </li>
+              
             </ul>
           </div>
           <div class="cont-list-transaction-section">
@@ -341,5 +343,30 @@ export function funcTransactions() {
 
   document.getElementById("options-type").addEventListener("change", renderCategories);
   renderCategories();
+
+  const btnShowFilter = document.getElementById("btn-show-filter");
+  const filterList = document.querySelector(".list-filter-hidden");
+
+  function toggleFilterList() {
+    if (filterList.classList.contains("list-filter-hidden")) {
+      filterList.classList.remove("list-filter-hidden");
+      filterList.classList.add("list-filter");
+    } else {
+      filterList.classList.remove("list-filter");
+      filterList.classList.add("list-filter-hidden");
+    }
+  }
+
+  btnShowFilter.addEventListener("click", (event) => {
+    event.stopPropagation();
+    toggleFilterList();
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!filterList.contains(event.target) && !btnShowFilter.contains(event.target)) {
+      filterList.classList.remove("list-filter");
+      filterList.classList.add("list-filter-hidden");
+    }
+  });
   
 }
