@@ -1511,6 +1511,28 @@ td {
 }
 
 @media (max-width: 768px) {
+  .cont-list-transaction-section {
+    height: auto;
+    overflow: scroll;
+  }
+
+  .cont-list-transaction-section table {
+    width: 100%;
+    display: table;
+  }
+
+  .cont-list-transaction-section th,
+  .cont-list-transaction-section td {
+    display: table-cell;
+    overflow: visible;
+  }
+
+  .cont-list-transaction-section td{
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
   body {
     flex-direction: column;
     height: auto;
@@ -1584,13 +1606,14 @@ td {
   .aside-section-app .section-app {
     overflow-y: scroll;
     width: 100%;
-    height: 80vh;
+    height: 73vh;
     max-height: 100vh;
   }
 
   .footer-app {
     height: 10vh;
     justify-content: space-around;
+    border-radius: 0px;
   }
   
   .footer-app div{
@@ -1598,7 +1621,7 @@ td {
   }
 
   .container-home {
-    height: auto;
+    height: 100%;
     padding: 10px;
   }
 
@@ -1620,7 +1643,7 @@ td {
   .container-goals,
   .container-settings,
   .container-profile {
-    height: auto;
+    height: 100%;
   }
 
   .profile-details {
@@ -1633,5 +1656,43 @@ td {
 
   .about-profile table {
     font-size: 10px;
+  }
+
+  .cont-table-transaction, .head-table-transaction {
+    display: block;
+    width: 100%;
+}
+
+.head-table-transaction {
+    display: none;
+}
+
+.row-table-transaction {
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background: #f9f9fa;
+    display: flex;
+    flex-direction: column;
+    width: 90vw;
+}
+
+.col-table-transaction {
+    display: flex;
+    padding: 5px 0;
+    gap: 10px;
+    width: 90%;
+    margin: auto;
+    text-align: left;
+}
+
+.col-table-transaction::before {
+    content: attr(data-label);
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+  .cont-list-transaction-section{
+    height: 70%;
   }
 }

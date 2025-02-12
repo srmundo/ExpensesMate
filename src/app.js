@@ -50,28 +50,30 @@ export function main() {
     buttonsAside.forEach((button, index) => {
       if (index === getActiveButton()) {
         button.classList.add("button-active");
-        switch (button.innerText) {
-          case "Home":
+        switch (button.id) {
+          case "btn-home":
             loadView("home", containerView);
             updateScore(75);
+            console.log("Home");
             break;
-          case "Transactions":
+          case "btn-transactions":
             loadView("transactions", containerView);
             funcTransactions();
+            console.log("Transactions");
             break;
-          case "Reports":
+          case "btn-reports":
             loadView("reports", containerView);
             funcReport(jsPDF);
             break;
-          case "Goals":
+          case "btn-goals":
             loadView("goals", containerView);
             initializeGoals();
             break;
-          case "Settings":
+          case "btn-settings":
             loadView("settings", containerView);
             initializeSettings();
             break;
-          case "Profile":
+          case "btn-profile":
             loadView("profile", containerView);
             initializeProfile();
             break;
