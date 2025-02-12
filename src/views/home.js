@@ -1,3 +1,4 @@
+import { getTransactions } from "../data/storage.js";
 export function home() {
   return `
     <div class="container-home">
@@ -23,7 +24,7 @@ export function home() {
           </div>
 
           <div class="cont-summary-balance summary">
-            <span class="title-balance-summary title">Expenses</span>
+            <span class="title-balance-summary title">Balance</span>
             <div class="data-summary-balance">
               <span class="iden-expenses">Final Balance</span>
               <div class="cont-value-cash">
@@ -151,57 +152,6 @@ export function home() {
                   </tr>
                 </table>
             </div>
-
-            <!-- Expenses Table -->
-            <div class="data-expenses">
-                <div class="cont-expenses">
-                    <div class="expenses">
-                    <h3>Fixed Expenses</h3>
-                    <table border="1">
-                      <tr>
-                        <th>Description</th>
-                        <th>Amount</th>
-                      </tr>
-                      <tr>
-                        <td>Rent</td>
-                        <td>$1,200</td>
-                      </tr>
-                      <tr>
-                        <td>Utilities</td>
-                        <td>$150</td>
-                      </tr>
-                      <tr>
-                        <td>Insurance</td>
-                        <td>$100</td>
-                      </tr>
-                    </table>
-                </div>
-                <div class="variable-expenses">
-                    <h3>Variable Expenses</h3>
-                    <table border="1">
-                      <tr>
-                        <th>Description</th>
-                        <th>Amount</th>
-                      </tr>
-                      <tr>
-                        <td>Groceries</td>
-                        <td>$300</td>
-                      </tr>
-                      <tr>
-                        <td>Entertainment</td>
-                        <td>$100</td>
-                      </tr>
-                      <tr>
-                        <td>Dining Out</td>
-                        <td>$150</td>
-                      </tr>
-                      <tr>
-                        <th>Total Monthly Expenses</th>
-                        <th>$2,500</th>
-                      </tr>
-                    </table>
-                </div>
-                </div>
             </div>
         </div>
         
@@ -418,7 +368,181 @@ export function updateScore(score) {
   const progress = document.getElementById("progress");
   progress.style.strokeDashoffset = dashOffset;
 
+  // Cambia el color según el puntaje
+  if (score < 30) {
+    progress.style.stroke = "red";
+  } else if (score < 60) {
+    progress.style.stroke = "orange";
+  } else {
+    progress.style.stroke = "#4CAF50"; // Verde
+  }
+
   // Actualiza el texto del puntaje
   const scoreText = document.getElementById("score");
   scoreText.textContent = score;
+}
+
+export async function initializeHome() {
+  // Obtener las transacciones y calcular el puntaje
+  const transactions = await getTransactions();
+  let totalIncome = 0;
+  let totalExpenses = 0;
+
+  transactions.forEach(transaction => {
+    if (transaction.type === 'Income') {
+      totalIncome += Number(transaction.amount);
+    } else if (transaction.type === 'Expense') {
+      totalExpenses += Number(transaction.amount);
+    }
+  });
+
+  const financialHealthScore = calculateFinancialHealthScore(totalIncome, totalExpenses);
+  updateScore(financialHealthScore);
+
+  function calculateFinancialHealthScore(income, expenses) {
+    const savings = income - expenses;
+    const savingsRate = savings / income;
+    return Math.round(savingsRate * 100);
+  }
+
+  const finalBalance = totalIncome - totalExpenses;
+
+  // Render the values in the DOM
+  document.querySelector('.data-summary-income .value-money').textContent = `$ ${totalIncome}`;
+  document.querySelector('.data-summary-expenses .value-money').textContent = `$ ${totalExpenses}`;
+  document.querySelector('.data-summary-balance .value-money').textContent = `$ ${finalBalance}`;
+
+  function updateCategoryData(transactions) {
+    console.log(transactions.map(transaction => transaction));
+  
+    const categoryTotals = transactions.reduce((acc, transaction) => {
+      if (transaction.type === 'Expense') {
+        if (!acc[transaction.categoryId]) {
+          acc[transaction.categoryId] = 0;
+        }
+        acc[transaction.categoryId] += Number(transaction.amount);
+      }
+      return acc;
+    }, {});
+
+    const totalExpenses = Object.values(categoryTotals).reduce((acc, amount) => acc + amount, 0);
+
+    const categoryRows = Object.entries(categoryTotals).map(([category, amount]) => {
+      const percentage = ((amount / totalExpenses) * 100).toFixed(2);
+      return `
+        <tr>
+          <td id="data-category">${category}</td>
+          <td id="data-amount">$ ${amount}</td>
+          <td id="data-charts">
+            <div class="bar-container">
+              <div class="bar-progress ${category.toLowerCase()}" style="width: ${percentage}%;">${percentage}%</div>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    document.querySelector('.summary-cat').innerHTML = categoryRows;
+
+    function updateIncomeExpensesData(transactions) {
+      const incomeRows = transactions
+        .filter(transaction => transaction.type === 'Income')
+        .map(transaction => `
+          <tr>
+            <td>${transaction.categoryId}</td>
+            <td>$${transaction.amount}</td>
+          </tr>
+        `).join('');
+
+      const expenseRows = transactions
+        .filter(transaction => transaction.type === 'Expense')
+        .map(transaction => `
+          <tr>
+            <td>${transaction.description}</td>
+            <td>$${transaction.amount}</td>
+          </tr>
+        `).join('');
+
+      document.querySelector('.income-data table').innerHTML = `
+        <tr>
+          <th>Description</th>
+          <th>Amount</th>
+        </tr>
+        ${incomeRows}
+        <tr>
+          <th>Total Income</th>
+          <th>$${totalIncome}</th>
+        </tr>
+      `;
+    }
+
+    updateIncomeExpensesData(transactions);
+
+    function updateCategoriesBudgetData(transactions) {
+      const categoryRows = transactions
+        .filter(transaction => transaction.type === 'Expense')
+        .map(transaction => `
+          <tr>
+            <td>${transaction.categoryId}</td>
+            <td>${transaction.note}</td>
+            <td>$${transaction.amount}</td>
+          </tr>
+        `).join('');
+
+      document.querySelector('.categories table').innerHTML = `
+        <tr>
+          <th>Category</th>
+          <th>Description</th>
+          <th>Amount</th>
+        </tr>
+        ${categoryRows}
+      `;
+    }
+
+    updateCategoriesBudgetData(transactions);
+
+    function updateBudgetTrackingData(transactions) {
+      const budgetData = {
+        Housing: { budgeted: 1400, actual: 0 },
+        Transportation: { budgeted: 250, actual: 0 },
+        Groceries: { budgeted: 350, actual: 0 },
+        Entertainment: { budgeted: 150, actual: 0 },
+        Health: { budgeted: 150, actual: 0 }
+      };
+
+      transactions.forEach(transaction => {
+        if (transaction.type === 'Expense' && budgetData[transaction.categoryId]) {
+          budgetData[transaction.categoryId].actual += Number(transaction.amount);
+        }
+      });
+
+      const budgetRows = Object.entries(budgetData).map(([category, data]) => {
+        const difference = data.budgeted - data.actual;
+        const differenceText = difference >= 0 ? `+$${difference}` : `-$${Math.abs(difference)}`;
+        return `
+          <tr>
+            <td>${category}</td>
+            <td>$${data.budgeted}</td>
+            <td>$${data.actual}</td>
+            <td>${differenceText}</td>
+          </tr>
+        `;
+      }).join('');
+
+      document.querySelector('.budget table').innerHTML = `
+        <tr>
+          <th>Category</th>
+          <th>Budgeted Amount</th>
+          <th>Actual Spent</th>
+          <th>Difference</th>
+        </tr>
+        ${budgetRows}
+      `;
+    }
+
+    updateBudgetTrackingData(transactions);
+
+  }
+
+  updateCategoryData(transactions);
 }

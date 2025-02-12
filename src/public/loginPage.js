@@ -74,7 +74,7 @@ export const LoginPage = function() {
             <h2>ExpensesMate</h2>
             <form id="loginForm">
             <h4>Login</h4>
-            <input type="text" id="nicknameOrEmail" name="nicknameOrEmail" placeholder="Nickname or Email" required>
+            <input type="text" id="nicknameOrEmail" name="nicknameOrEmail" placeholder="Nickname" required>
             <br>
             <input type="password" id="password" name="password" placeholder="Password" required>
             <br>
@@ -140,7 +140,7 @@ export const LoginPage = function() {
             <h4>Register</h4>
             <input type="text" id="nickname" name="nickname" placeholder="Nickname" required>
             <br>
-            <input type="email" id="email" name="email" placeholder="Email" required>
+            <input type="text" id="name" name="name" placeholder="Full name" required>
             <br>
             <input type="password" id="password" name="password" placeholder="Password" required>
             <br>
@@ -180,6 +180,7 @@ export const LoginPage = function() {
         document.getElementById('registerForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const name = document.getElementById('nickname').value;
+            const fullName = document.getElementById('name').value;
             const password = document.getElementById('password').value;
             const repeatPassword = document.getElementById('repeatPassword').value;
             const photo = '../src/assets/icon/avatar-boy-svgrepo-com.svg'; // Imagen por defecto
@@ -189,7 +190,7 @@ export const LoginPage = function() {
                 return;
             }
 
-            registerSessionData(name, password);
+            registerSessionData(name, fullName, password);
         
             createLoginForm();
         });

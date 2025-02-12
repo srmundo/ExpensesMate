@@ -1,7 +1,8 @@
-export function registerSessionData(nickname, password) {
+export function registerSessionData(nickname, name, password) {
     if (typeof(Storage) !== "undefined") {
         const session = {
             nickname: nickname,
+            name: name,
             password: password,
             photo: '../src/assets/icon/avatar-boy-svgrepo-com.svg'
         };

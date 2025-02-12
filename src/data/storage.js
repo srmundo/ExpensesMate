@@ -117,13 +117,13 @@ export async function getTransactions() {
     });
 }
 
-export async function updateCategory(id, newName) {
+export async function updateCategory(id, newName, newType) {
     return openDatabase().then(db => {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("categories", "readwrite");
             const store = transaction.objectStore("categories");
 
-            const category = { id, name: newName };  // Crear el objeto actualizado
+            const category = { id, name: newName, type:newType };  // Crear el objeto actualizado
             const request = store.put(category);  // Usamos 'put' para actualizar
 
             request.onsuccess = () => resolve("Category updated successfully");

@@ -1,4 +1,4 @@
-import { insertTransaction, getTransactions, deleteTransaction, getCategories } from "../data/storage.js";
+import { insertTransaction, getTransactions, deleteTransaction, getCategories, insertCategory, updateCategory, deleteCategory } from "../data/storage.js";
 export function transactions() {
   return `
     <div class="container-transactions">
@@ -121,6 +121,7 @@ export function transactions() {
                     /><label for="item-example3">Item for example 3</label>
                   </li>
                 </ul>
+
                 <div class="option-items-cat">
                   <button id="btn-edit-item-cat">
                     <span class="icon-edit"></span>
@@ -146,7 +147,7 @@ export function transactions() {
               <span class="icon-search"></span>
               <input type="search" name="search" id="filter-search" placeholder="Search by category, description, or transaction type"/>
             </div>
-            <ul class="list-filter-hidden">
+            <ul id="list-filter" class="list-filter-hidden">
               <li><button id="filter-all">All</button></li>
               <li id="filter-date-list"><label for="filter-date">By date</label><input type="date" id="filter-date"/></li>
               <li><button id="filter-transaction">By type</button>
@@ -221,7 +222,7 @@ export function funcTransactions() {
         row.className = "row-table-transaction";
         row.setAttribute("data-id", transaction.id);
         row.innerHTML = `
-          <td class="col-table-transaction" data-label="Amount">$$ ${transaction.amount}</td>
+          <td class="col-table-transaction" data-label="Amount">$${transaction.amount}</td>
           <td class="col-table-transaction" data-label="Date">${transaction.date}</td>
           <td class="col-table-transaction" data-label="Category">${transaction.categoryId}</td>
           <td class="col-table-transaction" data-label="Type">${transaction.type}</td>
@@ -275,6 +276,7 @@ export function funcTransactions() {
         btnBoxEditCategory.addEventListener("click", () => {
           if (containerBoxEditCategory.style.display === "none") {
             containerBoxEditCategory.style.display = "block";
+            
           }
           const btnCancelEditCategory = document.getElementById(
             "btn-cancel-edit-category"
@@ -293,6 +295,82 @@ export function funcTransactions() {
         });
       }
     });
+
+    async function renderCategoryList() {
+      try {
+        const categories = await getCategories();
+        const categoryList = document.querySelector(".cont-list-category ul");
+        categoryList.innerHTML = "";
+        categories.forEach(category => {
+          const listItem = document.createElement("li");
+          listItem.innerHTML = `
+            <input type="checkbox" name="category-${category.id}" id="category-${category.id}" />
+            <label for="category-${category.id}">${category.name}</label>
+          `;
+          categoryList.appendChild(listItem);
+            listItem.querySelector(`#category-${category.id}`).addEventListener("change", (event) => {
+            const isChecked = event.target.checked;
+            const btnEditItemCat = document.getElementById("btn-edit-item-cat");
+            const btnDropItemCat = document.getElementById("btn-drop-item-cat");
+
+            btnEditItemCat.addEventListener("click", () => {
+              if (isChecked) {
+              document.getElementById("input-edit-cat").value = category.name;
+              console.log("Category to edit:", category);
+              const btnEditCategory = document.getElementById("btn-edit-category");
+              btnEditCategory.addEventListener("click", async () => {
+                const newCategoryName = document.getElementById("input-edit-cat").value;
+                if (newCategoryName.trim() !== "") {
+                try {
+                  await updateCategory(category.id, newCategoryName, category.type);
+                  document.getElementById("input-edit-cat").value = "";
+                  containerBoxEditCategory.style.display = "none";
+                  renderCategories();
+                  renderCategoryList();
+                } catch (error) {
+                  console.error("Error updating category:", error);
+                }
+                }
+              });
+              }
+            });
+
+            btnDropItemCat.addEventListener("click", async () => {
+              if (isChecked) {
+              try {
+                await deleteCategory(category.id);
+                renderCategories();
+                renderCategoryList();
+              } catch (error) {
+                console.error("Error deleting category:", error);
+              }
+              }
+            });
+            });
+
+        });
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    }
+
+    renderCategoryList();
+
+    const btnAddCategory = document.getElementById("btn-add-category");
+    btnAddCategory.addEventListener("click", async () => {
+      const categoryName = document.getElementById("input-add-cat").value;
+      const categoryType = document.getElementById("options-type").value;
+      if (categoryName.trim() !== "") {
+        try {
+          await insertCategory(categoryName, categoryType);
+          renderCategories();
+          renderCategoryList();
+          document.getElementById("input-add-cat").value = "";
+        } catch (error) {
+          console.error("Error adding category:", error);
+        }
+      }
+    });
     const btnAddTransaction = document.getElementById("btn-add-transactions");
     btnAddTransaction.addEventListener("click", () => {
       const amount = document.getElementById("input-amount").value;
@@ -300,9 +378,19 @@ export function funcTransactions() {
       const category = document.getElementById("options-category").value;
       const type = document.getElementById("options-type").value;
       const note = document.getElementById("input-note").value;
+
+      if (amount.trim() === "" || date.trim() === "" || category.trim() === "" || type.trim() === "") {
+        console.log("Please fill in all required fields.");
+        return;
+      }
+
       insertTransaction(amount, date, category, type, note);
       console.log(amount, date, category, type, note);
       containerNewTransactions.style.display = "none";
+      document.getElementById("input-amount").value = "";
+      document.getElementById("input-date").value = "";
+      document.getElementById("options-category").value = "";
+      document.getElementById("input-note").value = "";
       renderTransactions();
     });
   });

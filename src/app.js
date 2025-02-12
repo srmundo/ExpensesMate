@@ -1,5 +1,5 @@
 import { createLinkStyle } from "./scripts/createLinkStyle.js";
-import { home, updateScore } from "./views/home.js";
+import { home, updateScore, initializeHome } from "./views/home.js";
 import { transactions, funcTransactions } from "./views/transactions.js";
 import { reports, funcReport } from "./views/reports.js";
 import { goals, initializeGoals } from "./views/goals.js";
@@ -33,6 +33,7 @@ export function main() {
   //   createLinkStyle("./src/css/default-styles.css");
   // }
   loadView("home", containerView);
+  initializeHome();
 
   const buttonsAside = document.querySelectorAll(
     ".aside-section-app .aside-app ul li button"
@@ -53,7 +54,8 @@ export function main() {
         switch (button.id) {
           case "btn-home":
             loadView("home", containerView);
-            updateScore(75);
+            // updateScore(75);
+            initializeHome();
             console.log("Home");
             break;
           case "btn-transactions":
