@@ -4,9 +4,11 @@ export function reports() {
           <div class="container-reports">
               <span class="title-reports"><h4>Reports</h4></span>
               <div class="btn-report-generate">
-                <button id="btn-show-report-month">Show monthly report</button>
-                <button id="btn-show-report-quarterly">Show quarterly report</button>
-                <button id="btn-show-report-annual">Show Annual Report</button>
+                <div class="btn-report">
+                  <button id="btn-show-report-month">Show monthly</button>
+                  <button id="btn-show-report-quarterly">Show quarterly</button>
+                  <button id="btn-show-report-annual">Show Annual</button>
+                </div>
                 <button id="btn-export-pdf">To PDF</button>
                 <button id="btn-export-csv">To CSV</button>
               </div>
@@ -39,7 +41,7 @@ export function funcReport(libJsPDF) {
     monthly: `
                     <table class="report-table">
                       <tr>
-                        <td><h2 class="report-title">Informe Financiero Mensual</h2></td>
+                        <td data-label="Title"><h2 class="report-title">Informe Financiero Mensual</h2></td>
                       </tr>
                     </table>
                     <table class="report-table" border="1">
@@ -49,80 +51,80 @@ export function funcReport(libJsPDF) {
                         <th class="report-header">Monto</th>
                       </tr>
                       <tr>
-                        <td class="report-cell"><b>Ingresos</b></td>
-                        <td class="report-cell"></td>
-                        <td class="report-cell"></td>
+                        <td class="report-cell" data-label="Categoría"><b>Ingresos</b></td>
+                        <td class="report-cell" data-label="Descripción"></td>
+                        <td class="report-cell" data-label="Monto"></td>
                       </tr>
                       <tr>
-                        <td class="report-cell">Salario</td>
-                        <td class="report-cell"></td>
-                        <td class="report-cell">$2,000.00</td>
+                        <td class="report-cell" data-label="Categoría">Salario</td>
+                        <td class="report-cell" data-label="Descripción"></td>
+                        <td class="report-cell" data-label="Monto">$2,000.00</td>
                       </tr>
                       <tr>
-                        <td class="report-cell">Freelance</td>
-                        <td class="report-cell"></td>
-                        <td class="report-cell">$500.00</td>
+                        <td class="report-cell" data-label="Categoría">Freelance</td>
+                        <td class="report-cell" data-label="Descripción"></td>
+                        <td class="report-cell" data-label="Monto">$500.00</td>
                       </tr>
                       <tr>
-                        <td class="report-cell"><b>Total de Ingresos</b></td>
-                        <td class="report-cell"></td>
-                        <td class="report-cell"><b>$2,500.00</b></td>
+                        <td class="report-cell" data-label="Categoría"><b>Total de Ingresos</b></td>
+                        <td class="report-cell" data-label="Descripción"></td>
+                        <td class="report-cell" data-label="Monto"><b>$2,500.00</b></td>
                       </tr>
                       <tr>
-                        <td class="report-cell"><b>Gastos</b></td>
-                        <td class="report-cell"></td>
-                        <td class="report-cell"></td>
+                        <td class="report-cell" data-label="Categoría"><b>Gastos</b></td>
+                        <td class="report-cell" data-label="Descripción"></td>
+                        <td class="report-cell" data-label="Monto"></td>
                       </tr>
                       <tr>
-                        <td class="report-cell">Alquiler</td>
-                        <td class="report-cell"></td>
-                        <td class="report-cell">$800.00</td>
+                        <td class="report-cell" data-label="Categoría">Alquiler</td>
+                        <td class="report-cell" data-label="Descripción"></td>
+                        <td class="report-cell" data-label="Monto">$800.00</td>
                       </tr>
                       <tr>
-                        <td class="report-cell">Alimentos</td>
-                        <td class="report-cell">Compra de supermercado</td>
-                        <td class="report-cell">$300.00</td>
+                        <td class="report-cell" data-label="Categoría">Alimentos</td>
+                        <td class="report-cell" data-label="Descripción">Compra de supermercado</td>
+                        <td class="report-cell" data-label="Monto">$300.00</td>
                       </tr>
                       <tr>
-                        <td class="report-cell">Transporte</td>
-                        <td class="report-cell">Gasolina y transporte público</td>
-                        <td class="report-cell">$150.00</td>
+                        <td class="report-cell" data-label="Categoría">Transporte</td>
+                        <td class="report-cell" data-label="Descripción">Gasolina y transporte público</td>
+                        <td class="report-cell" data-label="Monto">$150.00</td>
                       </tr>
                       <tr>
-                        <td class="report-cell">Entretenimiento</td>
-                        <td class="report-cell">Salidas, cine, etc.</td>
-                        <td class="report-cell">$100.00</td>
+                        <td class="report-cell" data-label="Categoría">Entretenimiento</td>
+                        <td class="report-cell" data-label="Descripción">Salidas, cine, etc.</td>
+                        <td class="report-cell" data-label="Monto">$100.00</td>
                       </tr>
                       <tr>
-                        <td class="report-cell">Servicios</td>
-                        <td class="report-cell">Agua, luz, internet</td>
-                        <td class="report-cell">$120.00</td>
+                        <td class="report-cell" data-label="Categoría">Servicios</td>
+                        <td class="report-cell" data-label="Descripción">Agua, luz, internet</td>
+                        <td class="report-cell" data-label="Monto">$120.00</td>
                       </tr>
                       <tr>
-                        <td class="report-cell">Otros</td>
-                        <td class="report-cell">Suscripciones, etc.</td>
-                        <td class="report-cell">$50.00</td>
+                        <td class="report-cell" data-label="Categoría">Otros</td>
+                        <td class="report-cell" data-label="Descripción">Suscripciones, etc.</td>
+                        <td class="report-cell" data-label="Monto">$50.00</td>
                       </tr>
                       <tr>
-                        <td class="report-cell"><b>Total de Gastos</b></td>
-                        <td class="report-cell"></td>
-                        <td class="report-cell"><b>$1,520.00</b></td>
+                        <td class="report-cell" data-label="Categoría"><b>Total de Gastos</b></td>
+                        <td class="report-cell" data-label="Descripción"></td>
+                        <td class="report-cell" data-label="Monto"><b>$1,520.00</b></td>
                       </tr>
                       <tr>
-                        <td class="report-cell"><b>Balance Neto Mensual</b></td>
-                        <td class="report-cell">Total Ingresos - Total Gastos</td>
-                        <td class="report-cell"><b>$980.00</b></td>
+                        <td class="report-cell" data-label="Categoría"><b>Balance Neto Mensual</b></td>
+                        <td class="report-cell" data-label="Descripción">Total Ingresos - Total Gastos</td>
+                        <td class="report-cell" data-label="Monto"><b>$980.00</b></td>
                       </tr>
                     </table>
 
                     <table class="report-table">
                       <tr>
-                        <td>
+                        <td data-label="Objetivos del Mes">
                           <h3 class="report-subtitle">Objetivos del Mes</h3>
                         </td>
                       </tr>
                       <tr>
-                        <td>
+                        <td data-label="Objetivos del Mes">
                           <p class="report-text">Ahorro, pago de deudas, etc. - Cumplidos: 75%</p>
                         </td>
                       </tr>
@@ -130,12 +132,12 @@ export function funcReport(libJsPDF) {
 
                     <table class="report-table">
                       <tr>
-                        <td>
+                        <td data-label="Conclusiones">
                           <h3 class="report-subtitle">Conclusiones</h3>
                         </td>
                       </tr>
                       <tr>
-                        <td>
+                        <td data-label="Conclusiones">
                           <p class="report-text">Gastos en entretenimiento fueron altos. Ajustar el próximo mes.</p>
                         </td>
                       </tr>
@@ -143,10 +145,10 @@ export function funcReport(libJsPDF) {
     quarterly: `
       <table class="report-table">
         <tr>
-          <td><h2 class="report-title">Informe Financiero Trimestral</h2></td>
+          <td data-label="Title"><h2 class="report-title">Informe Financiero Trimestral</h2></td>
         </tr>
       </table>
-      <table class="report-table" border="1">
+      <table class="report-table-q" border="1">
         <tr>
           <th class="report-header">Trimestre</th>
           <th class="report-header">Mes</th>
@@ -155,15 +157,15 @@ export function funcReport(libJsPDF) {
           <th class="report-header">Balance Neto</th>
         </tr>
         <tr>
-          <td class="report-cell">1</td>
-          <td class="report-cell">Enero</td>
-          <td class="report-cell">$2,500.00</td>
-          <td class="report-cell">$1,520.00</td>
-          <td class="report-cell">$980.00</td>
+          <td class="report-cell" data-label="Trimestre">1</td>
+          <td class="report-cell" data-label="Mes">Enero</td>
+          <td class="report-cell" data-label="Total Ingresos">$2,500.00</td>
+          <td class="report-cell" data-label="Total Gastos">$1,520.00</td>
+          <td class="report-cell" data-label="Balance Neto">$980.00</td>
         </tr>
         <tr>
-          <td class="report-cell"></td>
-          <td class="report-cell">Febrero</td>
+          <td class="report-cell" data-label="Trimestre"></td>
+          <td class="report-cell"
           <td class="report-cell">$2,500.00</td>
           <td class="report-cell">$1,480.00</td>
           <td class="report-cell">$1,020.00</td>
@@ -524,7 +526,7 @@ export function funcReport(libJsPDF) {
             body: data,
             startY: startY,
             theme: 'grid',
-            headStyles: { fillColor: [255, 0, 0], textColor: [255, 255, 255] },
+            headStyles: { fillColor: [153, 102, 255], textColor: [255, 255, 255] },
             bodyStyles: { fillColor: [255, 255, 255] },
             alternateRowStyles: { fillColor: [240, 240, 240] },
             tableLineColor: [0, 0, 0],

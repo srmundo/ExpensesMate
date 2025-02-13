@@ -1023,8 +1023,11 @@ td {
   padding-left: 20px;
 }
 
+.btn-report{
+  margin-bottom: 5px;
+}
+
 #btn-export-pdf {
-  margin-left: 30px;
 }
 
 .cont-report-table {
