@@ -133,13 +133,13 @@ export async function updateCategory(id, newName, newType) {
     });
 }
 
-export async function updateGoal(id, newName, newAmount, newDate) {
+export async function updateGoal(id, newName, newAmount, currentAmount, newDate) {
     return openDatabase().then(db => {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("goals", "readwrite");
             const store = transaction.objectStore("goals");
 
-            const goal = { id, name: newName, amount: newAmount, date: newDate };  // Crear el objeto actualizado
+            const goal = { id, name: newName, amount: newAmount, currentAmount: currentAmount, date: newDate };  // Crear el objeto actualizado
             const request = store.put(goal);  // Usamos 'put' para actualizar
 
             request.onsuccess = () => resolve("Goal updated successfully");

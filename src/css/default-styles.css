@@ -1636,7 +1636,6 @@ input[type="number"]::-webkit-inner-spin-button,
   .cont-list-transaction-section {
     height: auto;
     overflow: scroll;
-    background-color: red;
     max-height: 130%;
     height: 120%;
   }

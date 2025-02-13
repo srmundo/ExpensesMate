@@ -400,6 +400,9 @@ export async function initializeHome() {
   updateScore(financialHealthScore);
 
   function calculateFinancialHealthScore(income, expenses) {
+    if (income <= 0) {
+      return 0; // or any default value you prefer
+    }
     const savings = income - expenses;
     const savingsRate = savings / income;
     return Math.round(savingsRate * 100);
@@ -413,7 +416,6 @@ export async function initializeHome() {
   document.querySelector('.data-summary-balance .value-money').textContent = `$ ${finalBalance}`;
 
   function updateCategoryData(transactions) {
-    console.log(transactions.map(transaction => transaction));
   
     const categoryTotals = transactions.reduce((acc, transaction) => {
       if (transaction.type === 'Expense') {

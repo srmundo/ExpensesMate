@@ -1,4 +1,4 @@
-import { insertTransaction, getTransactions, deleteTransaction, getCategories, insertCategory, updateCategory, deleteCategory } from "../data/storage.js";
+import { insertTransaction, getTransactions, deleteTransaction, getCategories, insertCategory, updateCategory, deleteCategory, getGoals, updateGoal } from "../data/storage.js";
 export function transactions() {
   return `
     <div class="container-transactions">
@@ -30,6 +30,7 @@ export function transactions() {
               <select id="options-type" name="options-type">
                 <option value="Income">Income</option>
                 <option value="Expense">Expense</option>
+                <option value="Goals">Goals</option>
               </select>
             </div>
             <div class="cont-input-category div-cont">
@@ -207,11 +208,10 @@ export function funcTransactions() {
 
   const transactionsTableBody = document.getElementById("body-table-transaction");
 
-  getTransactions().then(transactions => {
-    console.log("Transactions:", transactions);
-}).catch(error => {
-    console.error(error);
-});
+//   getTransactions().then(transactions => {
+// }).catch(error => {
+//     console.error(error);
+// });
 
   async function renderTransactions() {
     try {
@@ -384,8 +384,28 @@ export function funcTransactions() {
         return;
       }
 
+
       insertTransaction(amount, date, category, type, note);
-      console.log(amount, date, category, type, note);
+      
+      async function updateGoalIfMatch(categoryName, amount) {
+        console.log("Category:", categoryName);
+        try {
+          const goals = await getGoals();
+          console.log("Goals:", goals);
+          const goal = goals.find(goal => goal.name === categoryName);
+          if (goal) {
+          const newCurrentAmount = goal.currentAmount + parseFloat(amount);
+ 
+          await updateGoal(goal.id, goal.name, goal.amount, newCurrentAmount, goal.date);
+          console.log(`Goal updated: ${goal.name}, new current amount: ${newCurrentAmount}`);
+          }
+        } catch (error) {
+          console.error("Error updating goal:", error);
+        }
+      }
+
+      updateGoalIfMatch(category, amount);
+
       containerNewTransactions.style.display = "none";
       document.getElementById("input-amount").value = "";
       document.getElementById("input-date").value = "";
@@ -410,6 +430,31 @@ export function funcTransactions() {
     }
   });
 
+  async function renderGoals() {
+    try {
+      const goals = await getGoals(); // Assuming you have a function to get goals from the database
+      const optionsCategory = document.getElementById("options-category");
+      const type = document.getElementById("options-type").value;
+      optionsCategory.innerHTML = "";
+      goals.forEach(goal => {
+        if (type === "Goals") {
+          optionsCategory.innerHTML += `<option value="${goal.name}">${goal.name}</option>`;
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching goals:", error);
+    }
+  }
+
+  document.getElementById("options-type").addEventListener("change", async (event) => {
+    const type = event.target.value;
+    if (type === "Goals") {
+      await renderGoals();
+    } else {
+      renderCategories();
+    }
+  });
+
   async function renderCategories() {
     try {
       const categories = await getCategories();
@@ -417,11 +462,13 @@ export function funcTransactions() {
       const type = document.getElementById("options-type").value;
       optionsCategory.innerHTML = "";
       categories.forEach(category => {
-        if (category.type === type) {
+        if (type === category.type) {
           const option = document.createElement("option");
           option.value = category.name;
           option.textContent = category.name;
           optionsCategory.appendChild(option);
+        }else if (type === "Goals") {
+          renderGoals();
         }
       });
     } catch (error) {

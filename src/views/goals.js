@@ -84,7 +84,7 @@ export function initializeGoals() {
                 <td data-label="Amount">$${goal.amount}</td>
                 <td data-label="Current Amount">$${goal.currentAmount}</td>
                 <td data-label="Target Date">${goal.date}</td>
-                <td data-label="Progress">${goal.currentAmount / goal.amount * 100}%</td>
+                <td data-label="Progress">${(goal.currentAmount / goal.amount * 100).toFixed(2)}%</td>
                 <td data-label="Actions"><button class="btn-delete-goal" type="button">Delete</button></td>
             </tr>
             `).join('')}
