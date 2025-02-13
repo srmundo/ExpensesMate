@@ -6,6 +6,7 @@ import { goals, initializeGoals } from "./views/goals.js";
 import { settings, initializeSettings } from "./views/settings.js";
 import { profile, initializeProfile } from "./views/profile.js";
 import { useState } from "./scripts/useState.js";
+import './lib/jspdf.plugin.autotable.min.js';
 let exampleStorage = ["default-style"];
 
 export function main() {
@@ -20,7 +21,7 @@ export function main() {
   // jsPDFScript.onload = () => {
   // };
   window.jsPDF = window.jspdf.jsPDF;
-  window.jsPDF.autoTable = window.jspdf.autoTable;
+  // window.jsPDF.autoTable = window.jspdf.autoTable;
   if (!window.jsPDF) {
     location.reload();
   }
