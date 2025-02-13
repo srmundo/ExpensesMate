@@ -20,6 +20,7 @@ export function openDatabase() {
             });
             goalsStore.createIndex("name", "name", { unique: false });
             goalsStore.createIndex("amount", "amount", { unique: false });
+            goalsStore.createIndex("currentAmount", "currentAmount", { unique: false });
             goalsStore.createIndex("date", "date", { unique: false });
             
             // Crear la tabla de transacciones
@@ -69,8 +70,8 @@ export function insertCategory(name, type) {
     return insertData("categories", { name, type });
 }
 
-export function insertGoal(name, amount, date) {
-    return insertData("goals", { name, amount, date });
+export function insertGoal(name, amount, currentAmount, date) {
+    return insertData("goals", { name, amount, currentAmount, date });
 }
 
 export function insertTransaction(amount, date, categoryId, type, note, goalId) {

@@ -204,6 +204,7 @@ export function loadAppHTML() {
 function loadAppScripts() {
 	const scripts = [
 		'./src/lib/jspdf.umd.min.js',
+		'./src/lib/jspdf.plugin.autotable.min.js',
 		'./src/lib/html2canvas.js',
 		'./src/lib/xlsx.full.min.js',
 		'./src/app.js',

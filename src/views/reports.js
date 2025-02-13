@@ -37,384 +37,384 @@ export function funcReport(libJsPDF) {
 
   const schemeTable = {
     monthly: `
-                    <table>
+                    <table class="report-table">
                       <tr>
-                        <td><h2>Informe Financiero Mensual</h2></td>
+                        <td><h2 class="report-title">Informe Financiero Mensual</h2></td>
                       </tr>
                     </table>
-                    <table border="1">
+                    <table class="report-table" border="1">
                       <tr>
-                        <th>Categoría</th>
-                        <th>Descripción</th>
-                        <th>Monto</th>
+                        <th class="report-header">Categoría</th>
+                        <th class="report-header">Descripción</th>
+                        <th class="report-header">Monto</th>
                       </tr>
                       <tr>
-                        <td><b>Ingresos</b></td>
-                        <td></td>
-                        <td></td>
+                        <td class="report-cell"><b>Ingresos</b></td>
+                        <td class="report-cell"></td>
+                        <td class="report-cell"></td>
                       </tr>
                       <tr>
-                        <td>Salario</td>
-                        <td></td>
-                        <td>$2,000.00</td>
+                        <td class="report-cell">Salario</td>
+                        <td class="report-cell"></td>
+                        <td class="report-cell">$2,000.00</td>
                       </tr>
                       <tr>
-                        <td>Freelance</td>
-                        <td></td>
-                        <td>$500.00</td>
+                        <td class="report-cell">Freelance</td>
+                        <td class="report-cell"></td>
+                        <td class="report-cell">$500.00</td>
                       </tr>
                       <tr>
-                        <td><b>Total de Ingresos</b></td>
-                        <td></td>
-                        <td><b>$2,500.00</b></td>
+                        <td class="report-cell"><b>Total de Ingresos</b></td>
+                        <td class="report-cell"></td>
+                        <td class="report-cell"><b>$2,500.00</b></td>
                       </tr>
                       <tr>
-                        <td><b>Gastos</b></td>
-                        <td></td>
-                        <td></td>
+                        <td class="report-cell"><b>Gastos</b></td>
+                        <td class="report-cell"></td>
+                        <td class="report-cell"></td>
                       </tr>
                       <tr>
-                        <td>Alquiler</td>
-                        <td></td>
-                        <td>$800.00</td>
+                        <td class="report-cell">Alquiler</td>
+                        <td class="report-cell"></td>
+                        <td class="report-cell">$800.00</td>
                       </tr>
                       <tr>
-                        <td>Alimentos</td>
-                        <td>Compra de supermercado</td>
-                        <td>$300.00</td>
+                        <td class="report-cell">Alimentos</td>
+                        <td class="report-cell">Compra de supermercado</td>
+                        <td class="report-cell">$300.00</td>
                       </tr>
                       <tr>
-                        <td>Transporte</td>
-                        <td>Gasolina y transporte público</td>
-                        <td>$150.00</td>
+                        <td class="report-cell">Transporte</td>
+                        <td class="report-cell">Gasolina y transporte público</td>
+                        <td class="report-cell">$150.00</td>
                       </tr>
                       <tr>
-                        <td>Entretenimiento</td>
-                        <td>Salidas, cine, etc.</td>
-                        <td>$100.00</td>
+                        <td class="report-cell">Entretenimiento</td>
+                        <td class="report-cell">Salidas, cine, etc.</td>
+                        <td class="report-cell">$100.00</td>
                       </tr>
                       <tr>
-                        <td>Servicios</td>
-                        <td>Agua, luz, internet</td>
-                        <td>$120.00</td>
+                        <td class="report-cell">Servicios</td>
+                        <td class="report-cell">Agua, luz, internet</td>
+                        <td class="report-cell">$120.00</td>
                       </tr>
                       <tr>
-                        <td>Otros</td>
-                        <td>Suscripciones, etc.</td>
-                        <td>$50.00</td>
+                        <td class="report-cell">Otros</td>
+                        <td class="report-cell">Suscripciones, etc.</td>
+                        <td class="report-cell">$50.00</td>
                       </tr>
                       <tr>
-                        <td><b>Total de Gastos</b></td>
-                        <td></td>
-                        <td><b>$1,520.00</b></td>
+                        <td class="report-cell"><b>Total de Gastos</b></td>
+                        <td class="report-cell"></td>
+                        <td class="report-cell"><b>$1,520.00</b></td>
                       </tr>
                       <tr>
-                        <td><b>Balance Neto Mensual</b></td>
-                        <td>Total Ingresos - Total Gastos</td>
-                        <td><b>$980.00</b></td>
-                      </tr>
-                    </table>
-
-                    <table>
-                      <tr>
-                        <td>
-                          <h3>Objetivos del Mes</h3>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <p>Ahorro, pago de deudas, etc. - Cumplidos: 75%</p>
-                        </td>
+                        <td class="report-cell"><b>Balance Neto Mensual</b></td>
+                        <td class="report-cell">Total Ingresos - Total Gastos</td>
+                        <td class="report-cell"><b>$980.00</b></td>
                       </tr>
                     </table>
 
-                    <table>
+                    <table class="report-table">
                       <tr>
                         <td>
-                          <h3>Conclusiones</h3>
+                          <h3 class="report-subtitle">Objetivos del Mes</h3>
                         </td>
                       </tr>
                       <tr>
                         <td>
-                          <p>Gastos en entretenimiento fueron altos. Ajustar el próximo mes.</p>
+                          <p class="report-text">Ahorro, pago de deudas, etc. - Cumplidos: 75%</p>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <table class="report-table">
+                      <tr>
+                        <td>
+                          <h3 class="report-subtitle">Conclusiones</h3>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class="report-text">Gastos en entretenimiento fueron altos. Ajustar el próximo mes.</p>
                         </td>
                       </tr>
                     </table>`,
     quarterly: `
-      <table>
+      <table class="report-table">
         <tr>
-          <td><h2>Informe Financiero Trimestral</h2></td>
+          <td><h2 class="report-title">Informe Financiero Trimestral</h2></td>
         </tr>
       </table>
-      <table border="1">
+      <table class="report-table" border="1">
         <tr>
-          <th>Trimestre</th>
-          <th>Mes</th>
-          <th>Total Ingresos</th>
-          <th>Total Gastos</th>
-          <th>Balance Neto</th>
+          <th class="report-header">Trimestre</th>
+          <th class="report-header">Mes</th>
+          <th class="report-header">Total Ingresos</th>
+          <th class="report-header">Total Gastos</th>
+          <th class="report-header">Balance Neto</th>
         </tr>
         <tr>
-          <td>1</td>
-          <td>Enero</td>
-          <td>$2,500.00</td>
-          <td>$1,520.00</td>
-          <td>$980.00</td>
+          <td class="report-cell">1</td>
+          <td class="report-cell">Enero</td>
+          <td class="report-cell">$2,500.00</td>
+          <td class="report-cell">$1,520.00</td>
+          <td class="report-cell">$980.00</td>
         </tr>
         <tr>
-          <td></td>
-          <td>Febrero</td>
-          <td>$2,500.00</td>
-          <td>$1,480.00</td>
-          <td>$1,020.00</td>
+          <td class="report-cell"></td>
+          <td class="report-cell">Febrero</td>
+          <td class="report-cell">$2,500.00</td>
+          <td class="report-cell">$1,480.00</td>
+          <td class="report-cell">$1,020.00</td>
         </tr>
         <tr>
-          <td></td>
-          <td>Marzo</td>
-          <td>$2,500.00</td>
-          <td>$1,600.00</td>
-          <td>$900.00</td>
+          <td class="report-cell"></td>
+          <td class="report-cell">Marzo</td>
+          <td class="report-cell">$2,500.00</td>
+          <td class="report-cell">$1,600.00</td>
+          <td class="report-cell">$900.00</td>
         </tr>
         <tr>
-          <td><b>Total</b></td>
-          <td><b>Trimestre 1</b></td>
-          <td><b>$7,500.00</b></td>
-          <td><b>$4,600.00</b></td>
-          <td><b>$2,900.00</b></td>
+          <td class="report-cell"><b>Total</b></td>
+          <td class="report-cell"><b>Trimestre 1</b></td>
+          <td class="report-cell"><b>$7,500.00</b></td>
+          <td class="report-cell"><b>$4,600.00</b></td>
+          <td class="report-cell"><b>$2,900.00</b></td>
         </tr>
       </table>
 
-      <table>
+      <table class="report-table">
         <tr>
           <td>
-            <h3>Desglose de Gastos por Categoría (Trimestral)</h3>
+            <h3 class="report-subtitle">Desglose de Gastos por Categoría (Trimestral)</h3>
           </td>
         </tr>
       </table>
-      <table border="1">
+      <table class="report-table" border="1">
         <tr>
-          <th>Categoría de Gasto</th>
-          <th>Enero</th>
-          <th>Febrero</th>
-          <th>Marzo</th>
-          <th>Total Trimestral</th>
+          <th class="report-header">Categoría de Gasto</th>
+          <th class="report-header">Enero</th>
+          <th class="report-header">Febrero</th>
+          <th class="report-header">Marzo</th>
+          <th class="report-header">Total Trimestral</th>
         </tr>
         <tr>
-          <td>Alquiler</td>
-          <td>$800.00</td>
-          <td>$800.00</td>
-          <td>$800.00</td>
-          <td>$2,400.00</td>
+          <td class="report-cell">Alquiler</td>
+          <td class="report-cell">$800.00</td>
+          <td class="report-cell">$800.00</td>
+          <td class="report-cell">$800.00</td>
+          <td class="report-cell">$2,400.00</td>
         </tr>
         <tr>
-          <td>Alimentos</td>
-          <td>$300.00</td>
-          <td>$280.00</td>
-          <td>$320.00</td>
-          <td>$900.00</td>
+          <td class="report-cell">Alimentos</td>
+          <td class="report-cell">$300.00</td>
+          <td class="report-cell">$280.00</td>
+          <td class="report-cell">$320.00</td>
+          <td class="report-cell">$900.00</td>
         </tr>
         <tr>
-          <td>Transporte</td>
-          <td>$150.00</td>
-          <td>$140.00</td>
-          <td>$150.00</td>
-          <td>$440.00</td>
+          <td class="report-cell">Transporte</td>
+          <td class="report-cell">$150.00</td>
+          <td class="report-cell">$140.00</td>
+          <td class="report-cell">$150.00</td>
+          <td class="report-cell">$440.00</td>
         </tr>
         <tr>
-          <td>Entretenimiento</td>
-          <td>$100.00</td>
-          <td>$90.00</td>
-          <td>$120.00</td>
-          <td>$310.00</td>
+          <td class="report-cell">Entretenimiento</td>
+          <td class="report-cell">$100.00</td>
+          <td class="report-cell">$90.00</td>
+          <td class="report-cell">$120.00</td>
+          <td class="report-cell">$310.00</td>
         </tr>
         <tr>
-          <td>Servicios</td>
-          <td>$120.00</td>
-          <td>$130.00</td>
-          <td>$130.00</td>
-          <td>$380.00</td>
+          <td class="report-cell">Servicios</td>
+          <td class="report-cell">$120.00</td>
+          <td class="report-cell">$130.00</td>
+          <td class="report-cell">$130.00</td>
+          <td class="report-cell">$380.00</td>
         </tr>
         <tr>
-          <td>Otros</td>
-          <td>$50.00</td>
-          <td>$40.00</td>
-          <td>$80.00</td>
-          <td>$170.00</td>
+          <td class="report-cell">Otros</td>
+          <td class="report-cell">$50.00</td>
+          <td class="report-cell">$40.00</td>
+          <td class="report-cell">$80.00</td>
+          <td class="report-cell">$170.00</td>
         </tr>
       </table>
 
-      <table>
+      <table class="report-table">
         <tr>
           <td colspan="6">
-            <h3>Conclusiones Trimestrales y Metas del Próximo Trimestre</h3>
+            <h3 class="report-subtitle">Conclusiones Trimestrales y Metas del Próximo Trimestre</h3>
           </td>
         </tr>
         <tr>
-          <td colspan="4"><b>Logros:</b></td>
-          <td> Se mantuvo un balance positivo cada mes. Se logró ahorrar el 70% de la meta trimestral.</td>    
+          <td colspan="4" class="report-cell"><b>Logros:</b></td>
+          <td class="report-cell"> Se mantuvo un balance positivo cada mes. Se logró ahorrar el 70% de la meta trimestral.</td>    
         </tr>
         <tr>
-          <td colspan="4"><b>Observaciones:</b></td>
-          <td> Aumento en gastos de entretenimiento en marzo.</td>
+          <td colspan="4" class="report-cell"><b>Observaciones:</b></td>
+          <td class="report-cell"> Aumento en gastos de entretenimiento en marzo.</td>
         </tr>
         <tr>
-          <td colspan="4"><b>Meta para el próximo trimestre:</b></td>
-          <td> Reducir un 10% el gasto en entretenimiento y aumentar el ahorro un 5%.</td>
+          <td colspan="4" class="report-cell"><b>Meta para el próximo trimestre:</b></td>
+          <td class="report-cell"> Reducir un 10% el gasto en entretenimiento y aumentar el ahorro un 5%.</td>
         </tr>
       </table>
 
     `,
     annual: `
-      <table>
+      <table class="report-table">
         <tr>
           <td>
-            <h2>Informe Financiero Anual</h2>
+            <h2 class="report-title">Informe Financiero Anual</h2>
           </td>
         </tr>
       </table>
 
-      <table border="1">
+      <table class="report-table" border="1">
         <tr>
-          <th>Mes</th>
-          <th>Total Ingresos</th>
-          <th>Total Gastos</th>
-          <th>Balance Neto</th>
+          <th class="report-header">Mes</th>
+          <th class="report-header">Total Ingresos</th>
+          <th class="report-header">Total Gastos</th>
+          <th class="report-header">Balance Neto</th>
         </tr>
         <tr>
-          <td>Enero</td>
-          <td>$2,500.00</td>
-          <td>$1,520.00</td>
-          <td>$980.00</td>
+          <td class="report-cell">Enero</td>
+          <td class="report-cell">$2,500.00</td>
+          <td class="report-cell">$1,520.00</td>
+          <td class="report-cell">$980.00</td>
         </tr>
         <tr>
-          <td>Febrero</td>
-          <td>$2,500.00</td>
-          <td>$1,480.00</td>
-          <td>$1,020.00</td>
+          <td class="report-cell">Febrero</td>
+          <td class="report-cell">$2,500.00</td>
+          <td class="report-cell">$1,480.00</td>
+          <td class="report-cell">$1,020.00</td>
         </tr>
         <tr>
-          <td>Marzo</td>
-          <td>$2,500.00</td>
-          <td>$1,480.00</td>
-          <td>$1,020.00</td>
+          <td class="report-cell">Marzo</td>
+          <td class="report-cell">$2,500.00</td>
+          <td class="report-cell">$1,480.00</td>
+          <td class="report-cell">$1,020.00</td>
         </tr>
         <tr>
-          <td>Abril</td>
-          <td>$2,500.00</td>
-          <td>$1,480.00</td>
-          <td>$1,020.00</td>
+          <td class="report-cell">Abril</td>
+          <td class="report-cell">$2,500.00</td>
+          <td class="report-cell">$1,480.00</td>
+          <td class="report-cell">$1,020.00</td>
         </tr>
         <tr>
-          <td>Mayo</td>
-          <td>$2,500.00</td>
-          <td>$1,480.00</td>
-          <td>$1,020.00</td>
+          <td class="report-cell">Mayo</td>
+          <td class="report-cell">$2,500.00</td>
+          <td class="report-cell">$1,480.00</td>
+          <td class="report-cell">$1,020.00</td>
         </tr>
         <tr>
-          <td>Junio</td>
-          <td>$2,500.00</td>
-          <td>$1,480.00</td>
-          <td>$1,020.00</td>
+          <td class="report-cell">Junio</td>
+          <td class="report-cell">$2,500.00</td>
+          <td class="report-cell">$1,480.00</td>
+          <td class="report-cell">$1,020.00</td>
         </tr>
         <tr>
-          <td>Julio</td>
-          <td>$2,500.00</td>
-          <td>$1,480.00</td>
-          <td>$1,020.00</td>
+          <td class="report-cell">Julio</td>
+          <td class="report-cell">$2,500.00</td>
+          <td class="report-cell">$1,480.00</td>
+          <td class="report-cell">$1,020.00</td>
         </tr>
         <tr>
-          <td>Agosto</td>
-          <td>$2,500.00</td>
-          <td>$1,480.00</td>
-          <td>$1,020.00</td>
+          <td class="report-cell">Agosto</td>
+          <td class="report-cell">$2,500.00</td>
+          <td class="report-cell">$1,480.00</td>
+          <td class="report-cell">$1,020.00</td>
         </tr>
         <tr>
-          <td>Septiembre</td>
-          <td>$2,500.00</td>
-          <td>$1,480.00</td>
-          <td>$1,020.00</td>
+          <td class="report-cell">Septiembre</td>
+          <td class="report-cell">$2,500.00</td>
+          <td class="report-cell">$1,480.00</td>
+          <td class="report-cell">$1,020.00</td>
         </tr>
         <tr>
-          <td>Octubre</td>
-          <td>$2,500.00</td>
-          <td>$1,480.00</td>
-          <td>$1,020.00</td>
+          <td class="report-cell">Octubre</td>
+          <td class="report-cell">$2,500.00</td>
+          <td class="report-cell">$1,480.00</td>
+          <td class="report-cell">$1,020.00</td>
         </tr>
         <tr>
-          <td>Noviembre</td>
-          <td>$2,500.00</td>
-          <td>$1,480.00</td>
-          <td>$1,020.00</td>
+          <td class="report-cell">Noviembre</td>
+          <td class="report-cell">$2,500.00</td>
+          <td class="report-cell">$1,480.00</td>
+          <td class="report-cell">$1,020.00</td>
         </tr>
         <tr>
-          <td>Diciembre</td>
-          <td>$2,500.00</td>
-          <td>$1,480.00</td>
-          <td>$1,020.00</td>
+          <td class="report-cell">Diciembre</td>
+          <td class="report-cell">$2,500.00</td>
+          <td class="report-cell">$1,480.00</td>
+          <td class="report-cell">$1,020.00</td>
         </tr>
         <!-- Repetir filas para cada mes -->
         <tr>
-          <td><b>Total Anual</b></td>
-          <td><b>$30,000.00</b></td>
-          <td><b>$18,510.00</b></td>
-          <td><b>$11,490.00</b></td>
+          <td class="report-cell"><b>Total Anual</b></td>
+          <td class="report-cell"><b>$30,000.00</b></td>
+          <td class="report-cell"><b>$18,510.00</b></td>
+          <td class="report-cell"><b>$11,490.00</b></td>
         </tr>
       </table>
 
-      <table>
+      <table class="report-table">
         <tr>
           <td>
-            <h3>Desglose de Gastos Anuales por Categoría</h3>
+            <h3 class="report-subtitle">Desglose de Gastos Anuales por Categoría</h3>
           </td>
         </tr>
       </table>
-      <table border="1">
+      <table class="report-table" border="1">
         <tr>
-          <th>Categoría de Gasto</th>
-          <th>Gasto Total</th>
-          <th>Porcentaje del Gasto Total</th>
+          <th class="report-header">Categoría de Gasto</th>
+          <th class="report-header">Gasto Total</th>
+          <th class="report-header">Porcentaje del Gasto Total</th>
         </tr>
         <tr>
-          <td>Alquiler</td>
-          <td>$9,600.00</td>
-          <td>52%</td>
+          <td class="report-cell">Alquiler</td>
+          <td class="report-cell">$9,600.00</td>
+          <td class="report-cell">52%</td>
         </tr>
         <tr>
-          <td>Alimentos</td>
-          <td>$3,600.00</td>
-          <td>19%</td>
+          <td class="report-cell">Alimentos</td>
+          <td class="report-cell">$3,600.00</td>
+          <td class="report-cell">19%</td>
         </tr>
         <tr>
-          <td>Transporte</td>
-          <td>$1,800.00</td>
-          <td>10%</td>
+          <td class="report-cell">Transporte</td>
+          <td class="report-cell">$1,800.00</td>
+          <td class="report-cell">10%</td>
         </tr>
         <tr>
-          <td>Entretenimiento</td>
-          <td>$1,200.00</td>
-          <td>6%</td>
+          <td class="report-cell">Entretenimiento</td>
+          <td class="report-cell">$1,200.00</td>
+          <td class="report-cell">6%</td>
         </tr>
         <tr>
-          <td>Servicios</td>
-          <td>$1,500.00</td>
-          <td>8%</td>
+          <td class="report-cell">Servicios</td>
+          <td class="report-cell">$1,500.00</td>
+          <td class="report-cell">8%</td>
         </tr>
         <tr>
-          <td>Otros</td>
-          <td>$810.00</td>
-          <td>5%</td>
+          <td class="report-cell">Otros</td>
+          <td class="report-cell">$810.00</td>
+          <td class="report-cell">5%</td>
         </tr>
       </table>
 
-      <table>
+      <table class="report-table">
         <tr>
           <td>
-            <h3>Logros Financieros del Año</h3>
+            <h3 class="report-subtitle">Logros Financieros del Año</h3>
           </td>
         </tr>
         <tr>
           <td>
-            <ul>
+            <ul class="report-list">
               <li><b>Ahorro Anual:</b> $11,490.00, equivalente al 38% del ingreso total anual.</li>
               <li><b>Deudas Reducidas:</b> Reducción de un 20% en deudas pendientes.</li>
               <li><b>Inversiones Realizadas:</b> $2,000.00 en fondos de inversión a largo plazo.</li>
@@ -423,15 +423,15 @@ export function funcReport(libJsPDF) {
         </tr>
       </table>
 
-      <table>
+      <table class="report-table">
         <tr>
           <td>
-            <h3>Metas Financieras para el Próximo Año</h3>
+            <h3 class="report-subtitle">Metas Financieras para el Próximo Año</h3>
           </td>
         </tr>
         <tr>
           <td>
-            <ul>
+            <ul class="report-list">
               <li>Aumentar el ahorro anual al 40%.</li>
               <li>Reducir los gastos en entretenimiento un 15%.</li>
               <li>Destinar un 5% adicional de los ingresos a nuevas inversiones.</li>
@@ -466,36 +466,9 @@ export function funcReport(libJsPDF) {
   });
 
   function exportDoc(nameDoc) {
-    // Selecciona el div que deseas exportar
-    const filas = contenido.querySelectorAll("table tr");
-    // Usa html2canvas para capturar el contenido
-    html2canvas(contenido, {
-      scale: 2, // Aumenta la calidad de la captura
-      useCORS: true, // Para asegurar que los estilos externos se aplican
-    }).then((canvas) => {
-      // Convierte el canvas a una imagen en formato PNG
-      const imgData = canvas.toDataURL("image/png");
-
-      // Crea el PDF
-      const pdf = new libJsPDF({
-        orientation: "portrait", // orientación del PDF
-        unit: "px", // unidad de medida
-        format: [canvas.width, canvas.height], // Tamaño ajustado al canvas
-      });
-
-      // Añade la imagen al PDF
-      pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
-
-      // Guarda el PDF
-      document
-        .querySelector("#btn-export-pdf")
-        .addEventListener("click", () => {
-          pdf.save(`${nameDoc}.pdf`);
-        });
-    });
-
     // Construir el contenido CSV
     let csv = [];
+    const filas = contenido.querySelectorAll("table tr");
 
     filas.forEach((fila) => {
       let columnas = fila.querySelectorAll("th, td");
@@ -520,10 +493,54 @@ export function funcReport(libJsPDF) {
       document.body.removeChild(link);
     });
 
-    // Usa DOMParser para convertir el HTML en un nodo de tabla
-    const tablaHTML = document.querySelector(".cont-report-table").innerHTML;
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(tablaHTML, "text/html");
-    const tableElement = doc.querySelector("table");
+    const pdf = new libJsPDF();
+
+    // Usa jsPDF para exportar el contenido de la tabla a PDF
+    let tablas = document.querySelectorAll(".report-table");
+    let startY = 20;
+    
+    tablas.forEach((tabla, index) => {
+        let filas = tabla.querySelectorAll("tr");
+        let data = [];
+        let encabezado = [];
+        
+        filas.forEach((fila, filaIndex) => {
+            let columnas = fila.querySelectorAll("th, td");
+            let filaData = [];
+            
+            columnas.forEach((columna) => {
+                filaData.push(columna.innerText);
+            });
+            
+            if (filaIndex === 0) {
+                encabezado.push(filaData);
+            } else {
+                data.push(filaData);
+            }
+        });
+        
+        pdf.autoTable({
+            head: encabezado,
+            body: data,
+            startY: startY,
+            theme: 'grid',
+            headStyles: { fillColor: [255, 0, 0], textColor: [255, 255, 255] },
+            bodyStyles: { fillColor: [255, 255, 255] },
+            alternateRowStyles: { fillColor: [240, 240, 240] },
+            tableLineColor: [0, 0, 0],
+            tableLineWidth: 0.1,
+        });
+        
+        startY = pdf.lastAutoTable.finalY + 10;
+        
+        if (index < tablas.length - 1 && startY > 250) {
+            pdf.addPage();
+            startY = 20;
+        }
+    });
+
+    document.querySelector("#btn-export-pdf").addEventListener("click", () => {
+      pdf.save(`${nameDoc}.pdf`);
+    });
   }
 }

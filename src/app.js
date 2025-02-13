@@ -20,6 +20,7 @@ export function main() {
   // jsPDFScript.onload = () => {
   // };
   window.jsPDF = window.jspdf.jsPDF;
+  window.jsPDF.autoTable = window.jspdf.autoTable;
   if (!window.jsPDF) {
     location.reload();
   }
