@@ -24,7 +24,6 @@ export function main() {
   if (!window.jsPDF) {
     location.reload();
   }
-
   // document.head.appendChild(jsPDFScript);
   const [getActiveButton, setActiveButton] = useState(0);
   const containerView = document.querySelector(".section-app");

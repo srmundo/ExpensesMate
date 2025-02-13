@@ -55,6 +55,9 @@ export function initializeGoals() {
             document.getElementById('goal-name').value = '';
             document.getElementById('goal-amount').value = '';
             document.getElementById('goal-date').value = '';
+
+            goalForm.classList.add('hidden');
+
         }).catch(error => {
             console.error('Error inserting goal:', error);
         });
