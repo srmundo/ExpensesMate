@@ -668,7 +668,7 @@ export function funcReport() {
     return `
       <table class="report-table">
       <tr>
-        <td data-label="Title"><h2 class="report-title">Informe Financiero Mensual</h2></td>
+        <td><h2 class="report-title">Informe Financiero Mensual</h2></td>
       </tr>
       </table>
       <table class="report-table" border="1">
@@ -708,12 +708,12 @@ export function funcReport() {
 
       <table class="report-table">
       <tr>
-        <td data-label="Objetivos del Mes">
+        <td>
         <h3 class="report-subtitle">Objetivos del Mes</h3>
         </td>
       </tr>
       <tr>
-        <td data-label="Objetivos del Mes">
+        <td>
         <p class="report-text">${goals.monthly}</p>
         </td>
       </tr>
@@ -721,12 +721,12 @@ export function funcReport() {
 
       <table class="report-table">
       <tr>
-        <td data-label="Conclusiones">
+        <td>
         <h3 class="report-subtitle">Conclusiones</h3>
         </td>
       </tr>
       <tr>
-        <td data-label="Conclusiones">
+        <td>
         <p class="report-text">Gastos en entretenimiento fueron altos. Ajustar el próximo mes.</p>
         </td>
       </tr>
@@ -773,7 +773,7 @@ export function funcReport() {
     return `
       <table class="report-table">
       <tr>
-        <td data-label="Title"><h2 class="report-title">Informe Financiero Trimestral</h2></td>
+        <td><h2 class="report-title">Informe Financiero Trimestral</h2></td>
       </tr>
       </table>
       <table class="report-table-q" border="1">
@@ -796,7 +796,7 @@ export function funcReport() {
 
       <table class="report-table">
       <tr>
-        <td data-label="Desglose de Gastos por Categoría (Trimestral)">
+        <td>
         <h3 class="report-subtitle">Desglose de Gastos por Categoría (Trimestral)</h3>
         </td>
       </tr>
@@ -814,7 +814,7 @@ export function funcReport() {
 
       <table class="report-table">
       <tr>
-        <td data-label="Conclusiones Trimestrales y Metas del Próximo Trimestre" colspan="6">
+        <td>
         <h3 class="report-subtitle">Conclusiones Trimestrales y Metas del Próximo Trimestre</h3>
         </td>
       </tr>
@@ -889,7 +889,7 @@ export function funcReport() {
     return `
       <table class="report-table">
       <tr>
-      <td data-label="Title">
+      <td>
       <h2 class="report-title">Informe Financiero Anual</h2>
       </td>
       </tr>
@@ -913,7 +913,7 @@ export function funcReport() {
 
       <table class="report-table">
       <tr>
-      <td data-label="Desglose de Gastos Anuales por Categoría">
+      <td>
       <h3 class="report-subtitle">Desglose de Gastos Anuales por Categoría</h3>
       </td>
       </tr>
@@ -929,12 +929,12 @@ export function funcReport() {
 
       <table class="report-table">
       <tr>
-      <td data-label="Logros Financieros del Año">
+      <td>
       <h3 class="report-subtitle">Logros Financieros del Año</h3>
       </td>
       </tr>
       <tr>
-      <td data-label="Logros Financieros del Año">
+      <td>
       <ul class="report-list">
         <li><b>Ahorro Anual:</b> $${netBalance.toFixed(2)}, equivalente al ${(netBalance / incomeTotal * 100).toFixed(2)}% del ingreso total anual.</li>
         <li><b>Deudas Reducidas:</b> Reducción de un 20% en deudas pendientes.</li>
@@ -946,12 +946,12 @@ export function funcReport() {
 
       <table class="report-table">
       <tr>
-      <td data-label="Metas Financieras para el Próximo Año">
+      <td>
       <h3 class="report-subtitle">Metas Financieras para el Próximo Año</h3>
       </td>
       </tr>
       <tr>
-      <td data-label="Metas Financieras para el Próximo Año">
+      <td>
       <ul class="report-list">
         <li>Aumentar el ahorro anual al 40%.</li>
         <li>Reducir los gastos en entretenimiento un 15%.</li>
