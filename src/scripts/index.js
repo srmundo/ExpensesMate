@@ -131,6 +131,9 @@ export function loadAppHTML() {
 			// Asegurar que los scripts de la app se ejecuten después de inyectar el HTML
 			loadAppScripts();
 
+			const userSession = JSON.parse(sessionStorage.getItem('session'));
+
+
             // Crear el menú flotante
             const profileMenu  = `
                 <div class="menuFloatOptionsNone">
@@ -146,6 +149,8 @@ export function loadAppHTML() {
                 </div>
                 </div>
             `;
+
+			
 
             const contMenuFloatOptions = document.getElementById('cont-btn-propile-nav');
             contMenuFloatOptions.innerHTML += profileMenu;
@@ -179,7 +184,6 @@ export function loadAppHTML() {
             });
             });
 
-			const userSession = JSON.parse(sessionStorage.getItem('session'));
     		if (userSession && userSession.photo) {
     		    const imgProfile = document.querySelector('.profile-photo');
     		    imgProfile.src = userSession.photo;

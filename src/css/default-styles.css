@@ -1831,7 +1831,433 @@ input[type="number"]::-webkit-inner-spin-button,
   }
 
 
+  .change-password-section {
+    width: 60%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+  }
+
+  .change-password-section h3 {
+    font-family: poppins-medium;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .change-password-section .form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .change-password-section .form-group label {
+    font-family: poppins-regular;
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+
+  .change-password-section .form-group input {
+    padding: 10px;
+    font-size: 14px;
+    font-family: poppins-regular;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .change-password-section .form-group input:focus {
+    border-color: #643df2;
+  }
+
+  .change-password-section button {
+    font-size: 14px;
+    font-family: poppins-regular;
+    cursor: pointer;
+    padding: 10px 20px;
+    background-color: #643df2;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+  }
+
+  .change-password-section button:hover {
+    background-color: #4b2dbf;
+    transform: translateY(-1px);
+  }
+
+  .update-email-section {
+    width: 60%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+  }
+
+  .update-email-section h3 {
+    font-family: poppins-medium;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .update-email-section .form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .update-email-section .form-group label {
+    font-family: poppins-regular;
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+
+  .update-email-section .form-group input {
+    padding: 10px;
+    font-size: 14px;
+    font-family: poppins-regular;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .update-email-section .form-group input:focus {
+    border-color: #643df2;
+  }
+
+  .update-email-section button {
+    font-size: 14px;
+    font-family: poppins-regular;
+    cursor: pointer;
+    padding: 10px 20px;
+    background-color: #643df2;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+  }
+
+  .update-email-section button:hover {
+    background-color: #4b2dbf;
+    transform: translateY(-1px);
+  }
+
+  .delete-account-section {
+    width: 60%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+  }
+
+  .delete-account-section h3 {
+    font-family: poppins-medium;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .delete-account-section p {
+    font-family: poppins-regular;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .delete-account-section .form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .delete-account-section .form-group label {
+    font-family: poppins-regular;
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+
+  .delete-account-section .form-group input {
+    padding: 10px;
+    font-size: 14px;
+    font-family: poppins-regular;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .delete-account-section .form-group input:focus {
+    border-color: #643df2;
+  }
+
+  .delete-account-section .btn-delete {
+    font-size: 14px;
+    font-family: poppins-regular;
+    cursor: pointer;
+    padding: 10px 20px;
+    background-color: #800808;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+  }
+
+  .delete-account-section .btn-delete:hover {
+    background-color: #991c1c;
+    transform: translateY(-1px);
+  }
+
+  .currency-settings-section {
+    width: 60%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+  }
+
+  .currency-settings-section h3 {
+    font-family: poppins-medium;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .currency-settings-section .form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .currency-settings-section .form-group label {
+    font-family: poppins-regular;
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+
+  .currency-settings-section .form-group select {
+    display: block;
+    height: 35px;
+    font-size: 14px;
+    font-family: poppins-regular;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .currency-settings-section .form-group select:focus {
+    border-color: #643df2;
+  }
+
+  .currency-settings-section .btn-save-currency {
+    font-size: 14px;
+    font-family: poppins-regular;
+    cursor: pointer;
+    padding: 10px 20px;
+    background-color: #643df2;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+  }
+
+  .currency-settings-section .btn-save-currency:hover {
+    background-color: #4b2dbf;
+    transform: translateY(-1px);
+  }
+
+  .language-settings-section {
+    width: 60%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+  }
+
+  .language-settings-section h3 {
+    font-family: poppins-medium;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .language-settings-section .form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .language-settings-section .form-group label {
+    font-family: poppins-regular;
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+
+  .language-settings-section .form-group select {
+    display: block;
+    height: 35px;
+    font-size: 14px;
+    font-family: poppins-regular;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .language-settings-section .form-group select:focus {
+    border-color: #643df2;
+  }
+
+  .language-settings-section .btn-save-language {
+    font-size: 14px;
+    font-family: poppins-regular;
+    cursor: pointer;
+    padding: 10px 20px;
+    background-color: #643df2;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+  }
+
+  .language-settings-section .btn-save-language:hover {
+    background-color: #4b2dbf;
+    transform: translateY(-1px);
+  }
+
+  .notification-preferences-section {
+    width: 60%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+  }
+
+  .notification-preferences-section h3 {
+    font-family: poppins-medium;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .notification-preferences-section .form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .notification-preferences-section .form-group label {
+    font-family: poppins-regular;
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+
+  .notification-preferences-section .form-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+  }
+
+  .notification-preferences-section .btn-save-notifications {
+    font-size: 14px;
+    font-family: poppins-regular;
+    cursor: pointer;
+    padding: 10px 20px;
+    background-color: #643df2;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+  }
+
+  .notification-preferences-section .btn-save-notifications:hover {
+    background-color: #4b2dbf;
+    transform: translateY(-1px);
+  }
+
+  #back-to-settings {
+    font-size: 14px;
+    font-family: poppins-regular;
+    cursor: pointer;
+    padding: 10px 20px;
+    background-color: #643df2;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+    margin-left: 100px;
+  }
+
+  #back-to-settings:hover {
+    background-color: #4b2dbf;
+    transform: translateY(-1px);
+  }
+
 @media (max-width: 768px) {
+
+  .change-password-section,
+  .update-email-section,
+  .delete-account-section,
+  .currency-settings-section,
+  .language-settings-section,
+  .notification-preferences-section {
+    width: 90%;
+    padding: 10px;
+    margin: 10px auto;
+  }
+
+  .change-password-section h3,
+  .update-email-section h3,
+  .delete-account-section h3,
+  .currency-settings-section h3,
+  .language-settings-section h3,
+  .notification-preferences-section h3 {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+
+  .change-password-section .form-group,
+  .update-email-section .form-group,
+  .delete-account-section .form-group,
+  .currency-settings-section .form-group,
+  .language-settings-section .form-group,
+  .notification-preferences-section .form-group {
+    margin-bottom: 10px;
+  }
+
+  .change-password-section .form-group label,
+  .update-email-section .form-group label,
+  .delete-account-section .form-group label,
+  .currency-settings-section .form-group label,
+  .language-settings-section .form-group label,
+  .notification-preferences-section .form-group label {
+    font-size: 10px;
+    margin-bottom: 3px;
+  }
+
+  .change-password-section .form-group input,
+  .update-email-section .form-group input,
+  .delete-account-section .form-group input,
+  .currency-settings-section .form-group select,
+  .language-settings-section .form-group select {
+    padding: 5px;
+    font-size: 12px;
+  }
+
+  .change-password-section button,
+  .update-email-section button,
+  .delete-account-section .btn-delete,
+  .currency-settings-section .btn-save-currency,
+  .language-settings-section .btn-save-language,
+  .notification-preferences-section .btn-save-notifications,
+  #back-to-settings {
+    font-size: 12px;
+    padding: 5px 10px;
+    margin-top: 5px;
+  }
 
   .cont-nav-trans-tracking {
     width: 100%;

@@ -5,11 +5,23 @@ export function openDatabase() {
         request.onupgradeneeded = (event) => {
             const db = event.target.result;
 
+            // Crear la tabla de usuarios
+            const usersStore = db.createObjectStore("users", {
+                keyPath: "id",
+                autoIncrement: true
+            });
+            usersStore.createIndex("name", "name", { unique: false });
+            usersStore.createIndex("nick", "nick", { unique: true });
+            usersStore.createIndex("email", "email", { unique: true });
+            usersStore.createIndex("photo", "photo", { unique: false });
+            usersStore.createIndex("password", "password", { unique: false });
+
             // Crear la tabla de seguimiento de presupuesto
             const budgetTrackingStore = db.createObjectStore("budgetTracking", {
                 keyPath: "id",
                 autoIncrement: true
             });
+            budgetTrackingStore.createIndex("userId", "userId", { unique: false });
             budgetTrackingStore.createIndex("category", "category", { unique: false });
             budgetTrackingStore.createIndex("budgetedAmount", "budgetedAmount", { unique: false });
             budgetTrackingStore.createIndex("actualSpent", "actualSpent", { unique: false });
@@ -20,6 +32,7 @@ export function openDatabase() {
                 keyPath: "id",
                 autoIncrement: true
             });
+            categoriesStore.createIndex("userId", "userId", { unique: false });
             categoriesStore.createIndex("name", "name", { unique: true });
             categoriesStore.createIndex("type", "type", { unique: false });
             
@@ -28,6 +41,7 @@ export function openDatabase() {
                 keyPath: "id",
                 autoIncrement: true
             });
+            goalsStore.createIndex("userId", "userId", { unique: false });
             goalsStore.createIndex("name", "name", { unique: false });
             goalsStore.createIndex("amount", "amount", { unique: false });
             goalsStore.createIndex("currentAmount", "currentAmount", { unique: false });
@@ -38,6 +52,7 @@ export function openDatabase() {
                 keyPath: "id",
                 autoIncrement: true
             });
+            transactionsStore.createIndex("userId", "userId", { unique: false });
             transactionsStore.createIndex("amount", "amount", { unique: false });
             transactionsStore.createIndex("date", "date", { unique: false });
             transactionsStore.createIndex("categoryId", "categoryId", { unique: false });
@@ -62,12 +77,13 @@ export function openDatabase() {
 //     console.error(error);
 // });
 
-export async function getBudgetTracking() {
+export async function getBudgetTracking(userId) {
     return openDatabase().then(db => {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("budgetTracking", "readonly");
             const store = transaction.objectStore("budgetTracking");
-            const request = store.getAll();  // Devuelve todos los registros de la tabla de seguimiento de presupuesto
+            const index = store.index("userId");
+            const request = index.getAll(userId);
 
             request.onsuccess = () => resolve(request.result);
             request.onerror = (event) => reject("Error retrieving budget tracking: " + event.target.errorCode);
@@ -75,18 +91,18 @@ export async function getBudgetTracking() {
     });
 }
 
-export async function insertBudgetTracking(category, budgetedAmount, actualSpent, difference) {
-    return insertData("budgetTracking", { category, budgetedAmount, actualSpent, difference });
+export async function insertBudgetTracking(userId, category, budgetedAmount, actualSpent, difference) {
+    return insertData("budgetTracking", { userId, category, budgetedAmount, actualSpent, difference });
 }
 
-export async function updateBudgetTracking(id, newCategory, newBudgetedAmount, newActualSpent, newDifference) {
+export async function updateBudgetTracking(userId, id, newCategory, newBudgetedAmount, newActualSpent, newDifference) {
     return openDatabase().then(db => {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("budgetTracking", "readwrite");
             const store = transaction.objectStore("budgetTracking");
 
-            const budgetTracking = { id, category: newCategory, budgetedAmount: newBudgetedAmount, actualSpent: newActualSpent, difference: newDifference };  // Crear el objeto actualizado
-            const request = store.put(budgetTracking);  // Usamos 'put' para actualizar
+            const budgetTracking = { id, userId, category: newCategory, budgetedAmount: newBudgetedAmount, actualSpent: newActualSpent, difference: newDifference };
+            const request = store.put(budgetTracking);
 
             request.onsuccess = () => resolve("Budget tracking updated successfully");
             request.onerror = (event) => reject("Error updating budget tracking: " + event.target.errorCode);
@@ -94,13 +110,13 @@ export async function updateBudgetTracking(id, newCategory, newBudgetedAmount, n
     });
 }
 
-export async function deleteBudgetTracking(id) {
+export async function deleteBudgetTracking(userId, id) {
     return openDatabase().then(db => {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("budgetTracking", "readwrite");
             const store = transaction.objectStore("budgetTracking");
 
-            const request = store.delete(id);  // Usamos 'delete' para eliminar el registro
+            const request = store.delete(id);
 
             request.onsuccess = () => resolve("Budget tracking deleted successfully");
             request.onerror = (event) => reject("Error deleting budget tracking: " + event.target.errorCode);
@@ -108,39 +124,25 @@ export async function deleteBudgetTracking(id) {
     });
 }
 
-async function insertData(storeName, data) {
-    return openDatabase().then(db => {
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction(storeName, "readwrite");
-            const store = transaction.objectStore(storeName);
-            const request = store.add(data);
-            
-            request.onsuccess = () => resolve("Data inserted successfully");
-            request.onerror = (event) => reject("Error inserting data: " + event.target.errorCode);
-        });
-    });
+export function insertCategory(userId, name, type) {
+    return insertData("categories", { userId, name, type });
 }
 
-export function insertCategory(name, type) {
-    return insertData("categories", { name, type });
+export function insertGoal(userId, name, amount, currentAmount, date) {
+    return insertData("goals", { userId, name, amount, currentAmount, date });
 }
 
-export function insertGoal(name, amount, currentAmount, date) {
-    return insertData("goals", { name, amount, currentAmount, date });
+export function insertTransaction(userId, amount, date, categoryId, type, note, goalId) {
+    return insertData("transactions", { userId, amount, date, categoryId, type, note, goalId });
 }
 
-export function insertTransaction(amount, date, categoryId, type, note, goalId) {
-    return insertData("transactions", { amount, date, categoryId, type, note, goalId });
-}
-
-
-
-export async function getCategories() {
+export async function getCategories(userId) {
     return openDatabase().then(db => {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("categories", "readonly");
             const store = transaction.objectStore("categories");
-            const request = store.getAll();  // Devuelve todos los registros de la tabla de categorías
+            const index = store.index("userId");
+            const request = index.getAll(userId);
 
             request.onsuccess = () => resolve(request.result);
             request.onerror = (event) => reject("Error retrieving categories: " + event.target.errorCode);
@@ -148,13 +150,13 @@ export async function getCategories() {
     });
 }
 
-
-export async function getGoals() {
+export async function getGoals(userId) {
     return openDatabase().then(db => {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("goals", "readonly");
             const store = transaction.objectStore("goals");
-            const request = store.getAll();  // Devuelve todos los registros de la tabla de metas
+            const index = store.index("userId");
+            const request = index.getAll(userId);
 
             request.onsuccess = () => resolve(request.result);
             request.onerror = (event) => reject("Error retrieving goals: " + event.target.errorCode);
@@ -162,12 +164,13 @@ export async function getGoals() {
     });
 }
 
-export async function getTransactions() {
+export async function getTransactions(userId) {
     return openDatabase().then(db => {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("transactions", "readonly");
             const store = transaction.objectStore("transactions");
-            const request = store.getAll();  // Devuelve todos los registros de la tabla de transacciones
+            const index = store.index("userId");
+            const request = index.getAll(userId);
 
             request.onsuccess = () => resolve(request.result);
             request.onerror = (event) => reject("Error retrieving transactions: " + event.target.errorCode);
@@ -175,14 +178,14 @@ export async function getTransactions() {
     });
 }
 
-export async function updateCategory(id, newName, newType) {
+export async function updateCategory(userId, id, newName, newType) {
     return openDatabase().then(db => {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("categories", "readwrite");
             const store = transaction.objectStore("categories");
 
-            const category = { id, name: newName, type:newType };  // Crear el objeto actualizado
-            const request = store.put(category);  // Usamos 'put' para actualizar
+            const category = { id, userId, name: newName, type: newType };
+            const request = store.put(category);
 
             request.onsuccess = () => resolve("Category updated successfully");
             request.onerror = (event) => reject("Error updating category: " + event.target.errorCode);
@@ -190,14 +193,14 @@ export async function updateCategory(id, newName, newType) {
     });
 }
 
-export async function updateGoal(id, newName, newAmount, currentAmount, newDate) {
+export async function updateGoal(userId, id, newName, newAmount, currentAmount, newDate) {
     return openDatabase().then(db => {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("goals", "readwrite");
             const store = transaction.objectStore("goals");
 
-            const goal = { id, name: newName, amount: newAmount, currentAmount: currentAmount, date: newDate };  // Crear el objeto actualizado
-            const request = store.put(goal);  // Usamos 'put' para actualizar
+            const goal = { id, userId, name: newName, amount: newAmount, currentAmount, date: newDate };
+            const request = store.put(goal);
 
             request.onsuccess = () => resolve("Goal updated successfully");
             request.onerror = (event) => reject("Error updating goal: " + event.target.errorCode);
@@ -205,14 +208,14 @@ export async function updateGoal(id, newName, newAmount, currentAmount, newDate)
     });
 }
 
-export async function updateTransaction(id, newAmount, newDate, newCategoryId, newType, newNote, newGoalId) {
+export async function updateTransaction(userId, id, newAmount, newDate, newCategoryId, newType, newNote, newGoalId) {
     return openDatabase().then(db => {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("transactions", "readwrite");
             const store = transaction.objectStore("transactions");
 
-            const transactionData = { id, amount: newAmount, date: newDate, categoryId: newCategoryId, type: newType, note: newNote, goalId: newGoalId };  // Crear el objeto actualizado
-            const request = store.put(transactionData);  // Usamos 'put' para actualizar
+            const transactionData = { id, userId, amount: newAmount, date: newDate, categoryId: newCategoryId, type: newType, note: newNote, goalId: newGoalId };
+            const request = store.put(transactionData);
 
             request.onsuccess = () => resolve("Transaction updated successfully");
             request.onerror = (event) => reject("Error updating transaction: " + event.target.errorCode);
@@ -220,13 +223,13 @@ export async function updateTransaction(id, newAmount, newDate, newCategoryId, n
     });
 }
 
-export async function deleteCategory(id) {
+export async function deleteCategory(userId, id) {
     return openDatabase().then(db => {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("categories", "readwrite");
             const store = transaction.objectStore("categories");
 
-            const request = store.delete(id);  // Usamos 'delete' para eliminar el registro
+            const request = store.delete(id);
 
             request.onsuccess = () => resolve("Category deleted successfully");
             request.onerror = (event) => reject("Error deleting category: " + event.target.errorCode);
@@ -234,13 +237,13 @@ export async function deleteCategory(id) {
     });
 }
 
-export async function deleteGoal(id) {
+export async function deleteGoal(userId, id) {
     return openDatabase().then(db => {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("goals", "readwrite");
             const store = transaction.objectStore("goals");
 
-            const request = store.delete(id);  // Usamos 'delete' para eliminar el registro
+            const request = store.delete(id);
 
             request.onsuccess = () => resolve("Goal deleted successfully");
             request.onerror = (event) => reject("Error deleting goal: " + event.target.errorCode);
@@ -248,13 +251,13 @@ export async function deleteGoal(id) {
     });
 }
 
-export async function deleteTransaction(id) {
+export async function deleteTransaction(userId, id) {
     return openDatabase().then(db => {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("transactions", "readwrite");
             const store = transaction.objectStore("transactions");
 
-            const request = store.delete(id);  // Usamos 'delete' para eliminar el registro
+            const request = store.delete(id);
 
             request.onsuccess = () => resolve("Transaction deleted successfully");
             request.onerror = (event) => reject("Error deleting transaction: " + event.target.errorCode);
@@ -262,9 +265,48 @@ export async function deleteTransaction(id) {
     });
 }
 
+export async function getUsers() {
+    return openDatabase().then(db => {
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction("users", "readonly");
+            const store = transaction.objectStore("users");
+            const request = store.getAll();
 
-// openDatabase().then(db => {
-//     console.log("Database opened successfully", db);
-// }).catch(error => {
-//     console.error(error);
-// });
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = (event) => reject("Error retrieving users: " + event.target.errorCode);
+        });
+    });
+}
+
+export function insertUser(name, nickname, email, password, photo) {
+    return insertData("users", { name, nick: nickname, email, password, photo });
+}
+
+export async function updateUser(id, newName, newNick, newEmail, newPassword, newPhoto) {
+    return openDatabase().then(db => {
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction("users", "readwrite");
+            const store = transaction.objectStore("users");
+
+            const user = { id, name: newName, nick: newNick, email: newEmail, password: newPassword, photo: newPhoto };
+            const request = store.put(user);
+
+            request.onsuccess = () => resolve("User updated successfully");
+            request.onerror = (event) => reject("Error updating user: " + event.target.errorCode);
+        });
+    });
+}
+
+export async function deleteUser(id) {
+    return openDatabase().then(db => {
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction("users", "readwrite");
+            const store = transaction.objectStore("users");
+
+            const request = store.delete(id);
+
+            request.onsuccess = () => resolve("User deleted successfully");
+            request.onerror = (event) => reject("Error deleting user: " + event.target.errorCode);
+        });
+    });
+}

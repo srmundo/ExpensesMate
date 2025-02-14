@@ -1,5 +1,6 @@
 import { loadAppHTML } from "../scripts/index.js";
 import { registerSessionData, loginSession } from "../auth/auth.js";
+import { getUsers } from "../data/storage.js";
 export const LoginPage = function() {
     const app = document.getElementById('app');
     const style = document.createElement('style');
@@ -191,6 +192,7 @@ export const LoginPage = function() {
             }
 
             registerSessionData(name, fullName, password);
+
         
             createLoginForm();
         });
