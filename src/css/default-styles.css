@@ -1555,7 +1555,7 @@ td {
 #btn-show-filter{
   width: 30px;
   height: 30px;
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   background-color: #643df2;
@@ -2147,7 +2147,7 @@ input[type="number"]::-webkit-inner-spin-button,
   #btn-show-filter{
     width: 30px;
     height: 30px;
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     background-color: #643df2;

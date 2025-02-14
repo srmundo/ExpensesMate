@@ -253,11 +253,6 @@ export function funcTransactions() {
 
   const transactionsTableBody = document.getElementById("body-table-transaction");
 
-//   getTransactions().then(transactions => {
-// }).catch(error => {
-//     console.error(error);
-// });
-
   async function renderTransactions() {
     try {
       const transactions = await getTransactions();
@@ -274,7 +269,6 @@ export function funcTransactions() {
           <td class="col-table-transaction" data-label="Description">${transaction.note}</td>
           <td class="col-table-transaction col-btn" data-label="Action">
             <div class="col-btn">
-              <button id="btn-edit-transaction">Edit</button>
               <button id="btn-remove-transaction">Remove</button>
             </div>
           </td>
@@ -318,20 +312,6 @@ export function funcTransactions() {
         );
 
         const btnBoxEditCategory = document.getElementById("btn-edit-item-cat");
-        // btnBoxEditCategory.addEventListener("click", () => {
-        //   if (containerBoxEditCategory.style.display === "none") {
-        //     containerBoxEditCategory.style.display = "block";
-            
-        //   }
-        //   const btnCancelEditCategory = document.getElementById(
-        //     "btn-cancel-edit-category"
-        //   );
-        //   btnCancelEditCategory.addEventListener("click", () => {
-        //     if (containerBoxEditCategory.style.display === "block") {
-        //       containerBoxEditCategory.style.display = "none";
-        //     }
-        //   });
-        // });
 
         btnCancelNewCategory.addEventListener("click", () => {
           if (containerCategoryTransactions.style.display === "flex") {
@@ -645,5 +625,45 @@ export function funcTransactions() {
   }
 
   renderCategoriesForTracking();
+
+  function filterTransactions() {
+    const searchInput = document.getElementById("filter-search").value.toLowerCase();
+
+    const rows = transactionsTableBody.querySelectorAll("tr");
+
+    rows.forEach(row => {
+      const category = row.querySelector('[data-label="Category"]').textContent.toLowerCase();
+      const type = row.querySelector('[data-label="Type"]').textContent.toLowerCase();
+      const description = row.querySelector('[data-label="Description"]').textContent.toLowerCase();
+
+      const matchesSearch = category.includes(searchInput) || type.includes(searchInput) || description.includes(searchInput);
+
+      if (matchesSearch) {
+        row.style.display = "";
+      } else {
+        row.style.display = "none";
+      }
+    });
+
+    const filterDateInput = document.getElementById("filter-date");
+
+    filterDateInput.addEventListener("change", () => {
+      const selectedDate = filterDateInput.value;
+      const rows = transactionsTableBody.querySelectorAll("tr");
+
+      rows.forEach(row => {
+        const date = row.querySelector('[data-label="Date"]').textContent;
+        const matchesDate = date === selectedDate;
+
+        if (matchesDate || selectedDate === "") {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      });
+    });
+  }
+
+  document.getElementById("filter-search").addEventListener("input", filterTransactions);
   
 }
