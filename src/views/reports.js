@@ -688,18 +688,18 @@ export function funcReport() {
       incomeTotal += Number(transaction.amount);
       incomeRows += `
         <tr>
-        <td class="report-cell" data-label="Categoría">${transaction.categoryId}</td>
-        <td class="report-cell" data-label="Descripción">${transaction.note}</td>
-        <td class="report-cell" data-label="Monto">$${Number(transaction.amount).toFixed(2)}</td>
+        <td class="report-cell" data-label="Category">${transaction.categoryId}</td>
+        <td class="report-cell" data-label="Description">${transaction.note}</td>
+        <td class="report-cell" data-label="Amount">$${Number(transaction.amount).toFixed(2)}</td>
         </tr>
       `;
       } else if (transaction.type === 'Expense') {
       expenseTotal += Number(transaction.amount);
       expenseRows += `
         <tr>
-        <td class="report-cell" data-label="Categoría">${transaction.categoryId}</td>
-        <td class="report-cell" data-label="Descripción">${transaction.note}</td>
-        <td class="report-cell" data-label="Monto">$${Number(transaction.amount).toFixed(2)}</td>
+        <td class="report-cell" data-label="Category">${transaction.categoryId}</td>
+        <td class="report-cell" data-label="Description">${transaction.note}</td>
+        <td class="report-cell" data-label="Amount">$${Number(transaction.amount).toFixed(2)}</td>
         </tr>
       `;
       }
@@ -710,48 +710,48 @@ export function funcReport() {
     return `
       <table class="report-table">
       <tr>
-        <td><h2 class="report-title">Informe Financiero Mensual</h2></td>
+        <td><h2 class="report-title">Monthly Financial Report</h2></td>
       </tr>
       </table>
       <table class="report-table" border="1">
       <tr>
-        <th class="report-header" data-label="Categoría">Categoría</th>
-        <th class="report-header" data-label="Descripción">Descripción</th>
-        <th class="report-header" data-label="Monto">Monto</th>
+        <th class="report-header" data-label="Category">Category</th>
+        <th class="report-header" data-label="Description">Description</th>
+        <th class="report-header" data-label="Amount">Amount</th>
       </tr>
       <tr>
-        <td class="report-cell" data-label="Categoría"><b>Ingresos</b></td>
-        <td class="report-cell" data-label="Descripción"></td>
-        <td class="report-cell" data-label="Monto"></td>
+        <td class="report-cell" data-label="Category"><b>Income</b></td>
+        <td class="report-cell" data-label="Description"></td>
+        <td class="report-cell" data-label="Amount"></td>
       </tr>
       ${incomeRows}
       <tr>
-        <td class="report-cell" data-label="Categoría"><b>Total de Ingresos</b></td>
-        <td class="report-cell" data-label="Descripción"></td>
-        <td class="report-cell" data-label="Monto"><b>$${incomeTotal.toFixed(2)}</b></td>
+        <td class="report-cell" data-label="Category"><b>Total Income</b></td>
+        <td class="report-cell" data-label="Description"></td>
+        <td class="report-cell" data-label="Amount"><b>$${incomeTotal.toFixed(2)}</b></td>
       </tr>
       <tr>
-        <td class="report-cell" data-label="Categoría"><b>Gastos</b></td>
-        <td class="report-cell" data-label="Descripción"></td>
-        <td class="report-cell" data-label="Monto"></td>
+        <td class="report-cell" data-label="Category"><b>Expenses</b></td>
+        <td class="report-cell" data-label="Description"></td>
+        <td class="report-cell" data-label="Amount"></td>
       </tr>
       ${expenseRows}
       <tr>
-        <td class="report-cell" data-label="Categoría"><b>Total de Gastos</b></td>
-        <td class="report-cell" data-label="Descripción"></td>
-        <td class="report-cell" data-label="Monto"><b>$${expenseTotal.toFixed(2)}</b></td>
+        <td class="report-cell" data-label="Category"><b>Total Expenses</b></td>
+        <td class="report-cell" data-label="Description"></td>
+        <td class="report-cell" data-label="Amount"><b>$${expenseTotal.toFixed(2)}</b></td>
       </tr>
       <tr>
-        <td class="report-cell" data-label="Categoría"><b>Balance Neto Mensual</b></td>
-        <td class="report-cell" data-label="Descripción">Total Ingresos - Total Gastos</td>
-        <td class="report-cell" data-label="Monto"><b>$${netBalance.toFixed(2)}</b></td>
+        <td class="report-cell" data-label="Category"><b>Net Monthly Balance</b></td>
+        <td class="report-cell" data-label="Description">Total Income - Total Expenses</td>
+        <td class="report-cell" data-label="Amount"><b>$${netBalance.toFixed(2)}</b></td>
       </tr>
       </table>
 
       <table class="report-table">
       <tr>
         <td>
-        <h3 class="report-subtitle">Objetivos del Mes</h3>
+        <h3 class="report-subtitle">Monthly Goals</h3>
         </td>
       </tr>
       <tr>
@@ -764,12 +764,12 @@ export function funcReport() {
       <table class="report-table">
       <tr>
         <td>
-        <h3 class="report-subtitle">Conclusiones</h3>
+        <h3 class="report-subtitle">Conclusions</h3>
         </td>
       </tr>
       <tr>
         <td>
-        <p class="report-text">Gastos en entretenimiento fueron altos. Ajustar el próximo mes.</p>
+        <p class="report-text">Entertainment expenses were high. Adjust next month.</p>
         </td>
       </tr>
       </table>
@@ -786,15 +786,15 @@ export function funcReport() {
     transactions.forEach(transaction => {
       const month = new Date(transaction.date).toLocaleString('default', { month: 'long' });
       if (!monthlyTotals[month]) {
-      monthlyTotals[month] = { income: 0, expense: 0 };
+        monthlyTotals[month] = { income: 0, expense: 0 };
       }
 
       if (transaction.type === 'Income') {
-      incomeTotal += Number(transaction.amount);
-      monthlyTotals[month].income += Number(transaction.amount);
+        incomeTotal += Number(transaction.amount);
+        monthlyTotals[month].income += Number(transaction.amount);
       } else if (transaction.type === 'Expense') {
-      expenseTotal += Number(transaction.amount);
-      monthlyTotals[month].expense += Number(transaction.amount);
+        expenseTotal += Number(transaction.amount);
+        monthlyTotals[month].expense += Number(transaction.amount);
       }
     });
 
@@ -803,75 +803,75 @@ export function funcReport() {
     let monthlyRows = Object.keys(monthlyTotals).map(month => {
       const { income, expense } = monthlyTotals[month];
       return `
-      <tr>
-        <td class="report-cell" data-label="Mes">${month}</td>
-        <td class="report-cell" data-label="Total Ingresos">$${income.toFixed(2)}</td>
-        <td class="report-cell" data-label="Total Gastos">$${expense.toFixed(2)}</td>
-        <td class="report-cell" data-label="Balance Neto">$${(income - expense).toFixed(2)}</td>
-      </tr>
+        <tr>
+          <td class="report-cell" data-label="Month">${month}</td>
+          <td class="report-cell" data-label="Total Income">$${income.toFixed(2)}</td>
+          <td class="report-cell" data-label="Total Expenses">$${expense.toFixed(2)}</td>
+          <td class="report-cell" data-label="Net Balance">$${(income - expense).toFixed(2)}</td>
+        </tr>
       `;
     }).join('');
 
     return `
       <table class="report-table">
-      <tr>
-        <td><h2 class="report-title">Informe Financiero Trimestral</h2></td>
-      </tr>
+        <tr>
+          <td><h2 class="report-title">Quarterly Financial Report</h2></td>
+        </tr>
       </table>
       <table class="report-table-q" border="1">
-      <tr>
-        <th class="report-header" data-label="Trimestre">Trimestre</th>
-        <th class="report-header" data-label="Mes">Mes</th>
-        <th class="report-header" data-label="Total Ingresos">Total Ingresos</th>
-        <th class="report-header" data-label="Total Gastos">Total Gastos</th>
-        <th class="report-header" data-label="Balance Neto">Balance Neto</th>
-      </tr>
-      ${monthlyRows}
-      <tr>
-        <td class="report-cell" data-label="Trimestre"><b>Total</b></td>
-        <td class="report-cell" data-label="Mes"><b>Trimestre 1</b></td>
-        <td class="report-cell" data-label="Total Ingresos"><b>$${incomeTotal.toFixed(2)}</b></td>
-        <td class="report-cell" data-label="Total Gastos"><b>$${expenseTotal.toFixed(2)}</b></td>
-        <td class="report-cell" data-label="Balance Neto"><b>$${netBalance.toFixed(2)}</b></td>
-      </tr>
+        <tr>
+          <th class="report-header" data-label="Quarter">Quarter</th>
+          <th class="report-header" data-label="Month">Month</th>
+          <th class="report-header" data-label="Total Income">Total Income</th>
+          <th class="report-header" data-label="Total Expenses">Total Expenses</th>
+          <th class="report-header" data-label="Net Balance">Net Balance</th>
+        </tr>
+        ${monthlyRows}
+        <tr>
+          <td class="report-cell" data-label="Quarter"><b>Total</b></td>
+          <td class="report-cell" data-label="Month"><b>Quarter 1</b></td>
+          <td class="report-cell" data-label="Total Income"><b>$${incomeTotal.toFixed(2)}</b></td>
+          <td class="report-cell" data-label="Total Expenses"><b>$${expenseTotal.toFixed(2)}</b></td>
+          <td class="report-cell" data-label="Net Balance"><b>$${netBalance.toFixed(2)}</b></td>
+        </tr>
       </table>
 
       <table class="report-table">
-      <tr>
-        <td>
-        <h3 class="report-subtitle">Desglose de Gastos por Categoría (Trimestral)</h3>
-        </td>
-      </tr>
+        <tr>
+          <td>
+            <h3 class="report-subtitle">Expense Breakdown by Category (Quarterly)</h3>
+          </td>
+        </tr>
       </table>
       <table class="report-table" border="1">
-      <tr>
-        <th class="report-header" data-label="Categoría de Gasto">Categoría de Gasto</th>
-        <th class="report-header" data-label="Enero">Enero</th>
-        <th class="report-header" data-label="Febrero">Febrero</th>
-        <th class="report-header" data-label="Marzo">Marzo</th>
-        <th class="report-header" data-label="Total Trimestral">Total Trimestral</th>
-      </tr>
-      ${expenseRows}
+        <tr>
+          <th class="report-header" data-label="Expense Category">Expense Category</th>
+          <th class="report-header" data-label="January">January</th>
+          <th class="report-header" data-label="February">February</th>
+          <th class="report-header" data-label="March">March</th>
+          <th class="report-header" data-label="Total Quarterly">Total Quarterly</th>
+        </tr>
+        ${expenseRows}
       </table>
 
       <table class="report-table">
-      <tr>
-        <td>
-        <h3 class="report-subtitle">Conclusiones Trimestrales y Metas del Próximo Trimestre</h3>
-        </td>
-      </tr>
-      <tr>
-        <td class="report-cell" data-label="Logros" colspan="4"></td>
-        <td class="report-cell" data-label="Descripción"> Se mantuvo un balance positivo cada mes. Se logró ahorrar el 70% de la meta trimestral.</td>    
-      </tr>
-      <tr>
-        <td class="report-cell" data-label="Observaciones" colspan="4"></td>
-        <td class="report-cell" data-label="Descripción"> Aumento en gastos de entretenimiento en marzo.</td>
-      </tr>
-      <tr>
-        <td class="report-cell" data-label="Meta para el próximo trimestre" colspan="4"></td>
-        <td class="report-cell" data-label="Descripción"> Reducir un 10% el gasto en entretenimiento y aumentar el ahorro un 5%.</td>
-      </tr>
+        <tr>
+          <td>
+            <h3 class="report-subtitle">Quarterly Conclusions and Goals for the Next Quarter</h3>
+          </td>
+        </tr>
+        <tr>
+          <td class="report-cell" data-label="Achievements" colspan="4"></td>
+          <td class="report-cell" data-label="Description"> A positive balance was maintained each month. 70% of the quarterly goal was achieved.</td>    
+        </tr>
+        <tr>
+          <td class="report-cell" data-label="Observations" colspan="4"></td>
+          <td class="report-cell" data-label="Description"> Increase in entertainment expenses in March.</td>
+        </tr>
+        <tr>
+          <td class="report-cell" data-label="Goal for the next quarter" colspan="4"></td>
+          <td class="report-cell" data-label="Description"> Reduce entertainment expenses by 10% and increase savings by 5%.</td>
+        </tr>
       </table>
     `;
   }
@@ -908,10 +908,10 @@ export function funcReport() {
       const { income, expense } = monthlyTotals[month];
       return `
       <tr>
-        <td class="report-cell" data-label="Mes">${month}</td>
-        <td class="report-cell" data-label="Total Ingresos">$${income.toFixed(2)}</td>
-        <td class="report-cell" data-label="Total Gastos">$${expense.toFixed(2)}</td>
-        <td class="report-cell" data-label="Balance Neto">$${(income - expense).toFixed(2)}</td>
+        <td class="report-cell" data-label="Month">${month}</td>
+        <td class="report-cell" data-label="Total Income">$${income.toFixed(2)}</td>
+        <td class="report-cell" data-label="Total Expenses">$${expense.toFixed(2)}</td>
+        <td class="report-cell" data-label="Net Balance">$${(income - expense).toFixed(2)}</td>
       </tr>
       `;
     }).join('');
@@ -932,39 +932,39 @@ export function funcReport() {
       <table class="report-table">
       <tr>
       <td>
-      <h2 class="report-title">Informe Financiero Anual</h2>
+      <h2 class="report-title">Annual Financial Report</h2>
       </td>
       </tr>
       </table>
 
       <table class="report-table" border="1">
       <tr>
-      <th class="report-header">Mes</th>
-      <th class="report-header">Total Ingresos</th>
-      <th class="report-header">Total Gastos</th>
-      <th class="report-header">Balance Neto</th>
+      <th class="report-header">Month</th>
+      <th class="report-header">Total Income</th>
+      <th class="report-header">Total Expenses</th>
+      <th class="report-header">Net Balance</th>
       </tr>
       ${monthlyRows}
       <tr>
-      <td class="report-cell" data-label="Mes"><b>Total Anual</b></td>
-      <td class="report-cell" data-label="Total Ingresos"><b>$${incomeTotal.toFixed(2)}</b></td>
-      <td class="report-cell" data-label="Total Gastos"><b>$${expenseTotal.toFixed(2)}</b></td>
-      <td class="report-cell" data-label="Balance Neto"><b>$${netBalance.toFixed(2)}</b></td>
+      <td class="report-cell" data-label="Month"><b>Annual Total</b></td>
+      <td class="report-cell" data-label="Total Income"><b>$${incomeTotal.toFixed(2)}</b></td>
+      <td class="report-cell" data-label="Total Expenses"><b>$${expenseTotal.toFixed(2)}</b></td>
+      <td class="report-cell" data-label="Net Balance"><b>$${netBalance.toFixed(2)}</b></td>
       </tr>
       </table>
 
       <table class="report-table">
       <tr>
       <td>
-      <h3 class="report-subtitle">Desglose de Gastos Anuales por Categoría</h3>
+      <h3 class="report-subtitle">Annual Expense Breakdown by Category</h3>
       </td>
       </tr>
       </table>
       <table class="report-table" border="1">
       <tr>
-      <th class="report-header">Categoría de Gasto</th>
-      <th class="report-header">Gasto Total</th>
-      <th class="report-header">Porcentaje del Gasto Total</th>
+      <th class="report-header">Expense Category</th>
+      <th class="report-header">Total Expense</th>
+      <th class="report-header">Percentage of Total Expense</th>
       </tr>
       ${categoryRows}
       </table>
@@ -972,15 +972,15 @@ export function funcReport() {
       <table class="report-table">
       <tr>
       <td>
-      <h3 class="report-subtitle">Logros Financieros del Año</h3>
+      <h3 class="report-subtitle">Financial Achievements of the Year</h3>
       </td>
       </tr>
       <tr>
       <td>
       <ul class="report-list">
-        <li><b>Ahorro Anual:</b> $${netBalance.toFixed(2)}, equivalente al ${(netBalance / incomeTotal * 100).toFixed(2)}% del ingreso total anual.</li>
-        <li><b>Deudas Reducidas:</b> Reducción de un 20% en deudas pendientes.</li>
-        <li><b>Inversiones Realizadas:</b> $2,000.00 en fondos de inversión a largo plazo.</li>
+        <li><b>Annual Savings:</b> $${netBalance.toFixed(2)}, equivalent to ${(netBalance / incomeTotal * 100).toFixed(2)}% of the total annual income.</li>
+        <li><b>Debts Reduced:</b> 20% reduction in outstanding debts.</li>
+        <li><b>Investments Made:</b> $2,000.00 in long-term investment funds.</li>
       </ul>
       </td>
       </tr>
@@ -989,15 +989,15 @@ export function funcReport() {
       <table class="report-table">
       <tr>
       <td>
-      <h3 class="report-subtitle">Metas Financieras para el Próximo Año</h3>
+      <h3 class="report-subtitle">Financial Goals for the Next Year</h3>
       </td>
       </tr>
       <tr>
       <td>
       <ul class="report-list">
-        <li>Aumentar el ahorro anual al 40%.</li>
-        <li>Reducir los gastos en entretenimiento un 15%.</li>
-        <li>Destinar un 5% adicional de los ingresos a nuevas inversiones.</li>
+        <li>Increase annual savings to 40%.</li>
+        <li>Reduce entertainment expenses by 15%.</li>
+        <li>Allocate an additional 5% of income to new investments.</li>
       </ul>
       </td>
       </tr>
@@ -1020,7 +1020,18 @@ export function funcReport() {
       await fetchDataAndFillTables(reportType);
       document.querySelector("#btn-export-pdf").disabled = false;
       document.querySelector("#btn-export-csv").disabled = false;
-      exportDoc(`${reportType}-finance-report`);
+      document.querySelector("#btn-export-xlsx").disabled = false;
+
+      document.querySelector("#btn-export-pdf").onclick = async () => {
+        await loadJsPDF();
+        exportDoc(`${reportType}-finance-report`, "pdf");
+      };
+      document.querySelector("#btn-export-csv").onclick = () => {
+        exportDoc(`${reportType}-finance-report`, "csv");
+      };
+      document.querySelector("#btn-export-xlsx").onclick = () => {
+        exportDoc(`${reportType}-finance-report`, "xlsx");
+      };
     });
   });
 
