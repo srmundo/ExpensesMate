@@ -405,7 +405,42 @@ export function funcTransactions() {
       const type = document.getElementById("options-type").value;
       const note = document.getElementById("input-note").value;
 
-      if (amount.trim() === "" || date.trim() === "" || category.trim() === "" || type.trim() === "") {
+      const amountInput = document.getElementById("input-amount");
+      const dateInput = document.getElementById("input-date");
+      const categoryInput = document.getElementById("options-category");
+      const typeInput = document.getElementById("options-type");
+
+      let isValid = true;
+
+      if (amount.trim() === "") {
+        amountInput.style.border = "1px solid red";
+        isValid = false;
+      } else {
+        amountInput.style.border = "";
+      }
+
+      if (date.trim() === "") {
+        dateInput.style.border = "1px solid red";
+        isValid = false;
+      } else {
+        dateInput.style.border = "";
+      }
+
+      if (category.trim() === "") {
+        categoryInput.style.border = "1px solid red";
+        isValid = false;
+      } else {
+        categoryInput.style.border = "";
+      }
+
+      if (type.trim() === "") {
+        typeInput.style.border = "1px solid red";
+        isValid = false;
+      } else {
+        typeInput.style.border = "";
+      }
+
+      if (!isValid) {
         console.log("Please fill in all required fields.");
         return;
       }
@@ -579,7 +614,26 @@ export function funcTransactions() {
     const category = document.getElementById("options-category-tracking").value;
     const amount = document.getElementById("input-amount-tracking").value;
 
-    if (category.trim() === "" || amount.trim() === "") {
+    const categoryInput = document.getElementById("options-category-tracking");
+    const amountInput = document.getElementById("input-amount-tracking");
+
+    let isValid = true;
+
+    if (category.trim() === "") {
+      categoryInput.style.border = "1px solid red";
+      isValid = false;
+    } else {
+      categoryInput.style.border = "";
+    }
+
+    if (amount.trim() === "") {
+      amountInput.style.border = "1px solid red";
+      isValid = false;
+    } else {
+      amountInput.style.border = "";
+    }
+
+    if (!isValid) {
       console.log("Please fill in all required fields.");
       return;
     }

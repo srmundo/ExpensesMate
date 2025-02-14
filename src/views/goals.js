@@ -43,7 +43,16 @@ export function initializeGoals() {
         const goalAmount = document.getElementById('goal-amount').value;
         const goalDate = document.getElementById('goal-date').value;
         const newGoal = { name: goalName, amount: goalAmount, currentAmount: 0, date: goalDate };
-
+        if (!goalName || !goalAmount || !goalDate) {
+            if (!goalName) document.getElementById('goal-name').style.border = '1px solid red';
+            if (!goalAmount) document.getElementById('goal-amount').style.border = '1px solid red';
+            if (!goalDate) document.getElementById('goal-date').style.border = '1px solid red';
+            return;
+        } else {
+            document.getElementById('goal-name').style.border = '';
+            document.getElementById('goal-amount').style.border = '';
+            document.getElementById('goal-date').style.border = '';
+        }
         // Insert the new goal into the database
         insertGoal(newGoal.name, newGoal.amount, newGoal.currentAmount, newGoal.date).then(() => {
             // Update the state and re-render the goals

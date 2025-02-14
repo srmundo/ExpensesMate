@@ -1,4 +1,5 @@
 import { loadView } from "../app.js";
+import { getGoals } from "../data/storage.js";
 export function profile() {
     return `
                 <div class="container-profile">
@@ -76,13 +77,18 @@ function previewImage(event) {
     reader.readAsDataURL(event.target.files[0]);
 }
 
-const goals = [
-    { goal: 'Save for vacation', amount: 2000, date: '2023-12-31', progress: '50%', status: 'in-progress' },
-    { goal: 'Emergency fund', amount: 5000, date: '2024-06-30', progress: '20%', status: 'in-progress' },
-    { goal: 'Buy a new laptop', amount: 1500, date: '2023-11-15', progress: '100%', status: 'achieved' }
-];
+async function fetchGoals() {
+    try {
+        const goals = await getGoals();
+        return goals;
+    } catch (error) {
+        console.error('Error fetching goals:', error);
+        return [];
+    }
+}
 
-function renderGoals() {
+async function renderGoals() {
+    const goals = await fetchGoals();
     const tbody = document.querySelector('.profile-goals tbody');
     tbody.innerHTML = '';
 
@@ -94,11 +100,28 @@ function renderGoals() {
         const progressCell = document.createElement('td');
         const statusCell = document.createElement('td');
 
-        goalCell.textContent = goal.goal;
+        goalCell.textContent = goal.name;
         amountCell.textContent = goal.amount;
         dateCell.textContent = goal.date;
-        progressCell.textContent = goal.progress;
+        const progressPercentage = (goal.currentAmount && goal.amount) ? Math.min((goal.currentAmount / goal.amount) * 100, 100) : 0;
+        progressCell.textContent = `${progressPercentage.toFixed(2)}%`;
+        const currentDate = new Date();
+        const targetDate = new Date(goal.date);
         statusCell.textContent = goal.status;
+
+        if (progressPercentage === 100 && currentDate <= targetDate) {
+            statusCell.textContent = 'Completed';
+            statusCell.style.color = 'blue';
+        } else if (progressPercentage < 100 && currentDate <= targetDate) {
+            statusCell.textContent = 'In Progress';
+            statusCell.style.color = 'green';
+        } else if (progressPercentage < 100 && currentDate > targetDate) {
+            statusCell.textContent = 'Incomplete';
+            statusCell.style.color = 'red';
+        } else if (progressPercentage === 100 && currentDate > targetDate) {
+            statusCell.textContent = 'Past Due';
+            statusCell.style.color = 'orange';
+        }
 
         row.appendChild(goalCell);
         row.appendChild(amountCell);
@@ -166,7 +189,6 @@ function renderGoals() {
             initializeProfile();
         });
     }
-
 }
 
 export function initializeProfile() {
