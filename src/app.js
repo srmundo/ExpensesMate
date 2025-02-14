@@ -6,7 +6,6 @@ import { goals, initializeGoals } from "./views/goals.js";
 import { settings, initializeSettings } from "./views/settings.js";
 import { profile, initializeProfile } from "./views/profile.js";
 import { useState } from "./scripts/useState.js";
-import './lib/jspdf.plugin.autotable.min.js';
 let exampleStorage = ["default-style"];
 
 export function main() {
@@ -16,16 +15,6 @@ export function main() {
   if (userSession && userSession.photo) {
     avatarNavApp.src = userSession.photo;
   }
-  // const jsPDFScript = document.createElement("script");
-  // jsPDFScript.src = "./src/lib/jspdf.umd.min.js";
-  // jsPDFScript.onload = () => {
-  // };
-  window.jsPDF = window.jspdf.jsPDF;
-  // window.jsPDF.autoTable = window.jspdf.autoTable;
-  if (!window.jsPDF) {
-    location.reload();
-  }
-  // document.head.appendChild(jsPDFScript);
   const [getActiveButton, setActiveButton] = useState(0);
   const containerView = document.querySelector(".section-app");
 
@@ -64,7 +53,7 @@ export function main() {
             break;
           case "btn-reports":
             loadView("reports", containerView);
-            funcReport(jsPDF);
+            funcReport();
             break;
           case "btn-goals":
             loadView("goals", containerView);

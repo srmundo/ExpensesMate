@@ -1,6 +1,13 @@
 import { useState } from "../scripts/useState.js";
-import '../lib/jspdf.plugin.autotable.min.js';
 import { getCategories, getTransactions, getGoals } from "../data/storage.js";
+async function loadJsPDF() {
+  if (!window.jspdf) {
+      await import("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js") || await import("../lib/jspdf.umd.min.js");
+  }
+  if (!window.jspdf?.jsPDF.prototype.autoTable) {
+      await import("https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js") || await import("../lib/jspdf.plugin.autotable.min.js");
+  }
+}
 
 export function reports() {
   return `
@@ -14,6 +21,8 @@ export function reports() {
                 </div>
                 <button id="btn-export-pdf">To PDF</button>
                 <button id="btn-export-csv">To CSV</button>
+                <button id="btn-export-xlsx">To Xlsx</button>
+
               </div>
               <body class="body-reports">
                 <div class="cont-report-table">
@@ -28,7 +37,7 @@ export function reports() {
       `;
 }
 
-export function funcReport(libJsPDF) {
+export function funcReport() {
   document.querySelector("#btn-export-pdf").disabled = true;
   document.querySelector("#btn-export-csv").disabled = true;
 
@@ -471,82 +480,141 @@ export function funcReport(libJsPDF) {
   });
 
   function exportDoc(nameDoc) {
-    // Construir el contenido CSV
-    let csv = [];
-    const filas = contenido.querySelectorAll("table tr");
 
-    filas.forEach((fila) => {
-      let columnas = fila.querySelectorAll("th, td");
-      let filaCSV = [];
-      columnas.forEach((columna) => filaCSV.push(`"${columna.innerText}"`)); // Encerrar en comillas para evitar problemas con comas
-      csv.push(filaCSV.join(",")); // Combina columnas con comas
-    });
+    function exportToCSV(nameDoc) {
+      const rows = document.querySelectorAll(".report-table tr");
+      let csvContent = "data:text/csv;charset=utf-8,";
+      
+      rows.forEach(row => {
+      let rowData = [];
+      row.querySelectorAll("td, th").forEach(cell => {
+        rowData.push(cell.innerText);
+      });
+      csvContent += rowData.join(",") + "\r\n";
+      });
 
-    // Convertir el array a texto
-    let csvContent = csv.join("\n");
-
-    document.getElementById("btn-export-csv").addEventListener("click", () => {
-      // Crear un enlace de descarga
-      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
+      const encodedUri = encodeURI(csvContent);
       const link = document.createElement("a");
-      link.setAttribute("href", url);
+      link.setAttribute("href", encodedUri);
       link.setAttribute("download", `${nameDoc}.csv`);
-      link.style.visibility = "hidden";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+    }
+
+    document.querySelector("#btn-export-csv").addEventListener("click", () => {
+      exportToCSV(nameDoc);
     });
 
-    const pdf = new libJsPDF();
+    function exportToPDF(nameDoc) {
 
-    // Usa jsPDF para exportar el contenido de la tabla a PDF
-    let tablas = document.querySelectorAll(".report-table");
-    let startY = 20;
-    
-    tablas.forEach((tabla, index) => {
-        let filas = tabla.querySelectorAll("tr");
-        let data = [];
-        let encabezado = [];
-        
-        filas.forEach((fila, filaIndex) => {
-            let columnas = fila.querySelectorAll("th, td");
-            let filaData = [];
-            
-            columnas.forEach((columna) => {
-                filaData.push(columna.innerText);
-            });
-            
-            if (filaIndex === 0) {
-                encabezado.push(filaData);
-            } else {
-                data.push(filaData);
-            }
+      window.jsPDF = window.jspdf.jsPDF;
+      const doc = new jsPDF();
+      const element = document.querySelector(".cont-report-table");
+
+      doc.text("Financial Report", 14, 16);
+      const tables = element.querySelectorAll("table");
+      let startY = 20;
+
+      tables.forEach((table) => {
+      doc.autoTable({
+        html: table,
+        startY: startY,
+        theme: 'grid',
+        headStyles: { fillColor: [22, 160, 133] },
+        alternateRowStyles: { fillColor: [240, 240, 240] },
+        styles: { fontSize: 8 }
+      });
+      startY = doc.lastAutoTable.finalY + 10;
+      });
+
+      doc.save(`${nameDoc}.pdf`);
+    }
+
+    document.querySelector("#btn-export-pdf").addEventListener("click", async () => {
+      await loadJsPDF(); // Asegura que se cargaron antes de ejecutarlo
+      exportToPDF(nameDoc);
+    });
+    function exportToXLSX(nameDoc) {
+      const tables = document.querySelectorAll(".report-table, .report-table-q");
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Report");
+
+      tables.forEach((table, tableIndex) => {
+      const rows = table.querySelectorAll("tr");
+      rows.forEach((row, rowIndex) => {
+        const rowData = [];
+        row.querySelectorAll("td, th").forEach(cell => {
+        rowData.push(cell.innerText);
         });
-        
-        pdf.autoTable({
-            head: encabezado,
-            body: data,
-            startY: startY,
-            theme: 'grid',
-            headStyles: { fillColor: [153, 102, 255], textColor: [255, 255, 255] },
-            bodyStyles: { fillColor: [255, 255, 255] },
-            alternateRowStyles: { fillColor: [240, 240, 240] },
-            tableLineColor: [0, 0, 0],
-            tableLineWidth: 0.1,
-        });
-        
-        startY = pdf.lastAutoTable.finalY + 10;
-        
-        if (index < tablas.length - 1 && startY > 250) {
-            pdf.addPage();
-            startY = 20;
+        const excelRow = worksheet.addRow(rowData);
+
+        // Apply styles
+        excelRow.eachCell((cell) => {
+        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
+        };
+        if (rowIndex === 0) {
+          // Header row styles
+          cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF16A085' } };
+        } else {
+          // Data row styles
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF0F0F0' } };
         }
-    });
+        });
+      });
 
-    document.querySelector("#btn-export-pdf").addEventListener("click", () => {
-      pdf.save(`${nameDoc}.pdf`);
+      worksheet.columns.forEach(column => {
+        let maxLength = 0;
+        column.eachCell({ includeEmpty: true }, cell => {
+          const cellValue = cell.value ? cell.value.toString() : '';
+          maxLength = Math.max(maxLength, cellValue.length);
+          if (cellValue.length > 33) {
+        cell.alignment = { wrapText: true };
+          }
+        });
+        column.width = Math.min(maxLength + 2, 35); // Add some padding to the width, max width 35
+      });
+
+      worksheet.eachRow({ includeEmpty: true }, row => {
+        let maxHeight = 15; // Default row height
+        row.eachCell({ includeEmpty: true }, cell => {
+          const cellValue = cell.value ? cell.value.toString() : '';
+          const lineCount = Math.ceil(cellValue.length / 33);
+          maxHeight = Math.max(maxHeight, lineCount * 15); // Approximate height per line
+          if (cellValue.length > 33) {
+        cell.alignment = { wrapText: true };
+          }
+        });
+        row.height = maxHeight;
+      });
+
+      // Add a blank row between tables
+      if (tableIndex < tables.length - 1) {
+        worksheet.addRow([]);
+      }
+      });
+
+      workbook.xlsx.writeBuffer().then(buffer => {
+      const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${nameDoc}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      });
+    }
+
+    document.querySelector("#btn-export-xlsx").addEventListener("click", () => {
+      exportToXLSX(nameDoc);
     });
+   
   }
 
   async function fetchDataAndFillTables(reportType) {
