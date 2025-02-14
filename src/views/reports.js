@@ -40,6 +40,7 @@ export function reports() {
 export function funcReport() {
   document.querySelector("#btn-export-pdf").disabled = true;
   document.querySelector("#btn-export-csv").disabled = true;
+  document.querySelector("#btn-export-xlsx").disabled = true;
 
   const [getIndexBtn, setIndexBtn] = useState(null);
 
@@ -464,22 +465,61 @@ export function funcReport() {
         contenido.innerHTML = schemeTable.monthly;
         document.querySelector("#btn-export-pdf").disabled = false;
         document.querySelector("#btn-export-csv").disabled = false;
+        document.querySelector("#btn-export-xlsx").disabled = false;
+        document.querySelector("#btn-export-pdf").addEventListener("click", async () => {
+          await loadJsPDF();
+          exportDoc("monthly-finance-report", "pdf");
+        });
+        document.querySelector("#btn-export-csv").addEventListener("click", () => {
+          exportDoc("monthly-finance-report", "csv");
+        });
+        document.querySelector("#btn-export-xlsx").addEventListener("click", () => {
+          exportDoc("monthly-finance-report", "xlsx");
+        });
         exportDoc("monthly-finance-report");
       } else if (getIndexBtn() === 1) {
         contenido.innerHTML = schemeTable.quarterly;
         document.querySelector("#btn-export-pdf").disabled = false;
+        document.querySelector("#btn-export-xlsx").disabled = false;
         document.querySelector("#btn-export-csv").disabled = false;
-        exportDoc("quarterly-finance-report");
+        document.querySelector("#btn-export-pdf").addEventListener("click", async () => {
+          await loadJsPDF();
+          exportDoc("quarterly-finance-report", "pdf");
+        });
+        document.querySelector("#btn-export-csv").addEventListener("click", () => {
+          exportDoc("quarterly-finance-report", "csv");
+        });
+        document.querySelector("#btn-export-xlsx").addEventListener("click", () => {
+          exportDoc("quarterly-finance-report", "xlsx");
+        });
       } else if (getIndexBtn() === 2) {
         contenido.innerHTML = schemeTable.annual;
         document.querySelector("#btn-export-pdf").disabled = false;
+        document.querySelector("#btn-export-xlsx").disabled = false;
         document.querySelector("#btn-export-csv").disabled = false;
-        exportDoc("annual-finance-report");
+        document.querySelector("#btn-export-pdf").addEventListener("click", async () => {
+          await loadJsPDF();
+          exportDoc("annual-finance-report", "pdf");
+        });
+        document.querySelector("#btn-export-csv").addEventListener("click", () => {
+          exportDoc("annual-finance-report", "csv");
+        });
+        document.querySelector("#btn-export-xlsx").addEventListener("click", () => {
+          exportDoc("annual-finance-report", "xlsx");
+        });
       }
     });
   });
 
-  function exportDoc(nameDoc) {
+  function exportDoc(nameDoc, type) {
+
+    if (type === "pdf") {
+      exportToPDF(nameDoc);
+    } else if (type === "csv") {
+      exportToCSV(nameDoc);
+    } else if (type === "xlsx") {
+      exportToXLSX(nameDoc);
+    }
 
     function exportToCSV(nameDoc) {
       const rows = document.querySelectorAll(".report-table tr");
@@ -501,10 +541,6 @@ export function funcReport() {
       link.click();
       document.body.removeChild(link);
     }
-
-    document.querySelector("#btn-export-csv").addEventListener("click", () => {
-      exportToCSV(nameDoc);
-    });
 
     function exportToPDF(nameDoc) {
 
@@ -531,10 +567,7 @@ export function funcReport() {
       doc.save(`${nameDoc}.pdf`);
     }
 
-    document.querySelector("#btn-export-pdf").addEventListener("click", async () => {
-      await loadJsPDF(); // Asegura que se cargaron antes de ejecutarlo
-      exportToPDF(nameDoc);
-    });
+    
     function exportToXLSX(nameDoc) {
       const tables = document.querySelectorAll(".report-table, .report-table-q");
       const workbook = new ExcelJS.Workbook();
@@ -611,11 +644,20 @@ export function funcReport() {
       });
     }
 
-    document.querySelector("#btn-export-xlsx").addEventListener("click", () => {
-      exportToXLSX(nameDoc);
-    });
+    
    
   }
+
+  // document.querySelector("#btn-export-csv").addEventListener("click", () => {
+  //   exportToCSV(nameDoc);
+  // });
+// document.querySelector("#btn-export-pdf").addEventListener("click", async () => {
+//     await loadJsPDF(); // Asegura que se cargaron antes de ejecutarlo
+//     exportToPDF(nameDoc);
+//   });
+// document.querySelector("#btn-export-xlsx").addEventListener("click", () => {
+//     exportToXLSX(nameDoc);
+//   });
 
   async function fetchDataAndFillTables(reportType) {
     const categories = await getCategories();
