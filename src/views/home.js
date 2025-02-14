@@ -1,4 +1,4 @@
-import { getTransactions } from "../data/storage.js";
+import { getTransactions, getBudgetTracking, getCategories, getGoals } from "../data/storage.js";
 export function home() {
   return `
     <div class="container-home">
@@ -273,7 +273,7 @@ export function home() {
             </table>
         </div>
 
-        <!-- Debt Tracking Table -->
+        <!-- Debt Tracking Table 
         <div class="tracking data">
             <h3>Debt Tracking</h3>
             <table border="1">
@@ -299,11 +299,10 @@ export function home() {
                 <td>20 months</td>
               </tr>
             </table>
-        </div>
+        </div>-->
 
-        <div class="summary-cashflow">
-            <div class="cashflow data">
-                <!-- Cash Flow Table -->
+      <div class="summary-cashflow">
+            <!-- <div class="cashflow data">
                 <h3>Cash Flow</h3>
                 <table border="1">
                   <tr>
@@ -323,7 +322,7 @@ export function home() {
                     <td>$1,700</td>
                   </tr>
                 </table>
-            </div>
+            </div> -->
              <div class="summary-table data">
                 <!-- Summary Indicators Table -->
                 <h3>Summary Indicators</h3>
@@ -503,48 +502,136 @@ export async function initializeHome() {
 
     updateCategoriesBudgetData(transactions);
 
-    function updateBudgetTrackingData(transactions) {
-      const budgetData = {
-        Housing: { budgeted: 1400, actual: 0 },
-        Transportation: { budgeted: 250, actual: 0 },
-        Groceries: { budgeted: 350, actual: 0 },
-        Entertainment: { budgeted: 150, actual: 0 },
-        Health: { budgeted: 150, actual: 0 }
-      };
-
-      transactions.forEach(transaction => {
-        if (transaction.type === 'Expense' && budgetData[transaction.categoryId]) {
-          budgetData[transaction.categoryId].actual += Number(transaction.amount);
-        }
-      });
-
-      const budgetRows = Object.entries(budgetData).map(([category, data]) => {
-        const difference = data.budgeted - data.actual;
-        const differenceText = difference >= 0 ? `+$${difference}` : `-$${Math.abs(difference)}`;
-        return `
-          <tr>
-            <td>${category}</td>
-            <td>$${data.budgeted}</td>
-            <td>$${data.actual}</td>
-            <td>${differenceText}</td>
-          </tr>
-        `;
-      }).join('');
-
-      document.querySelector('.budget table').innerHTML = `
-        <tr>
-          <th>Category</th>
-          <th>Budgeted Amount</th>
-          <th>Actual Spent</th>
-          <th>Difference</th>
-        </tr>
-        ${budgetRows}
-      `;
-    }
-
-    updateBudgetTrackingData(transactions);
-
   }
 
+  async function updateBudgetTrackingData() {
+    const budgetTracking = await getBudgetTracking();
+    const budgetData = budgetTracking.reduce((acc, item) => {
+    acc[item.category] = { budgeted: item.budgetedAmount, actual: 0 };
+    return acc;
+    }, {});
+
+    const transactions = await getTransactions();
+    transactions.forEach(transaction => {
+    if (transaction.type === 'Expense' && budgetData[transaction.categoryId]) {
+      budgetData[transaction.categoryId].actual += Number(transaction.amount);
+    }
+    });
+
+    const budgetRows = Object.entries(budgetData).map(([category, data]) => {
+    const difference = data.budgeted - data.actual;
+    const differenceText = difference >= 0 ? `<span style="color: green;">+$${difference}</span>` : `<span style="color: red;">-$${Math.abs(difference)}</span>`;
+    return `
+      <tr>
+      <td>${category}</td>
+      <td>$${data.budgeted}</td>
+      <td>$${data.actual}</td>
+      <td>${differenceText}</td>
+      </tr>
+    `;
+    }).join('');
+
+    document.querySelector('.budget table').innerHTML = `
+    <tr>
+      <th>Category</th>
+      <th>Budgeted Amount</th>
+      <th>Actual Spent</th>
+      <th>Difference</th>
+    </tr>
+    ${budgetRows}
+    `;
+  }
+
+  updateBudgetTrackingData(transactions);
+
+  async function updateSavingsGoalsData() {
+    const goals = await getGoals();
+    const goalRows = goals.map(goal => {
+      const remainingAmount = (Number(goal.amount) || 0) - (Number(goal.currentAmount) || 0);
+      return `
+        <tr>
+          <td>${goal.name}</td>
+          <td>$${goal.amount}</td>
+          <td>$${goal.currentAmount}</td>
+          <td>$${remainingAmount}</td>
+        </tr>
+      `;
+    }).join('');
+
+    document.querySelector('.saving-tables table').innerHTML = `
+      <tr>
+        <th>Goal</th>
+        <th>Target Amount</th>
+        <th>Current Savings</th>
+        <th>Remaining Amount</th>
+      </tr>
+      ${goalRows}
+    `;
+  }
+
+  updateSavingsGoalsData();
+
+  // function updateCashFlowData(transactions) {
+  //   const startingBalance = 1000; // Assuming a starting balance
+  //   const totalIncome = transactions
+  //     .filter(transaction => transaction.type === 'Income')
+  //     .reduce((acc, transaction) => acc + Number(transaction.amount), 0);
+  //   const totalExpenses = transactions
+  //     .filter(transaction => transaction.type === 'Expense')
+  //     .reduce((acc, transaction) => acc + Number(transaction.amount), 0);
+  //   const endingBalance = startingBalance + totalIncome - totalExpenses;
+  //   const monthlyCashFlow = totalIncome - totalExpenses;
+
+  //   document.querySelector('.cashflow table').innerHTML = `
+  //     <tr>
+  //       <th>Description</th>
+  //       <th>Amount</th>
+  //     </tr>
+  //     <tr>
+  //       <td>Starting Balance</td>
+  //       <td>$${startingBalance}</td>
+  //     </tr>
+  //     <tr>
+  //       <td>Ending Balance</td>
+  //       <td>$${endingBalance}</td>
+  //     </tr>
+  //     <tr>
+  //       <td>Monthly Cash Flow</td>
+  //       <td>$${monthlyCashFlow}</td>
+  //     </tr>
+  //   `;
+  // }
+
+  // updateCashFlowData(transactions);
+
+  function updateSummaryIndicators(totalIncome, totalExpenses, financialHealthScore) {
+    const savingsRate = ((totalIncome - totalExpenses) / totalIncome * 100).toFixed(2);
+    const debtToIncomeRatio = (totalExpenses / totalIncome * 100).toFixed(2);
+
+    document.querySelector('.summary-table table').innerHTML = `
+      <tr>
+        <th>Indicator</th>
+        <th>Value</th>
+      </tr>
+      <tr>
+        <td>Total Income vs. Expenses</td>
+        <td>$${totalIncome} - $${totalExpenses}</td>
+      </tr>
+      <tr>
+        <td>Savings Rate</td>
+        <td>${savingsRate}%</td>
+      </tr>
+      <tr>
+        <td>Debt-to-Income Ratio</td>
+        <td>${debtToIncomeRatio}%</td>
+      </tr>
+      <tr>
+        <td>Financial Health Score</td>
+        <td>${financialHealthScore}/100</td>
+      </tr>
+    `;
+  }
+
+  updateSummaryIndicators(totalIncome, totalExpenses, financialHealthScore);
   updateCategoryData(transactions);
 }

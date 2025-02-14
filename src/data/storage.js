@@ -4,6 +4,16 @@ export function openDatabase() {
 
         request.onupgradeneeded = (event) => {
             const db = event.target.result;
+
+            // Crear la tabla de seguimiento de presupuesto
+            const budgetTrackingStore = db.createObjectStore("budgetTracking", {
+                keyPath: "id",
+                autoIncrement: true
+            });
+            budgetTrackingStore.createIndex("category", "category", { unique: false });
+            budgetTrackingStore.createIndex("budgetedAmount", "budgetedAmount", { unique: false });
+            budgetTrackingStore.createIndex("actualSpent", "actualSpent", { unique: false });
+            budgetTrackingStore.createIndex("difference", "difference", { unique: false });
             
             // Crear la tabla de categorías
             const categoriesStore = db.createObjectStore("categories", {
@@ -46,12 +56,57 @@ export function openDatabase() {
     });
 }
 
-openDatabase().then(db => {
-    console.log("Database opened successfully", db);
-}).catch(error => {
-    console.error(error);
-});
+// openDatabase().then(db => {
+//     console.log("Database opened successfully", db);
+// }).catch(error => {
+//     console.error(error);
+// });
 
+export async function getBudgetTracking() {
+    return openDatabase().then(db => {
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction("budgetTracking", "readonly");
+            const store = transaction.objectStore("budgetTracking");
+            const request = store.getAll();  // Devuelve todos los registros de la tabla de seguimiento de presupuesto
+
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = (event) => reject("Error retrieving budget tracking: " + event.target.errorCode);
+        });
+    });
+}
+
+export async function insertBudgetTracking(category, budgetedAmount, actualSpent, difference) {
+    return insertData("budgetTracking", { category, budgetedAmount, actualSpent, difference });
+}
+
+export async function updateBudgetTracking(id, newCategory, newBudgetedAmount, newActualSpent, newDifference) {
+    return openDatabase().then(db => {
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction("budgetTracking", "readwrite");
+            const store = transaction.objectStore("budgetTracking");
+
+            const budgetTracking = { id, category: newCategory, budgetedAmount: newBudgetedAmount, actualSpent: newActualSpent, difference: newDifference };  // Crear el objeto actualizado
+            const request = store.put(budgetTracking);  // Usamos 'put' para actualizar
+
+            request.onsuccess = () => resolve("Budget tracking updated successfully");
+            request.onerror = (event) => reject("Error updating budget tracking: " + event.target.errorCode);
+        });
+    });
+}
+
+export async function deleteBudgetTracking(id) {
+    return openDatabase().then(db => {
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction("budgetTracking", "readwrite");
+            const store = transaction.objectStore("budgetTracking");
+
+            const request = store.delete(id);  // Usamos 'delete' para eliminar el registro
+
+            request.onsuccess = () => resolve("Budget tracking deleted successfully");
+            request.onerror = (event) => reject("Error deleting budget tracking: " + event.target.errorCode);
+        });
+    });
+}
 
 async function insertData(storeName, data) {
     return openDatabase().then(db => {
@@ -77,6 +132,8 @@ export function insertGoal(name, amount, currentAmount, date) {
 export function insertTransaction(amount, date, categoryId, type, note, goalId) {
     return insertData("transactions", { amount, date, categoryId, type, note, goalId });
 }
+
+
 
 export async function getCategories() {
     return openDatabase().then(db => {
@@ -206,8 +263,8 @@ export async function deleteTransaction(id) {
 }
 
 
-openDatabase().then(db => {
-    console.log("Database opened successfully", db);
-}).catch(error => {
-    console.error(error);
-});
+// openDatabase().then(db => {
+//     console.log("Database opened successfully", db);
+// }).catch(error => {
+//     console.error(error);
+// });

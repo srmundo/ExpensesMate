@@ -57,12 +57,10 @@ export function main() {
             loadView("home", containerView);
             // updateScore(75);
             initializeHome();
-            console.log("Home");
             break;
           case "btn-transactions":
             loadView("transactions", containerView);
             funcTransactions();
-            console.log("Transactions");
             break;
           case "btn-reports":
             loadView("reports", containerView);

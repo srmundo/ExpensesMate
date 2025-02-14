@@ -54,9 +54,9 @@ function checkLoginStatus() {
 				for (const name of categories[type]) {
 					try {
 						await insertCategory(name, type);
-						console.log(``);
+						// console.log(``);
 					} catch (error) {
-						console.log('');
+						// console.log('');
 					}
 				}
 			}
@@ -149,7 +149,6 @@ export function loadAppHTML() {
 
             const contMenuFloatOptions = document.getElementById('cont-btn-propile-nav');
             contMenuFloatOptions.innerHTML += profileMenu;
-            console.log(contMenuFloatOptions);
 
             // // Añadir eventos a los botones del menú
             // document.getElementById('btnProfile').addEventListener('click', () => {

@@ -49,7 +49,7 @@ export function initializeGoals() {
             // Update the state and re-render the goals
             setGoals([...goals(), newGoal]);
             renderGoals();
-            console.log(goals());
+            // console.log(goals());
 
             // Clear the form inputs
             document.getElementById('goal-name').value = '';
