@@ -27,7 +27,7 @@ export function loginSession(nickname, password) {
     if (typeof(Storage) !== "undefined") {
         getUsers().then(users => {
             const user = users.find(user => user.nick === nickname && user.password === password);
-            console.log(user)
+            console.log(user);
             if (user) {
                 const session = {
                     nickname: user.nick,
@@ -42,7 +42,11 @@ export function loginSession(nickname, password) {
                 }
                 
                 console.log('Login successful');
-                window.location.reload();
+                try {
+                    window.location.href = window.location.href;
+                } catch (error) {
+                    console.error('Error reloading the page', error);
+                }
                 return true;
             } else {
                 console.log('Invalid nickname or password');
