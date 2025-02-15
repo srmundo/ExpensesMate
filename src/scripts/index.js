@@ -2,8 +2,16 @@
 
 // import { Router } from '../auth/router.js';
 import { LoginPage } from '../public/loginPage.js';
-import { openDatabase, insertCategory } from '../data/storage.js';
+import { openDatabase, insertCategory, insertCurrencyConfig } from '../data/storage.js';
 import * as storageMobile from '../data/storageMobile.js';
+let currencyData;
+fetch('./src/locale/currency/currency.json')
+	.then(response => response.json())
+	.then(data => {
+		currencyData = data;
+		console.log('currencyData', currencyData);
+	})
+	.catch(error => console.error('Error loading currency data:', error));
 
 // import { logoutUser } from '../auth/supabase.js';
 
@@ -45,6 +53,7 @@ const categories = {
 		  "Investments"
 		]
 	  };
+console.log('currencyData', currencyData);
 	  async function insertCategories(userId) {
 		for (const type in categories) {
 			for (const name of categories[type]) {

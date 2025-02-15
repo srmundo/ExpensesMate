@@ -1,4 +1,5 @@
 import { insertTransaction, getTransactions, deleteTransaction, getCategories, insertCategory, updateCategory, deleteCategory, getGoals, updateGoal, getBudgetTracking, insertBudgetTracking, deleteBudgetTracking } from "../data/storage.js";
+import * as storageMobile from "../data/storageMobile.js";
 export function transactions() {
   return `
     <div class="container-transactions">
@@ -248,6 +249,9 @@ export function transactions() {
 
 
 export function funcTransactions() {
+  function isMobileDevice() {
+    return /Mobi|Android/i.test(navigator.userAgent);
+  }
   const session = sessionStorage.getItem("session");
   const sessionId = JSON.parse(session).id;
   
@@ -260,7 +264,11 @@ export function funcTransactions() {
 
   async function renderTransactions() {
     try {
-      const transactions = await getTransactions(sessionId);
+      let transactions;
+      if (isMobileDevice()) {
+        transactions = await storageMobile.getTransactions(sessionId);
+      }
+      transactions = await getTransactions(sessionId);
       transactionsTableBody.innerHTML = "";
       transactions.forEach(transaction => {
       const row = document.createElement("tr");
@@ -329,7 +337,12 @@ export function funcTransactions() {
     async function renderCategoryList() {
       try {
         // const session = sessionStorage.getItem("session");
-        const categories = await getCategories(sessionId);
+        let categories;
+
+        if (isMobileDevice()) {
+          categories = await storageMobile.getCategories();
+        }
+        categories = await getCategories(sessionId);
         const categoryList = document.querySelector(".cont-list-category ul");
         categoryList.innerHTML = "";
         categories.forEach(category => {
@@ -346,6 +359,9 @@ export function funcTransactions() {
         btnDropItemCat.addEventListener("click", async () => {
           if (isChecked) {
             try {
+              if (isMobileDevice()) {
+                await storageMobile.deleteCategory(sessionId, category.id);
+              }
           await deleteCategory(sessionId, category.id);
           renderCategories();
           renderCategoryList();
@@ -370,6 +386,9 @@ export function funcTransactions() {
       // const session = sessionStorage.getItem("session");
       if (categoryName.trim() !== "") {
         try {
+          if (isMobileDevice()) {
+            await storageMobile.insertCategory(sessionId, categoryName, categoryType);
+          }
           await insertCategory(sessionId, categoryName, categoryType);
           renderCategories();
           renderCategoryList();
@@ -428,17 +447,27 @@ export function funcTransactions() {
         return;
       }
 
+      if ( isMobileDevice() ) {
+        storageMobile.insertTransaction(sessionId, amount, date, category, type, note);
+      }
       insertTransaction(sessionId, amount, date, category, type, note);
       
       async function updateGoalIfMatch(categoryName, amount) {
         console.log("Category:", categoryName);
         try {
-            const goals = await getGoals(sessionId);
+            let goals;
+            if (isMobileDevice()) {
+                goals = await storageMobile.getGoals(sessionId);
+            }
+            goals = await getGoals(sessionId);
           console.log("Goals:", goals);
           const goal = goals.find(goal => goal.name === categoryName);
           if (goal) {
           const newCurrentAmount = goal.currentAmount + parseFloat(amount);
  
+          if (isMobileDevice()) {
+            await storageMobile.updateGoal(sessionId, goal.id, goal.name, goal.amount, newCurrentAmount, goal.date);
+          }
           await updateGoal(sessionId, goal.id, goal.name, goal.amount, newCurrentAmount, goal.date);
           console.log(`Goal updated: ${goal.name}, new current amount: ${newCurrentAmount}`);
           }
@@ -465,6 +494,9 @@ export function funcTransactions() {
       const transactionId = row.getAttribute("data-id");
       console.log("Transaction ID to remove:", Number(transactionId));
       try {
+        if (isMobileDevice()) {
+          await storageMobile.deleteTransaction(sessionId, Number(transactionId));
+        }
       await deleteTransaction(sessionId, Number(transactionId));
       row.remove();
       } catch (error) {
@@ -475,7 +507,11 @@ export function funcTransactions() {
 
   async function renderGoals() {
     try {
-      const goals = await getGoals(sessionId); // Assuming you have a function to get goals from the database
+      let goals;
+      if (isMobileDevice()) {
+        goals = await storageMobile.getGoals(sessionId);
+      }
+      goals = await getGoals(sessionId); // Assuming you have a function to get goals from the database
       const optionsCategory = document.getElementById("options-category");
       const type = document.getElementById("options-type").value;
       optionsCategory.innerHTML = "";
@@ -500,7 +536,11 @@ export function funcTransactions() {
 
   async function renderCategories() {
     try {
-      const categories = await getCategories(sessionId);
+      let categories;
+      if (isMobileDevice()) {
+        categories = await storageMobile.getCategories(sessionId);
+      }
+      categories = await getCategories(sessionId);
       const optionsCategory = document.getElementById("options-category");
       const type = document.getElementById("options-type").value;
       optionsCategory.innerHTML = "";
@@ -568,7 +608,11 @@ export function funcTransactions() {
 
   async function renderTrackingList() {
     try {
-      const budgetTracking = await getBudgetTracking(sessionId);
+      let budgetTracking;
+      if (isMobileDevice()) {
+        budgetTracking = await storageMobile.getBudgetTracking(sessionId);
+      }
+      budgetTracking = await getBudgetTracking(sessionId);
       console.log("Budget tracking:", budgetTracking);
       const trackingTableBody = document.getElementById("body-table-tracking");
       trackingTableBody.innerHTML = "";
@@ -622,6 +666,9 @@ export function funcTransactions() {
     }
 
     try {
+      if (isMobileDevice()) {
+        await storageMobile.insertBudgetTracking(sessionId, category, amount);
+      }
       await insertBudgetTracking(sessionId, category, amount);
       renderTrackingList();
       document.getElementById("input-amount-tracking").value = "";
@@ -636,6 +683,9 @@ export function funcTransactions() {
       const trackingId = row.getAttribute("data-id");
       const session = sessionStorage.getItem("session");
       try {
+      if (isMobileDevice()) {
+        await storageMobile.deleteBudgetTracking(sessionId, Number(trackingId));
+      }
       await deleteBudgetTracking(sessionId, Number(trackingId));
       row.remove();
       } catch (error) {
@@ -646,7 +696,11 @@ export function funcTransactions() {
 
   async function renderCategoriesForTracking() {
     try {
-      const categories = await getCategories(sessionId);
+      let categories;
+      if (isMobileDevice()) {
+        categories = await storageMobile.getCategories(sessionId);
+      }
+      categories = await getCategories(sessionId);
       const optionsCategoryTracking = document.getElementById("options-category-tracking");
       optionsCategoryTracking.innerHTML = "";
       categories.forEach(category => {

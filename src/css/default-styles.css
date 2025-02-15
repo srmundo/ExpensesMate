@@ -2241,6 +2241,13 @@ input[type="number"]::-webkit-inner-spin-button,
 
 @media (max-width: 768px) {
 
+  .cont-all-input{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10
+    background-color: rebeccapurple;
+  }
   .account-deleted {
     width: 90%;
     padding: 10px;

@@ -1,5 +1,6 @@
 import { useState } from '../scripts/useState.js';
 import { insertGoal, getGoals, updateGoal, deleteGoal } from '../data/storage.js';
+import * as storageMobile from '../data/storageMobile.js';
 export function goals() {
   return `
         <div class="container-goals">
@@ -31,6 +32,9 @@ export function goals() {
 }
 
 export function initializeGoals() {
+    function isMobileDevice() {
+        return /Mobi|Android/i.test(navigator.userAgent);
+    }
     const session = sessionStorage.getItem('session');
     const sessionId =JSON.parse(session).id;
     const [goals, setGoals] = useState([]);
@@ -56,6 +60,24 @@ export function initializeGoals() {
             document.getElementById('goal-date').style.border = '';
         }
         // Insert the new goal into the database
+        if (isMobileDevice()) {
+            storageMobile.insertGoal(sessionId, newGoal.name, newGoal.amount, newGoal.currentAmount, newGoal.date).then(() => {
+                // Update the state and re-render the goals
+                // setGoals([...goals(), newGoal]);
+                renderGoals();
+                // console.log(goals());
+
+                // Clear the form inputs
+                document.getElementById('goal-name').value = '';
+                document.getElementById('goal-amount').value = '';
+                document.getElementById('goal-date').value = '';
+
+                goalForm.classList.add('hidden');
+
+            }).catch(error => {
+                console.error('Error inserting goal:', error);
+            });
+        }
         insertGoal(sessionId, newGoal.name, newGoal.amount, newGoal.currentAmount, newGoal.date).then(() => {
             // Update the state and re-render the goals
             // setGoals([...goals(), newGoal]);
@@ -75,6 +97,51 @@ export function initializeGoals() {
     });
 
     function renderGoals() {
+        if (isMobileDevice()) {
+            storageMobile.getGoals(sessionId).then(fetchedGoals => {
+                goalList.innerHTML = `
+                <table class="goal-table">
+                <thead>
+                <tr>
+                <th>Goal Name</th>
+                <th>Amount</th>
+                <th>Current Amount</th>
+                <th>Target Date</th>
+                <th>Progress</th>
+                <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                ${fetchedGoals.map(goal => `
+                <tr id='${goal.id}'>
+                    <td data-label="Goal Name">${goal.name}</td>
+                    <td data-label="Amount">$${goal.amount}</td>
+                    <td data-label="Current Amount">$${goal.currentAmount}</td>
+                    <td data-label="Target Date">${goal.date}</td>
+                    <td data-label="Progress">${(goal.currentAmount / goal.amount * 100).toFixed(2)}%</td>
+                    <td data-label="Actions"><button class="btn-delete-goal" type="button">Delete</button></td>
+                </tr>
+                `).join('')}
+                </tbody>
+                </table>
+                `;
+
+                // Add event listeners for delete buttons
+                document.querySelectorAll('.btn-delete-goal').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const goalId = event.target.closest('tr').id;
+                    storageMobile.deleteGoal(sessionId, Number(goalId)).then(() => {
+                    // setGoals(goals().filter(goal => goal.id !== goalId));
+                    renderGoals();
+                    }).catch(error => {
+                    console.error('Error deleting goal:', error);
+                    });
+                });
+                });
+            }).catch(error => {
+                console.error('Error fetching goals:', error);
+            });
+        }
         getGoals(sessionId).then(fetchedGoals => {
             goalList.innerHTML = `
             <table class="goal-table">
@@ -124,6 +191,14 @@ export function initializeGoals() {
             button.addEventListener('click', (event) => {
                 const goalId = event.target.closest('tr').id;
                 // console.log(typeof goalId);
+                if (isMobileDevice()) {
+                    storageMobile.deleteGoal(sessionId, Number(goalId)).then(() => {
+                        setGoals(goals().filter(goal => goal.id !== goalId));
+                        renderGoals();
+                    }).catch(error => {
+                        console.error('Error deleting goal:', error);
+                    });
+                }
                 deleteGoal(sessionId, Number(goalId)).then(() => {
                     setGoals(sessionId, goals().filter(goal => goal.id !== goalId));
                     renderGoals();
@@ -135,6 +210,14 @@ export function initializeGoals() {
     }
 
     function loadGoals() {
+        if (isMobileDevice()) {
+            storageMobile.getGoals(sessionId).then(fetchedGoals => {
+                setGoals(fetchedGoals);
+                renderGoals();
+            }).catch(error => {
+                console.error('Error fetching goals:', error);
+            });
+        }
         getGoals(sessionId).then(fetchedGoals => {
             setGoals(sessionId, fetchedGoals);
             renderGoals();

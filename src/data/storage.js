@@ -60,6 +60,22 @@ export function openDatabase() {
             transactionsStore.createIndex("type", "type", { unique: false });
             transactionsStore.createIndex("note", "note", { unique: false });
             transactionsStore.createIndex("goalId", "goalId", { unique: false });
+
+            // Crear la tabla de configuración de monedas
+            const currencyConfigStore = db.createObjectStore("currencyConfig", {
+                keyPath: "id",
+                autoIncrement: true
+            });
+            currencyConfigStore.createIndex("userId", "userId", { unique: false });
+            currencyConfigStore.createIndex("currency", "currency", { unique: false });
+
+            // Crear la tabla de configuración de lenguaje
+            const languageConfigStore = db.createObjectStore("languageConfig", {
+                keyPath: "id",
+                autoIncrement: true
+            });
+            languageConfigStore.createIndex("userId", "userId", { unique: false });
+            languageConfigStore.createIndex("language", "language", { unique: false });
         };
 
         request.onsuccess = (event) => {
@@ -372,3 +388,122 @@ export async function deleteUser(id) {
 }
 
 
+export async function getCurrencyConfig(userId) {
+    return openDatabase().then(db => {
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction("currencyConfig", "readonly");
+            const store = transaction.objectStore("currencyConfig");
+            const index = store.index("userId");
+            const request = index.getAll(userId);
+
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = (event) => reject("Error retrieving currency configuration: " + event.target.errorCode);
+        });
+    });
+}
+
+export async function getLanguageConfig(userId) {
+    return openDatabase().then(db => {
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction("languageConfig", "readonly");
+            const store = transaction.objectStore("languageConfig");
+            const index = store.index("userId");
+            const request = index.getAll(userId);
+
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = (event) => reject("Error retrieving language configuration: " + event.target.errorCode);
+        });
+    });
+}
+
+export function insertCurrencyConfig(userId, currency) {
+    return insertData("currencyConfig", { userId, currency });
+}
+
+export function insertLanguageConfig(userId, language) {
+    return insertData("languageConfig", { userId, language });
+}
+
+export async function updateCurrencyConfig(userId, id, newCurrency) {
+    return openDatabase().then(db => {
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction("currencyConfig", "readwrite");
+            const store = transaction.objectStore("currencyConfig");
+
+            const currencyConfig = { id, userId, currency: newCurrency };
+            const request = store.put(currencyConfig);
+
+            request.onsuccess = () => resolve("Currency configuration updated successfully");
+            request.onerror = (event) => reject("Error updating currency configuration: " + event.target.errorCode);
+        });
+    });
+}
+
+export async function updateLanguageConfig(userId, id, newLanguage) {
+    return openDatabase().then(db => {
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction("languageConfig", "readwrite");
+            const store = transaction.objectStore("languageConfig");
+
+            const languageConfig = { id, userId, language: newLanguage };
+            const request = store.put(languageConfig);
+
+            request.onsuccess = () => resolve("Language configuration updated successfully");
+            request.onerror = (event) => reject("Error updating language configuration: " + event.target.errorCode);
+        });
+    });
+}
+
+export async function deleteCurrencyConfig(userId, id) {
+    return openDatabase().then(db => {
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction("currencyConfig", "readwrite");
+            const store = transaction.objectStore("currencyConfig");
+            const index = store.index("userId");
+            const request = index.openCursor(userId);
+
+            request.onsuccess = (event) => {
+                const cursor = event.target.result;
+                if (cursor) {
+                    if (cursor.value.userId === userId && cursor.value.id === id) {
+                        cursor.delete();
+                        resolve("Currency configuration deleted successfully");
+                    } else {
+                        cursor.continue();
+                    }
+                } else {
+                    reject("Currency configuration not found");
+                }
+            };
+
+            request.onerror = (event) => reject("Error deleting currency configuration: " + event.target.errorCode);
+        });
+    });
+}
+
+export async function deleteLanguageConfig(userId, id) {
+    return openDatabase().then(db => {
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction("languageConfig", "readwrite");
+            const store = transaction.objectStore("languageConfig");
+            const index = store.index("userId");
+            const request = index.openCursor(userId);
+
+            request.onsuccess = (event) => {
+                const cursor = event.target.result;
+                if (cursor) {
+                    if (cursor.value.userId === userId && cursor.value.id === id) {
+                        cursor.delete();
+                        resolve("Language configuration deleted successfully");
+                    } else {
+                        cursor.continue();
+                    }
+                } else {
+                    reject("Language configuration not found");
+                }
+            };
+
+            request.onerror = (event) => reject("Error deleting language configuration: " + event.target.errorCode);
+        });
+    });
+}

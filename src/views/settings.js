@@ -1,6 +1,8 @@
 /** @format */
 
-import { getUsers, updateUser, deleteUser } from '../data/storage.js';
+import { getUsers, updateUser, deleteUser, getCurrencyConfig, getLanguageConfig, updateCurrencyConfig, updateLanguageConfig, insertCurrencyConfig, insertLanguageConfig } from '../data/storage.js';
+
+import * as storageMobile from '../data/storageMobile.js';
 export function settings() {
 	return `
                     <div class="container-settings">
@@ -50,6 +52,27 @@ export const initializeSettings = () => {
 			showSection(sectionId);
 		});
 	});
+
+        document.getElementById('currency-settings-form').addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const newCurrency = document.getElementById('currency-type').value;
+
+                try {
+                        const session = sessionStorage.getItem('session');
+                        const sessionId = JSON.parse(session).id;
+
+                        if (isMobileDevice()) {
+                                await storageMobile.updateCurrencyConfig(sessionId, newCurrency);
+                        } else {
+                                await updateCurrencyConfig(sessionId, newCurrency);
+                        }
+
+                        alert('Currency settings updated successfully.');
+                } catch (error) {
+                        console.error(error);
+                        alert('Failed to update currency settings.');
+                }
+        });
 };
 
 function renderChangePasswordSection() {
@@ -199,6 +222,10 @@ function renderNotificationPreferencesSection() {
         `;
 }
 
+function isMobileDevice() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
 function showSection(sectionId) {
 	const sections = {
 		'change-password': renderChangePasswordSection(),
@@ -243,14 +270,28 @@ function showSection(sectionId) {
 				return;
 			}
 
-			const users = await getUsers();
+			let users;
+                        if (isMobileDevice()) {
+                                users = await storageMobile.getUsers();
+                        }
+                        users = await getUsers();
+
 			const user = users.find((user) => user.id === sessionId);
 
 			if (!user || user.password !== currentPassword) {
 				alert('Current password is incorrect.');
 				return;
 			}
-
+                        if (isMobileDevice()) {
+                                await storageMobile.updateUser(
+                                        sessionId,
+                                        user.name,
+                                        user.nick,
+                                        user.email,
+                                        newPassword,
+                                        user.photo,
+                                );
+                        }
 			await updateUser(
 				sessionId,
 				user.name,
@@ -273,7 +314,11 @@ function showSection(sectionId) {
                         const currentEmail = document.getElementById('current-email').value;
                         const newEmail = document.getElementById('new-email').value;
         
-                        const users = await getUsers();
+                        let users;
+                        if (isMobileDevice()) {
+                                users = await storageMobile.getUsers();
+                        }
+                        users = await getUsers();
                         const user = users.find((user) => user.id === sessionId);
         
                         console.log(user.email);
@@ -281,7 +326,16 @@ function showSection(sectionId) {
                                 alert('Current email is incorrect.');
                                 return;
                         }
-        
+                        if (isMobileDevice()) {
+                                await storageMobile.updateUser(
+                                        sessionId,
+                                        user.name,
+                                        user.nick,
+                                        newEmail,
+                                        user.password,
+                                        user.photo,
+                                );
+                        }
                         await updateUser(
                                 sessionId,
                                 user.name,
@@ -309,7 +363,9 @@ function showSection(sectionId) {
                                         alert('You must type "DELETE" to confirm.');
                                         return;
                                 }
-
+                                if (isMobileDevice()) {
+                                        await storageMobile.deleteUser(sessionId);
+                                }
                                 await deleteUser(sessionId);
                                 sessionStorage.removeItem('session');
                                 sessionStorage.setItem('isLoggedIn', 'false');

@@ -1,5 +1,6 @@
 import { loadView } from "../app.js";
 import { getGoals, updateUser, getUsers } from "../data/storage.js";
+import * as storageMobile from "../data/storageMobile.js";
 export function profile() {
     return `
                 <div class="container-profile">
@@ -76,7 +77,9 @@ function previewImage(event) {
     };
     reader.readAsDataURL(event.target.files[0]);
 }
-
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
 function getSessionData() {
     const sessionData = sessionStorage.getItem('session');
     return sessionData ? JSON.parse(sessionData) : null;
@@ -88,7 +91,11 @@ async function getUserDataBySessionId() {
         return null;
     }
 
-    const users = await getUsers();
+    let users;
+    if (isMobileDevice()) {
+        users = await storageMobile.getUsers();
+    }
+    users = await getUsers();
     return users.find(user => user.id === sessionData.id) || null;
 }
 
@@ -174,7 +181,11 @@ async function renderUserGoals() {
         return;
     }
 
-    const goals = await getGoals(userData.id);
+    let goals;
+    if (isMobileDevice()) {
+        goals = await storageMobile.getGoals(userData.id);
+    }
+    goals = await getGoals(userData.id);
     const goalsTableBody = document.querySelector('.profile-goals tbody');
     goalsTableBody.innerHTML = '';
 
@@ -234,8 +245,8 @@ async function renderUserGoals() {
 export async function initializeProfile() {
     document.getElementById('profile-image').addEventListener('change', previewImage);
 
-    console.log(getSessionData());
-    console.log(await getUserDataBySessionId());
+    // console.log(getSessionData());
+    // console.log(await getUserDataBySessionId());
     await renderUserProfile();
 
     await renderUserGoals();

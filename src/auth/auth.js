@@ -8,6 +8,7 @@ function isMobileDevice() {
 export function registerSessionData(nickname, name, password) {
     if (typeof(Storage) !== "undefined") {
         const session = {
+            id: null,
             nickname: nickname,
             name: name,
             email: `${nickname}@example.com`,
@@ -20,7 +21,17 @@ export function registerSessionData(nickname, name, password) {
                 console.log('🔵 Database opened successfully');
                 storageMobile.insertUser(session.name, session.nickname, session.email, session.password, session.photo).then(() => {
                     console.log('User registered successfully');
-                    sessionStorage.setItem('session', JSON.stringify(session));
+                    storageMobile.getUsers().then(users => {
+                        const user = users.find(user => user.nick === session.nickname && user.password === session.password);
+                        if (user) {
+                            session.id = user.id;
+                            sessionStorage.setItem('session', JSON.stringify(session));
+                        } else {
+                            console.error('User not found after registration');
+                        }
+                    }).catch(error => {
+                        console.error('Error retrieving user after registration', error);
+                    });
                     sessionStorage.setItem('isLoggedIn', 'true');
                     try {
                         window.location.reload();
@@ -38,7 +49,17 @@ export function registerSessionData(nickname, name, password) {
 
         insertUser(session.name, session.nickname, session.email, session.password, session.photo).then(() => {
             console.log('User registered successfully');
-            sessionStorage.setItem('session', JSON.stringify(session));
+            getUsers().then(users => {
+                const user = users.find(user => user.nick === session.nickname && user.password === session.password);
+                if (user) {
+                    session.id = user.id;
+                    sessionStorage.setItem('session', JSON.stringify(session));
+                } else {
+                    console.error('User not found after registration');
+                }
+            }).catch(error => {
+                console.error('Error retrieving user after registration', error);
+            });
             sessionStorage.setItem('isLoggedIn', 'true');
             try {
                 window.location.reload();

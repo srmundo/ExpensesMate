@@ -38,6 +38,9 @@ export function reports() {
 }
 
 export function funcReport() {
+  function isMobileDevice() {
+    return /Mobi|Android/i.test(navigator.userAgent);
+  }
   document.querySelector("#btn-export-pdf").disabled = true;
   document.querySelector("#btn-export-csv").disabled = true;
   document.querySelector("#btn-export-xlsx").disabled = true;
@@ -241,9 +244,21 @@ export function funcReport() {
   const sessionId = JSON.parse(session).id;
 
   async function fetchDataAndFillTables(reportType) {
-    const categories = await getCategories(sessionId);
-    const transactions = await getTransactions(sessionId);
-    const goals = await getGoals(sessionId);
+    let categories;
+    if (isMobileDevice()) {
+      categories = await getCategories(sessionId);
+    }
+    categories = await getCategories(sessionId);
+    let transactions;
+    if (isMobileDevice()) {
+      transactions = await getTransactions(sessionId);
+    }
+    transactions = await getTransactions(sessionId);
+    let goals;
+    if (isMobileDevice()) {
+      goals = await getGoals(sessionId);
+    }
+    goals = await getGoals(sessionId);
 
     let tableContent = '';
 

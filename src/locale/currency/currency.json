@@ -1,0 +1,90 @@
+{
+    "USD": {
+        "symbol": "$",
+        "name": "US Dollar"
+    },
+    "EUR": {
+        "symbol": "€",
+        "name": "Euro"
+    },
+    "GBP": {
+        "symbol": "£",
+        "name": "British Pound"
+    },
+    "JPY": {
+        "symbol": "¥",
+        "name": "Japanese Yen"
+    },
+    "AUD": {
+        "symbol": "A$",
+        "name": "Australian Dollar"
+    },
+    "ARS": {
+        "symbol": "$",
+        "name": "Argentine Peso"
+    },
+    "BOB": {
+        "symbol": "Bs.",
+        "name": "Bolivian Boliviano"
+    },
+    "BRL": {
+        "symbol": "R$",
+        "name": "Brazilian Real"
+    },
+    "CLP": {
+        "symbol": "$",
+        "name": "Chilean Peso"
+    },
+    "COP": {
+        "symbol": "$",
+        "name": "Colombian Peso"
+    },
+    "CRC": {
+        "symbol": "₡",
+        "name": "Costa Rican Colón"
+    },
+    "CUP": {
+        "symbol": "$",
+        "name": "Cuban Peso"
+    },
+    "DOP": {
+        "symbol": "RD$",
+        "name": "Dominican Peso"
+    },
+    "GTQ": {
+        "symbol": "Q",
+        "name": "Guatemalan Quetzal"
+    },
+    "HNL": {
+        "symbol": "L",
+        "name": "Honduran Lempira"
+    },
+    "MXN": {
+        "symbol": "$",
+        "name": "Mexican Peso"
+    },
+    "NIO": {
+        "symbol": "C$",
+        "name": "Nicaraguan Córdoba"
+    },
+    "PAB": {
+        "symbol": "B/.",
+        "name": "Panamanian Balboa"
+    },
+    "PYG": {
+        "symbol": "₲",
+        "name": "Paraguayan Guarani"
+    },
+    "PEN": {
+        "symbol": "S/",
+        "name": "Peruvian Sol"
+    },
+    "UYU": {
+        "symbol": "$U",
+        "name": "Uruguayan Peso"
+    },
+    "VEF": {
+        "symbol": "Bs.",
+        "name": "Venezuelan Bolívar"
+    }
+}
