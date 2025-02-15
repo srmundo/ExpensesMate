@@ -1,4 +1,10 @@
 import { getUsers, insertUser, updateUser, deleteUser } from "../data/storage.js";
+import * as storageMobile from "../data/storageMobile.js";
+
+function isMobileDevice() {
+    return /Mobi|Android/i.test(navigator.userAgent);
+}
+
 export function registerSessionData(nickname, name, password) {
     if (typeof(Storage) !== "undefined") {
         const session = {
@@ -8,7 +14,10 @@ export function registerSessionData(nickname, name, password) {
             password: password,
             photo: '../src/assets/icon/avatar-boy-svgrepo-com.svg'
         };
-        insertUser(session.name, session.nickname, session.email, session.password, session.photo).then(() => {
+
+        const insertUserFunction = isMobileDevice() ? storageMobile.insertUser : insertUser;
+
+        insertUserFunction(session.name, session.nickname, session.email, session.password, session.photo).then(() => {
             console.log('User registered successfully');
             sessionStorage.setItem('session', JSON.stringify(session));
             sessionStorage.setItem('isLoggedIn', 'true');
@@ -27,7 +36,9 @@ export function registerSessionData(nickname, name, password) {
 
 export function loginSession(nickname, password) {
     if (typeof(Storage) !== "undefined") {
-        getUsers().then(users => {
+        const getUsersFunction = isMobileDevice() ? storageMobile.getUsers : getUsers;
+
+        getUsersFunction().then(users => {
             const user = users.find(user => user.nick === nickname && user.password === password);
             console.log(user);
             if (user) {
