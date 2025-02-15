@@ -3,13 +3,13 @@
 // import { Router } from '../auth/router.js';
 import { LoginPage } from '../public/loginPage.js';
 import { openDatabase, insertCategory } from '../data/storage.js';
+import * as storageMobile from '../data/storageMobile.js';
 
 // import { logoutUser } from '../auth/supabase.js';
 
 if (!sessionStorage.getItem('isLoggedIn')) {
 	sessionStorage.setItem('isLoggedIn', 'false');
 }
-
 
 const categories = {
 		Income: [
@@ -62,7 +62,14 @@ function checkLoginStatus() {
 	const session = sessionStorage.getItem("session");
 	if (isLoggedIn && session) {
 		loadAppHTML();
-		openDatabase();
+
+		if (/Mobi|Android/i.test(navigator.userAgent)) {
+			storageMobile.openDatabase().then(() => {
+				console.log('🔵 Database opened successfully');
+			});
+		} else {
+			openDatabase();
+		}
 		const sessionId = JSON.parse(session).id;
 
 		insertCategories(sessionId);
