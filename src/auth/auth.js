@@ -15,9 +15,28 @@ export function registerSessionData(nickname, name, password) {
             photo: '../src/assets/icon/avatar-boy-svgrepo-com.svg'
         };
 
-        const insertUserFunction = isMobileDevice() ? storageMobile.insertUser : insertUser;
+        if (isMobileDevice()) {
+            storageMobile.openDatabase().then(() => {
+                console.log('🔵 Database opened successfully');
+                storageMobile.insertUser(session.name, session.nickname, session.email, session.password, session.photo).then(() => {
+                    console.log('User registered successfully');
+                    sessionStorage.setItem('session', JSON.stringify(session));
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                    try {
+                        window.location.reload();
+                    } catch (error) {
+                        console.error('Error reloading the page', error);
+                    }
+                }).catch(error => {
+                    console.error('Error registering user', error);
+                });
 
-        insertUserFunction(session.name, session.nickname, session.email, session.password, session.photo).then(() => {
+        });
+        }
+
+        // const insertUserFunction = isMobileDevice() ? storageMobile.insertUser : insertUser;
+
+        insertUser(session.name, session.nickname, session.email, session.password, session.photo).then(() => {
             console.log('User registered successfully');
             sessionStorage.setItem('session', JSON.stringify(session));
             sessionStorage.setItem('isLoggedIn', 'true');
