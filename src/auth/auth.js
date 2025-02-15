@@ -89,7 +89,7 @@ export function loginSession(nickname, password) {
                 });
             });
         }
-        getUsers.then(users => {
+        getUsers().then(users => {
             const user = users.find(user => user.nick === nickname && user.password === password);
             console.log(user);
             if (user) {
