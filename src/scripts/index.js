@@ -49,6 +49,9 @@ const categories = {
 		for (const type in categories) {
 			for (const name of categories[type]) {
 				try {
+					if (/Mobi|Android/i.test(navigator.userAgent)) {
+						await storageMobile.insertCategory(userId, name, type);
+					} else
 					await insertCategory(userId, name, type);
 				} catch (error) {
 					console.error(`Error inserting category ${name} for user ${userId}:`, error);
@@ -66,6 +69,7 @@ function checkLoginStatus() {
 		if (/Mobi|Android/i.test(navigator.userAgent)) {
 			storageMobile.openDatabase().then(() => {
 				console.log('🔵 Database opened successfully');
+				insertCategories(sessionId);
 			});
 		} else {
 			openDatabase();
