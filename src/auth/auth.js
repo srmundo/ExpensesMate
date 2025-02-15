@@ -1,5 +1,10 @@
 import { getUsers, insertUser, updateUser, deleteUser } from "../data/storage.js";
 export function registerSessionData(nickname, name, password) {
+    if (navigator.storage && navigator.storage.estimate) {
+        navigator.storage.estimate().then(estimate => {
+            console.log(`Using ${estimate.usage} out of ${estimate.quota} bytes.`);
+        });
+    }
     if (typeof(Storage) !== "undefined") {
         const session = {
             nickname: nickname,
