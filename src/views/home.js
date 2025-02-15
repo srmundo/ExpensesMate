@@ -382,8 +382,10 @@ export function updateScore(score) {
 }
 
 export async function initializeHome() {
+  const session = sessionStorage.getItem('session');
+  const sessionId = JSON.parse(session).id;
   // Obtener las transacciones y calcular el puntaje
-  const transactions = await getTransactions();
+  const transactions = await getTransactions(sessionId);
   let totalIncome = 0;
   let totalExpenses = 0;
 
@@ -505,13 +507,13 @@ export async function initializeHome() {
   }
 
   async function updateBudgetTrackingData() {
-    const budgetTracking = await getBudgetTracking();
+    const budgetTracking = await getBudgetTracking(sessionId);
     const budgetData = budgetTracking.reduce((acc, item) => {
     acc[item.category] = { budgeted: item.budgetedAmount, actual: 0 };
     return acc;
     }, {});
 
-    const transactions = await getTransactions();
+    const transactions = await getTransactions(sessionId);
     transactions.forEach(transaction => {
     if (transaction.type === 'Expense' && budgetData[transaction.categoryId]) {
       budgetData[transaction.categoryId].actual += Number(transaction.amount);
@@ -545,7 +547,7 @@ export async function initializeHome() {
   updateBudgetTrackingData(transactions);
 
   async function updateSavingsGoalsData() {
-    const goals = await getGoals();
+    const goals = await getGoals(sessionId);
     const goalRows = goals.map(goal => {
       const remainingAmount = (Number(goal.amount) || 0) - (Number(goal.currentAmount) || 0);
       return `

@@ -9,60 +9,62 @@ if (!sessionStorage.getItem('isLoggedIn')) {
 	sessionStorage.setItem('isLoggedIn', 'false');
 }
 
-function checkLoginStatus() {
-	const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
-	if (isLoggedIn) {
-		loadAppHTML();
-		openDatabase();
-		const categories = {
-			Income: [
-				"Salary",
-				"Additional income",
-				"Other income"
-			],
-			Expense: [
-				"Rent or Mortgage",
-				"Utilities",
-				"Internet and phone",
-				"Insurance",
-				"Taxes",
-				"Transportation",
-				"Education",
-				"Subscriptions",
-				"Food",
-				"Health and wellness",
-				"Clothing and accessories",
-				"Entertainment",
-				"Gifts and celebrations",
-				"Travel and vacations",
-				"Pets",
-				"Personal expenses",
-				"Personal loan payments",
-				"Credit card debt",
-				"Student loans",
-				"Other debts",
-				"Donations and charity",
-				"Unexpected expenses",
-				"Emergency savings",
-				"Savings for specific goals",
-				"Investments"
-			]
-		};
-
-		async function insertCategories() {
-			for (const type in categories) {
-				for (const name of categories[type]) {
-					try {
-						await insertCategory(name, type);
-						// console.log(``);
-					} catch (error) {
-						// console.log('');
-					}
+const categories = {
+		Income: [
+		  "Salary",
+		  "Additional income",
+		  "Other income"
+		],
+		Expense: [
+		  "Rent or Mortgage",
+		  "Utilities",
+		  "Internet and phone",
+		  "Insurance",
+		  "Taxes",
+		  "Transportation",
+		  "Education",
+		  "Subscriptions",
+		  "Food",
+		  "Health and wellness",
+		  "Clothing and accessories",
+		  "Entertainment",
+		  "Gifts and celebrations",
+		  "Travel and vacations",
+		  "Pets",
+		  "Personal expenses",
+		  "Personal loan payments",
+		  "Credit card debt",
+		  "Student loans",
+		  "Other debts",
+		  "Donations and charity",
+		  "Unexpected expenses",
+		  "Emergency savings",
+		  "Savings for specific goals",
+		  "Investments"
+		]
+	  };
+	  async function insertCategories(userId) {
+		for (const type in categories) {
+			for (const name of categories[type]) {
+				try {
+					await insertCategory(userId, name, type);
+				} catch (error) {
+					console.error(`Error inserting category ${name} for user ${userId}:`, error);
 				}
 			}
 		}
+	}
 
-		insertCategories();
+function checkLoginStatus() {
+	const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+	const session = sessionStorage.getItem("session");
+	if (isLoggedIn) {
+		loadAppHTML();
+		openDatabase();
+		const sessionId = JSON.parse(session).id;
+
+		insertCategories(sessionId);
+		
 	} else {
 		LoginPage();
 	}
@@ -87,7 +89,7 @@ let init = checkLoginStatus;
 
 export function loadAppHTML() {
 	console.log('🔵 Cargando app.html...');
-
+		
 	fetch('./src/app.html')
 		.then((response) => response.text())
 		.then((html) => {
@@ -198,7 +200,6 @@ export function loadAppHTML() {
 				const nickProfile = document.querySelector('.profile-nick');
     		    nickProfile.innerHTML = userSession.nickname;
 			}
-
 
 		})
 		.catch((error) => console.error('Error loading app.html:', error));

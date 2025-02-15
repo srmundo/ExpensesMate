@@ -33,8 +33,9 @@ export function openDatabase() {
                 autoIncrement: true
             });
             categoriesStore.createIndex("userId", "userId", { unique: false });
-            categoriesStore.createIndex("name", "name", { unique: true });
+            categoriesStore.createIndex("name", "name", { unique: false });
             categoriesStore.createIndex("type", "type", { unique: false });
+            categoriesStore.createIndex('userId_name', ['userId', 'name'], { unique: true });
             
             // Crear la tabla de metas
             const goalsStore = db.createObjectStore("goals", {
@@ -71,11 +72,18 @@ export function openDatabase() {
     });
 }
 
-// openDatabase().then(db => {
-//     console.log("Database opened successfully", db);
-// }).catch(error => {
-//     console.error(error);
-// });
+async function insertData(storeName, data) {
+    return openDatabase().then(db => {
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction(storeName, "readwrite");
+            const store = transaction.objectStore(storeName);
+            const request = store.add(data);
+
+            request.onsuccess = () => resolve("Data inserted successfully");
+            request.onerror = (event) => reject("Error inserting data: " + event.target.errorCode);
+        });
+    });
+}
 
 export async function getBudgetTracking(userId) {
     return openDatabase().then(db => {
@@ -115,10 +123,23 @@ export async function deleteBudgetTracking(userId, id) {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("budgetTracking", "readwrite");
             const store = transaction.objectStore("budgetTracking");
+            const index = store.index("userId");
+            const request = index.openCursor(userId);
 
-            const request = store.delete(id);
+            request.onsuccess = (event) => {
+                const cursor = event.target.result;
+                if (cursor) {
+                    if (cursor.value.userId === userId && cursor.value.id === id) {
+                        cursor.delete();
+                        resolve("Budget tracking deleted successfully");
+                    } else {
+                        cursor.continue();
+                    }
+                } else {
+                    reject("Budget tracking not found");
+                }
+            };
 
-            request.onsuccess = () => resolve("Budget tracking deleted successfully");
             request.onerror = (event) => reject("Error deleting budget tracking: " + event.target.errorCode);
         });
     });
@@ -228,10 +249,23 @@ export async function deleteCategory(userId, id) {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("categories", "readwrite");
             const store = transaction.objectStore("categories");
+            const index = store.index("userId");
+            const request = index.openCursor(userId);
 
-            const request = store.delete(id);
+            request.onsuccess = (event) => {
+                const cursor = event.target.result;
+                if (cursor) {
+                    if (cursor.value.userId === userId && cursor.value.id === id) {
+                        cursor.delete();
+                        resolve("Category deleted successfully");
+                    } else {
+                        cursor.continue();
+                    }
+                } else {
+                    reject("Category not found");
+                }
+            };
 
-            request.onsuccess = () => resolve("Category deleted successfully");
             request.onerror = (event) => reject("Error deleting category: " + event.target.errorCode);
         });
     });
@@ -242,10 +276,23 @@ export async function deleteGoal(userId, id) {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("goals", "readwrite");
             const store = transaction.objectStore("goals");
+            const index = store.index("userId");
+            const request = index.openCursor(userId);
 
-            const request = store.delete(id);
+            request.onsuccess = (event) => {
+                const cursor = event.target.result;
+                if (cursor) {
+                    if (cursor.value.userId === userId && cursor.value.id === id) {
+                        cursor.delete();
+                        resolve("Goal deleted successfully");
+                    } else {
+                        cursor.continue();
+                    }
+                } else {
+                    reject("Goal not found");
+                }
+            };
 
-            request.onsuccess = () => resolve("Goal deleted successfully");
             request.onerror = (event) => reject("Error deleting goal: " + event.target.errorCode);
         });
     });
@@ -256,10 +303,23 @@ export async function deleteTransaction(userId, id) {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("transactions", "readwrite");
             const store = transaction.objectStore("transactions");
+            const index = store.index("userId");
+            const request = index.openCursor(userId);
 
-            const request = store.delete(id);
+            request.onsuccess = (event) => {
+                const cursor = event.target.result;
+                if (cursor) {
+                    if (cursor.value.userId === userId && cursor.value.id === id) {
+                        cursor.delete();
+                        resolve("Transaction deleted successfully");
+                    } else {
+                        cursor.continue();
+                    }
+                } else {
+                    reject("Transaction not found");
+                }
+            };
 
-            request.onsuccess = () => resolve("Transaction deleted successfully");
             request.onerror = (event) => reject("Error deleting transaction: " + event.target.errorCode);
         });
     });

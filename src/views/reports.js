@@ -237,10 +237,13 @@ export function funcReport() {
 //     exportToXLSX(nameDoc);
 //   });
 
+  const session = sessionStorage.getItem("session");
+  const sessionId = JSON.parse(session).id;
+
   async function fetchDataAndFillTables(reportType) {
-    const categories = await getCategories();
-    const transactions = await getTransactions();
-    const goals = await getGoals();
+    const categories = await getCategories(sessionId);
+    const transactions = await getTransactions(sessionId);
+    const goals = await getGoals(sessionId);
 
     let tableContent = '';
 
@@ -373,6 +376,14 @@ export function funcReport() {
       } else if (transaction.type === 'Expense') {
         expenseTotal += Number(transaction.amount);
         monthlyTotals[month].expense += Number(transaction.amount);
+        expenseRows += `
+          <tr>
+            <td class="report-cell" data-label="Category">${transaction.categoryId}</td>
+            <td class="report-cell" data-label="Description">${transaction.note}</td>
+            <td class="report-cell" data-label="Month">${month}</td>
+            <td class="report-cell" data-label="Amount">$${Number(transaction.amount).toFixed(2)}</td>
+          </tr>
+        `;
       }
     });
 
@@ -400,16 +411,16 @@ export function funcReport() {
         <tr>
           <th class="report-header" data-label="Quarter">Quarter</th>
           <th class="report-header" data-label="Month">Month</th>
-          <th class="report-header" data-label="Total Income">Total Income</th>
           <th class="report-header" data-label="Total Expenses">Total Expenses</th>
+          <th class="report-header" data-label="Total Income">Total Income</th>
           <th class="report-header" data-label="Net Balance">Net Balance</th>
         </tr>
         ${monthlyRows}
         <tr>
           <td class="report-cell" data-label="Quarter"><b>Total</b></td>
           <td class="report-cell" data-label="Month"><b>Quarter 1</b></td>
-          <td class="report-cell" data-label="Total Income"><b>$${incomeTotal.toFixed(2)}</b></td>
           <td class="report-cell" data-label="Total Expenses"><b>$${expenseTotal.toFixed(2)}</b></td>
+          <td class="report-cell" data-label="Total Income"><b>$${incomeTotal.toFixed(2)}</b></td>
           <td class="report-cell" data-label="Net Balance"><b>$${netBalance.toFixed(2)}</b></td>
         </tr>
       </table>
@@ -424,10 +435,9 @@ export function funcReport() {
       <table class="report-table" border="1">
         <tr>
           <th class="report-header" data-label="Expense Category">Expense Category</th>
-          <th class="report-header" data-label="January">January</th>
-          <th class="report-header" data-label="February">February</th>
-          <th class="report-header" data-label="March">March</th>
-          <th class="report-header" data-label="Total Quarterly">Total Quarterly</th>
+          <th class="report-cell" data-label="Description">Description</th>
+          <th class="report-header" data-label="Month">Month</th>
+          <th class="report-header" data-label="Total Quarterly">Total</th>
         </tr>
         ${expenseRows}
       </table>

@@ -245,7 +245,12 @@ export function transactions() {
   `;
 }
 
+
+
 export function funcTransactions() {
+  const session = sessionStorage.getItem("session");
+  const sessionId = JSON.parse(session).id;
+  
   const containerNewTransactions = document.querySelector(".cont-nav-trans");
   const containerCategoryTransactions = document.querySelector(
     ".cont-categories-list"
@@ -255,25 +260,25 @@ export function funcTransactions() {
 
   async function renderTransactions() {
     try {
-      const transactions = await getTransactions();
+      const transactions = await getTransactions(sessionId);
       transactionsTableBody.innerHTML = "";
       transactions.forEach(transaction => {
-        const row = document.createElement("tr");
-        row.className = "row-table-transaction";
-        row.setAttribute("data-id", transaction.id);
-        row.innerHTML = `
-          <td class="col-table-transaction" data-label="Amount">$${transaction.amount}</td>
-          <td class="col-table-transaction" data-label="Date">${transaction.date}</td>
-          <td class="col-table-transaction" data-label="Category">${transaction.categoryId}</td>
-          <td class="col-table-transaction" data-label="Type">${transaction.type}</td>
-          <td class="col-table-transaction" data-label="Description">${transaction.note}</td>
-          <td class="col-table-transaction col-btn" data-label="Action">
-            <div class="col-btn">
-              <button id="btn-remove-transaction">Remove</button>
-            </div>
-          </td>
-        `;
-        transactionsTableBody.appendChild(row);
+      const row = document.createElement("tr");
+      row.className = "row-table-transaction";
+      row.setAttribute("data-id", transaction.id);
+      row.innerHTML = `
+        <td class="col-table-transaction" data-label="Amount">$${transaction.amount}</td>
+        <td class="col-table-transaction" data-label="Date">${transaction.date}</td>
+        <td class="col-table-transaction" data-label="Category">${transaction.categoryId}</td>
+        <td class="col-table-transaction" data-label="Type">${transaction.type}</td>
+        <td class="col-table-transaction" data-label="Description">${transaction.note}</td>
+        <td class="col-table-transaction col-btn" data-label="Action">
+        <div class="col-btn">
+          <button id="btn-remove-transaction">Remove</button>
+        </div>
+        </td>
+      `;
+      transactionsTableBody.appendChild(row);
       });
     } catch (error) {
       console.error("Error fetching transactions:", error);
@@ -323,56 +328,33 @@ export function funcTransactions() {
 
     async function renderCategoryList() {
       try {
-        const categories = await getCategories();
+        // const session = sessionStorage.getItem("session");
+        const categories = await getCategories(sessionId);
         const categoryList = document.querySelector(".cont-list-category ul");
         categoryList.innerHTML = "";
         categories.forEach(category => {
           const listItem = document.createElement("li");
           listItem.innerHTML = `
-            <input type="checkbox" name="category-${category.id}" id="category-${category.id}" />
-            <label for="category-${category.id}">${category.name}</label>
+        <input type="checkbox" name="category-${category.id}" id="category-${category.id}" />
+        <label for="category-${category.id}">${category.name}</label>
           `;
           categoryList.appendChild(listItem);
-            listItem.querySelector(`#category-${category.id}`).addEventListener("change", (event) => {
-            const isChecked = event.target.checked;
-            // const btnEditItemCat = document.getElementById("btn-edit-item-cat");
-            const btnDropItemCat = document.getElementById("btn-drop-item-cat");
+          listItem.querySelector(`#category-${category.id}`).addEventListener("change", (event) => {
+        const isChecked = event.target.checked;
+        const btnDropItemCat = document.getElementById("btn-drop-item-cat");
 
-            // btnEditItemCat.addEventListener("click", () => {
-            //   if (isChecked) {
-            //   document.getElementById("input-edit-cat").value = category.name;
-            //   console.log("Category to edit:", category);
-            //   const btnEditCategory = document.getElementById("btn-edit-category");
-            //   btnEditCategory.addEventListener("click", async () => {
-            //     const newCategoryName = document.getElementById("input-edit-cat").value;
-            //     if (newCategoryName.trim() !== "") {
-            //     try {
-            //       await updateCategory(category.id, newCategoryName, category.type);
-            //       document.getElementById("input-edit-cat").value = "";
-            //       containerBoxEditCategory.style.display = "none";
-            //       renderCategories();
-            //       renderCategoryList();
-            //     } catch (error) {
-            //       console.error("Error updating category:", error);
-            //     }
-            //     }
-            //   });
-            //   }
-            // });
-
-            btnDropItemCat.addEventListener("click", async () => {
-              if (isChecked) {
-              try {
-                await deleteCategory(category.id);
-                renderCategories();
-                renderCategoryList();
-              } catch (error) {
-                console.error("Error deleting category:", error);
-              }
-              }
-            });
-            });
-
+        btnDropItemCat.addEventListener("click", async () => {
+          if (isChecked) {
+            try {
+          await deleteCategory(sessionId, category.id);
+          renderCategories();
+          renderCategoryList();
+            } catch (error) {
+          console.error("Error deleting category:", error);
+            }
+          }
+        });
+          });
         });
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -385,10 +367,10 @@ export function funcTransactions() {
     btnAddCategory.addEventListener("click", async () => {
       const categoryName = document.getElementById("input-add-cat").value;
       const categoryType = document.getElementById("options-type-c").value;
-      console.log('categoryType: ', categoryType);
+      // const session = sessionStorage.getItem("session");
       if (categoryName.trim() !== "") {
         try {
-          await insertCategory(categoryName, categoryType);
+          await insertCategory(sessionId, categoryName, categoryType);
           renderCategories();
           renderCategoryList();
           document.getElementById("input-add-cat").value = "";
@@ -404,6 +386,7 @@ export function funcTransactions() {
       const category = document.getElementById("options-category").value;
       const type = document.getElementById("options-type").value;
       const note = document.getElementById("input-note").value;
+      const session = sessionStorage.getItem("session");
 
       const amountInput = document.getElementById("input-amount");
       const dateInput = document.getElementById("input-date");
@@ -445,19 +428,18 @@ export function funcTransactions() {
         return;
       }
 
-
-      insertTransaction(amount, date, category, type, note);
+      insertTransaction(sessionId, amount, date, category, type, note);
       
       async function updateGoalIfMatch(categoryName, amount) {
         console.log("Category:", categoryName);
         try {
-          const goals = await getGoals();
+            const goals = await getGoals(sessionId);
           console.log("Goals:", goals);
           const goal = goals.find(goal => goal.name === categoryName);
           if (goal) {
           const newCurrentAmount = goal.currentAmount + parseFloat(amount);
  
-          await updateGoal(goal.id, goal.name, goal.amount, newCurrentAmount, goal.date);
+          await updateGoal(sessionId, goal.id, goal.name, goal.amount, newCurrentAmount, goal.date);
           console.log(`Goal updated: ${goal.name}, new current amount: ${newCurrentAmount}`);
           }
         } catch (error) {
@@ -483,17 +465,17 @@ export function funcTransactions() {
       const transactionId = row.getAttribute("data-id");
       console.log("Transaction ID to remove:", Number(transactionId));
       try {
-        await deleteTransaction(Number(transactionId));
-        row.remove();
+      await deleteTransaction(sessionId, Number(transactionId));
+      row.remove();
       } catch (error) {
-        console.error("Error deleting transaction:", error);
+      console.error("Error deleting transaction:", error);
       }
     }
   });
 
   async function renderGoals() {
     try {
-      const goals = await getGoals(); // Assuming you have a function to get goals from the database
+      const goals = await getGoals(sessionId); // Assuming you have a function to get goals from the database
       const optionsCategory = document.getElementById("options-category");
       const type = document.getElementById("options-type").value;
       optionsCategory.innerHTML = "";
@@ -518,19 +500,19 @@ export function funcTransactions() {
 
   async function renderCategories() {
     try {
-      const categories = await getCategories();
+      const categories = await getCategories(sessionId);
       const optionsCategory = document.getElementById("options-category");
       const type = document.getElementById("options-type").value;
       optionsCategory.innerHTML = "";
       categories.forEach(category => {
-        if (type === category.type) {
-          const option = document.createElement("option");
-          option.value = category.name;
-          option.textContent = category.name;
-          optionsCategory.appendChild(option);
-        }else if (type === "Goals") {
-          renderGoals();
-        }
+      if (type === category.type) {
+        const option = document.createElement("option");
+        option.value = category.name;
+        option.textContent = category.name;
+        optionsCategory.appendChild(option);
+      } else if (type === "Goals") {
+        renderGoals();
+      }
       });
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -586,24 +568,24 @@ export function funcTransactions() {
 
   async function renderTrackingList() {
     try {
-      const budgetTracking = await getBudgetTracking();
+      const budgetTracking = await getBudgetTracking(sessionId);
       console.log("Budget tracking:", budgetTracking);
       const trackingTableBody = document.getElementById("body-table-tracking");
       trackingTableBody.innerHTML = "";
       budgetTracking.forEach(tracking => {
-        const row = document.createElement("tr");
-        row.className = "row-table-tracking";
-        row.setAttribute("data-id", tracking.id);
-        row.innerHTML = `
-          <td class="col-table-tracking" data-label="Category">${tracking.category}</td>
-          <td class="col-table-tracking" data-label="Budgeted Amount">$${tracking.budgetedAmount}</td>
-          <td class="col-table-tracking col-btn" data-label="Action">
-            <div class="col-btn">
-              <button id="btn-remove-tracking">Remove</button>
-            </div>
-          </td>
-        `;
-        trackingTableBody.appendChild(row);
+      const row = document.createElement("tr");
+      row.className = "row-table-tracking";
+      row.setAttribute("data-id", tracking.id);
+      row.innerHTML = `
+        <td class="col-table-tracking" data-label="Category">${tracking.category}</td>
+        <td class="col-table-tracking" data-label="Budgeted Amount">$${tracking.budgetedAmount}</td>
+        <td class="col-table-tracking col-btn" data-label="Action">
+        <div class="col-btn">
+          <button id="btn-remove-tracking">Remove</button>
+        </div>
+        </td>
+      `;
+      trackingTableBody.appendChild(row);
       });
     } catch (error) {
       console.error("Error fetching budget tracking:", error);
@@ -613,6 +595,7 @@ export function funcTransactions() {
   document.getElementById("btn-add-tracking").addEventListener("click", async () => {
     const category = document.getElementById("options-category-tracking").value;
     const amount = document.getElementById("input-amount-tracking").value;
+    const session = sessionStorage.getItem("session");
 
     const categoryInput = document.getElementById("options-category-tracking");
     const amountInput = document.getElementById("input-amount-tracking");
@@ -639,7 +622,7 @@ export function funcTransactions() {
     }
 
     try {
-      await insertBudgetTracking(category, amount);
+      await insertBudgetTracking(sessionId, category, amount);
       renderTrackingList();
       document.getElementById("input-amount-tracking").value = "";
     } catch (error) {
@@ -651,27 +634,28 @@ export function funcTransactions() {
     if (event.target && event.target.id === "btn-remove-tracking") {
       const row = event.target.closest("tr");
       const trackingId = row.getAttribute("data-id");
+      const session = sessionStorage.getItem("session");
       try {
-        await deleteBudgetTracking(Number(trackingId));
-        row.remove();
+      await deleteBudgetTracking(sessionId, Number(trackingId));
+      row.remove();
       } catch (error) {
-        console.error("Error deleting budget tracking:", error);
+      console.error("Error deleting budget tracking:", error);
       }
     }
   });
 
   async function renderCategoriesForTracking() {
     try {
-      const categories = await getCategories();
+      const categories = await getCategories(sessionId);
       const optionsCategoryTracking = document.getElementById("options-category-tracking");
       optionsCategoryTracking.innerHTML = "";
       categories.forEach(category => {
-        if (category.type === "Expense") {
-          const option = document.createElement("option");
-          option.value = category.name;
-          option.textContent = category.name;
-          optionsCategoryTracking.appendChild(option);
-        }
+      if (category.type === "Expense") {
+        const option = document.createElement("option");
+        option.value = category.name;
+        option.textContent = category.name;
+        optionsCategoryTracking.appendChild(option);
+      }
       });
     } catch (error) {
       console.error("Error fetching categories:", error);

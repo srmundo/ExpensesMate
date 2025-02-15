@@ -31,6 +31,8 @@ export function goals() {
 }
 
 export function initializeGoals() {
+    const session = sessionStorage.getItem('session');
+    const sessionId =JSON.parse(session).id;
     const [goals, setGoals] = useState([]);
 
     const btnAddGoal = document.getElementById('btn-add-goal');
@@ -54,9 +56,9 @@ export function initializeGoals() {
             document.getElementById('goal-date').style.border = '';
         }
         // Insert the new goal into the database
-        insertGoal(newGoal.name, newGoal.amount, newGoal.currentAmount, newGoal.date).then(() => {
+        insertGoal(sessionId, newGoal.name, newGoal.amount, newGoal.currentAmount, newGoal.date).then(() => {
             // Update the state and re-render the goals
-            setGoals([...goals(), newGoal]);
+            // setGoals([...goals(), newGoal]);
             renderGoals();
             // console.log(goals());
 
@@ -73,7 +75,7 @@ export function initializeGoals() {
     });
 
     function renderGoals() {
-        getGoals().then(fetchedGoals => {
+        getGoals(sessionId).then(fetchedGoals => {
             goalList.innerHTML = `
             <table class="goal-table">
             <thead>
@@ -105,8 +107,8 @@ export function initializeGoals() {
             document.querySelectorAll('.btn-delete-goal').forEach(button => {
             button.addEventListener('click', (event) => {
                 const goalId = event.target.closest('tr').id;
-                deleteGoal(Number(goalId)).then(() => {
-                setGoals(goals().filter(goal => goal.id !== goalId));
+                deleteGoal(sessionId, Number(goalId)).then(() => {
+                // setGoals(goals().filter(goal => goal.id !== goalId));
                 renderGoals();
                 }).catch(error => {
                 console.error('Error deleting goal:', error);
@@ -122,8 +124,8 @@ export function initializeGoals() {
             button.addEventListener('click', (event) => {
                 const goalId = event.target.closest('tr').id;
                 // console.log(typeof goalId);
-                deleteGoal(Number(goalId)).then(() => {
-                    setGoals(goals().filter(goal => goal.id !== goalId));
+                deleteGoal(sessionId, Number(goalId)).then(() => {
+                    setGoals(sessionId, goals().filter(goal => goal.id !== goalId));
                     renderGoals();
                 }).catch(error => {
                     console.error('Error deleting goal:', error);
@@ -133,8 +135,8 @@ export function initializeGoals() {
     }
 
     function loadGoals() {
-        getGoals().then(fetchedGoals => {
-            setGoals(fetchedGoals);
+        getGoals(sessionId).then(fetchedGoals => {
+            setGoals(sessionId, fetchedGoals);
             renderGoals();
         }).catch(error => {
             console.error('Error fetching goals:', error);

@@ -136,8 +136,12 @@ async function saveProfileChanges() {
         avatarNavApp.src = newPhoto;
     }
 
+    const profilePhoto = document.querySelector('.profile-photo');
+    if (profilePhoto) {
+        profilePhoto.src = newPhoto;
+    }
+
     const profileHeader = document.querySelector('.profile-header');
-    const profilePhoto = profileHeader.querySelector('.profile-photo');
     const profileName = profileHeader.querySelector('.profile-name');
     const profileNick = profileHeader.querySelector('.profile-nick');
 
@@ -163,12 +167,78 @@ function getBase64(file) {
         reader.readAsDataURL(file);
     });
 }
+
+async function renderUserGoals() {
+    const userData = await getUserDataBySessionId();
+    if (!userData) {
+        return;
+    }
+
+    const goals = await getGoals(userData.id);
+    const goalsTableBody = document.querySelector('.profile-goals tbody');
+    goalsTableBody.innerHTML = '';
+
+    goals.forEach(goal => {
+        const row = document.createElement('tr');
+
+        const goalCell = document.createElement('td');
+        goalCell.textContent = goal.name;
+        row.appendChild(goalCell);
+
+        const amountCell = document.createElement('td');
+        amountCell.textContent = goal.amount;
+        row.appendChild(amountCell);
+
+        const targetDateCell = document.createElement('td');
+        targetDateCell.textContent = goal.date;
+        row.appendChild(targetDateCell);
+
+        const progressCell = document.createElement('td');
+        let progressPercentage = (goal.currentAmount / goal.amount) * 100;
+        if (progressPercentage > 100) {
+            progressPercentage = 100;
+        }
+        progressCell.textContent = `${progressPercentage.toFixed(2)}%`;
+        row.appendChild(progressCell);
+
+        const statusCell = document.createElement('td');
+        const currentDate = new Date();
+        const targetDate = new Date(goal.date);
+
+        if (progressPercentage >= 100 && currentDate <= targetDate) {
+            statusCell.textContent = 'Completed';
+            statusCell.style.color = 'green';
+        } else if (progressPercentage < 100 && currentDate > targetDate) {
+            statusCell.textContent = 'Not completed';
+            statusCell.style.color = 'red';
+        } else if (progressPercentage >= 100 && currentDate > targetDate) {
+            statusCell.textContent = 'After the date';
+            statusCell.style.color = 'orange';
+        } else if (progressPercentage < 100 && currentDate <= targetDate) {
+            statusCell.textContent = 'In progress';
+            statusCell.style.color = 'blue';
+        }else if (progressPercentage > 100 && currentDate > targetDate) {
+            const excessAmount = goal.currentAmount - goal.amount;
+            statusCell.textContent = `After the date and exceeded by ${excessAmount}`;
+            statusCell.style.color = 'purple';
+        } else if (progressPercentage > 100 && currentDate <= targetDate) {
+            const excessAmount = goal.currentAmount - goal.amount;
+            statusCell.textContent = `Exceeded by ${excessAmount}`;
+            statusCell.style.color = 'purple';
+        }
+        row.appendChild(statusCell);
+
+        goalsTableBody.appendChild(row);
+    });
+}
 export async function initializeProfile() {
     document.getElementById('profile-image').addEventListener('change', previewImage);
 
     console.log(getSessionData());
     console.log(await getUserDataBySessionId());
     await renderUserProfile();
+
+    await renderUserGoals();
 
     document.querySelector('button[type="submit"]').addEventListener('click', async (event) => {
         event.preventDefault();

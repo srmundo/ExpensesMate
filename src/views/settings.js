@@ -1,5 +1,8 @@
+/** @format */
+
+import { getUsers, updateUser, deleteUser } from '../data/storage.js';
 export function settings() {
-    return `
+	return `
                     <div class="container-settings">
                             <span class="title-settings"><h4>Settings</h4></span>
                                 <div class="container-section-setting">
@@ -40,17 +43,17 @@ export function settings() {
 }
 
 export const initializeSettings = () => {
-        document.querySelectorAll('.settings-section a').forEach(link => {
-                link.addEventListener('click', event => {
-                        event.preventDefault();
-                        const sectionId = link.getAttribute('href').substring(1);
-                        showSection(sectionId);
-                });
-        });
+	document.querySelectorAll('.settings-section a').forEach((link) => {
+		link.addEventListener('click', (event) => {
+			event.preventDefault();
+			const sectionId = link.getAttribute('href').substring(1);
+			showSection(sectionId);
+		});
+	});
 };
 
 function renderChangePasswordSection() {
-        return `
+	return `
                 <div class="change-password-section">
                         <h3>Change Password</h3>
                         <form id="change-password-form">
@@ -73,7 +76,7 @@ function renderChangePasswordSection() {
 }
 
 function renderUpdateEmailSection() {
-        return `
+	return `
                 <div class="update-email-section">
                         <h3>Update Email</h3>
                         <form id="update-email-form">
@@ -85,14 +88,14 @@ function renderUpdateEmailSection() {
                                         <label for="new-email">New Email:</label>
                                         <input type="email" id="new-email" name="new-email" required>
                                 </div>
-                                <button type="submit">Update Email</button>
+                                <button id="btn-update-email" type="button">Update Email</button>
                         </form>
                 </div>
         `;
 }
 
 function renderDeleteAccountSection() {
-        return `
+	return `
                 <div class="delete-account-section">
                         <h3>Delete Account</h3>
                         <p>Are you sure you want to delete your account? This action cannot be undone.</p>
@@ -108,7 +111,7 @@ function renderDeleteAccountSection() {
 }
 
 function renderCurrencySettingsSection() {
-        return `
+	return `
                 <div class="currency-settings-section">
                         <h3>Currency Settings</h3>
                         <form id="currency-settings-form">
@@ -146,7 +149,7 @@ function renderCurrencySettingsSection() {
 }
 
 function renderLanguageSettingsSection() {
-        return `
+	return `
                 <div class="language-settings-section">
                         <h3>Language Settings</h3>
                         <form id="language-settings-form">
@@ -170,7 +173,7 @@ function renderLanguageSettingsSection() {
 }
 
 function renderNotificationPreferencesSection() {
-        return `
+	return `
                 <div class="notification-preferences-section">
                         <h3>Notification Preferences</h3>
                         <form id="notification-preferences-form">
@@ -197,24 +200,136 @@ function renderNotificationPreferencesSection() {
 }
 
 function showSection(sectionId) {
-        const sections = {
-                'change-password': renderChangePasswordSection(),
-                'update-email': renderUpdateEmailSection(),
-                'delete-account': renderDeleteAccountSection(),
-                'currency-settings': renderCurrencySettingsSection(),
-                'language-settings': renderLanguageSettingsSection(),
-                'notification-preferences': renderNotificationPreferencesSection(),
-                'bank-integration': '<h3>Bank Integration</h3><p>Here you can integrate with banks.</p>',
-                'third-party-apps': '<h3>Third-Party Apps</h3><p>Here you can manage third-party apps.</p>',
-                'two-factor-auth': '<h3>Two-Factor Authentication</h3><p>Here you can configure two-factor authentication.</p>',
-                'login-history': '<h3>Login History</h3><p>Here you can view the login history.</p>',
-        };
+	const sections = {
+		'change-password': renderChangePasswordSection(),
+		'update-email': renderUpdateEmailSection(),
+		'delete-account': renderDeleteAccountSection(),
+		'currency-settings': renderCurrencySettingsSection(),
+		'language-settings': renderLanguageSettingsSection(),
+		'notification-preferences': renderNotificationPreferencesSection(),
+		'bank-integration':
+			'<h3>Bank Integration</h3><p>Here you can integrate with banks.</p>',
+		'third-party-apps':
+			'<h3>Third-Party Apps</h3><p>Here you can manage third-party apps.</p>',
+		'two-factor-auth':
+			'<h3>Two-Factor Authentication</h3><p>Here you can configure two-factor authentication.</p>',
+		'login-history': '<h3>Login History</h3><p>Here you can view the login history.</p>',
+	};
 
-        const content = sections[sectionId] || '<h3>Section not found</h3><p>The requested section does not exist.</p>';
-        document.querySelector('.container-settings').innerHTML = content + '<button id="back-to-settings">Back to Settings</button>';
+	const content =
+		sections[sectionId] ||
+		'<h3>Section not found</h3><p>The requested section does not exist.</p>';
+	document.querySelector('.container-settings').innerHTML =
+		content + '<button id="back-to-settings">Back to Settings</button>';
 
-        document.getElementById('back-to-settings').addEventListener('click', () => {
-                document.querySelector('.container-settings').innerHTML = settings();
-                initializeSettings();
-        });
+	document.getElementById('back-to-settings').addEventListener('click', () => {
+		document.querySelector('.container-settings').innerHTML = settings();
+		initializeSettings();
+	});
+
+	const session = sessionStorage.getItem('session');
+	const sessionId = JSON.parse(session).id;
+	try{
+                document
+		.getElementById('change-password-form')
+		.addEventListener('submit', async (event) => {
+			event.preventDefault();
+			const currentPassword = document.getElementById('current-password').value;
+			const newPassword = document.getElementById('new-password').value;
+			const confirmPassword = document.getElementById('confirm-password').value;
+
+			if (newPassword !== confirmPassword) {
+				alert('New passwords do not match.');
+				return;
+			}
+
+			const users = await getUsers();
+			const user = users.find((user) => user.id === sessionId);
+
+			if (!user || user.password !== currentPassword) {
+				alert('Current password is incorrect.');
+				return;
+			}
+
+			await updateUser(
+				sessionId,
+				user.name,
+				user.nick,
+				user.email,
+				newPassword,
+				user.photo,
+			);
+			alert('Password changed successfully.');
+
+			document.getElementById('change-password-form').reset();
+		});
+                
+        }catch(error){
+                console.error(error);
+        }
+
+        try{
+                document.getElementById('btn-update-email').addEventListener('click', async (event) => {
+                        const currentEmail = document.getElementById('current-email').value;
+                        const newEmail = document.getElementById('new-email').value;
+        
+                        const users = await getUsers();
+                        const user = users.find((user) => user.id === sessionId);
+        
+                        console.log(user.email);
+                        if (!user || user.email !== currentEmail) {
+                                alert('Current email is incorrect.');
+                                return;
+                        }
+        
+                        await updateUser(
+                                sessionId,
+                                user.name,
+                                user.nick,
+                                newEmail,
+                                user.password,
+                                user.photo,
+                        );
+                        alert('Email updated successfully.');
+        
+                        document.getElementById('update-email-form').reset();
+                });
+        }catch(error){
+                console.error(error);
+        }
+
+        try {
+                document
+                        .getElementById('delete-account-form')
+                        .addEventListener('submit', async (event) => {
+                                event.preventDefault();
+                                const confirmDelete = document.getElementById('confirm-delete').value;
+
+                                if (confirmDelete !== 'DELETE') {
+                                        alert('You must type "DELETE" to confirm.');
+                                        return;
+                                }
+
+                                await deleteUser(sessionId);
+                                sessionStorage.removeItem('session');
+                                sessionStorage.setItem('isLoggedIn', 'false');
+                                sessionStorage.removeItem('isLoggedIn');
+                                document.querySelector('.main-app').innerHTML = `
+                                        <div class="account-deleted">
+                                                <h2>Account Deleted Successfully</h2>
+                                                <p>Your account has been deleted successfully.</p>
+                                                <button id="accept-deletion">Accept</button>
+                                        </div>
+                                `;
+
+                                document.getElementById('accept-deletion').addEventListener('click', () => {
+                                        
+                                        window.location.reload() // Redirect to login page after account deletion
+
+                                });
+                        });
+        } catch (error) {
+                console.error(error);
+        }
+        
 }
