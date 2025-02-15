@@ -3,11 +3,13 @@
 // import { Router } from '../auth/router.js';
 import { LoginPage } from '../public/loginPage.js';
 import { openDatabase, insertCategory } from '../data/storage.js';
+
 // import { logoutUser } from '../auth/supabase.js';
 
 if (!sessionStorage.getItem('isLoggedIn')) {
 	sessionStorage.setItem('isLoggedIn', 'false');
 }
+
 
 const categories = {
 		Income: [
@@ -58,7 +60,7 @@ const categories = {
 function checkLoginStatus() {
 	const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
 	const session = sessionStorage.getItem("session");
-	if (isLoggedIn) {
+	if (isLoggedIn && session) {
 		loadAppHTML();
 		openDatabase();
 		const sessionId = JSON.parse(session).id;
