@@ -55,9 +55,40 @@ export function registerSessionData(nickname, name, password) {
 
 export function loginSession(nickname, password) {
     if (typeof(Storage) !== "undefined") {
-        const getUsersFunction = isMobileDevice() ? storageMobile.getUsers : getUsers;
-
-        getUsersFunction().then(users => {
+        // const getUsersFunction = isMobileDevice() ? storageMobile.getUsers : getUsers;
+        if (isMobileDevice()) {
+            storageMobile.openDatabase().then(() => {
+                console.log('🔵 Database opened successfully');
+                storageMobile.getUsers().then(users => {
+                    const user = users.find(user => user.nick === nickname && user.password === password);
+                    console.log(user);
+                    if (user) {
+                        const session = {
+                            nickname: user.nick,
+                            name: user.name,
+                            email: user.email,
+                            photo: user.photo,
+                            id: user.id,
+                        };
+                        sessionStorage.setItem('session', JSON.stringify(session));
+                        if (sessionStorage.getItem('session')) {
+                            sessionStorage.setItem('isLoggedIn', 'true');
+                        }
+                        
+                        console.log('Login successful');
+                        try {
+                            window.location.reload();
+                        } catch (error) {
+                            console.error('Error reloading the page', error);
+                        }
+                    } else {
+                        console.log('Invalid nickname or password');
+                    }
+                }).catch(error => {
+                    console.error('Error logging in', error);
+                });
+            });
+        getUsers.then(users => {
             const user = users.find(user => user.nick === nickname && user.password === password);
             console.log(user);
             if (user) {
