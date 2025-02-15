@@ -1,16 +1,5 @@
 import { getUsers, insertUser, updateUser, deleteUser } from "../data/storage.js";
 export function registerSessionData(nickname, name, password) {
-    if (navigator.storage && navigator.storage.estimate) {
-        try {
-            navigator.storage.estimate().then(estimate => {
-                console.log(`Using ${estimate.usage} out of ${estimate.quota} bytes.`);
-            }).catch(error => {
-                console.error('Error estimating storage', error);
-            });
-        } catch (error) {
-            console.error('Error estimating storage', error);
-        }
-    }
     if (typeof(Storage) !== "undefined") {
         const session = {
             nickname: nickname,
@@ -21,6 +10,13 @@ export function registerSessionData(nickname, name, password) {
         };
         insertUser(session.name, session.nickname, session.email, session.password, session.photo).then(() => {
             console.log('User registered successfully');
+            sessionStorage.setItem('session', JSON.stringify(session));
+            sessionStorage.setItem('isLoggedIn', 'true');
+            try {
+                window.location.reload();
+            } catch (error) {
+                console.error('Error reloading the page', error);
+            }
         }).catch(error => {
             console.error('Error registering user', error);
         });
@@ -49,7 +45,7 @@ export function loginSession(nickname, password) {
                 
                 console.log('Login successful');
                 try {
-                    window.location.href = window.location.href;
+                    window.location.reload();
                 } catch (error) {
                     console.error('Error reloading the page', error);
                 }
