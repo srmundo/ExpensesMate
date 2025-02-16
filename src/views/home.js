@@ -1,4 +1,4 @@
-import { getTransactions, getBudgetTracking, getCategories, getGoals } from "../data/storage.js";
+import { getTransactions, getBudgetTracking, getCategories, getGoals, getCurrencyConfig } from "../data/storage.js";
 export function home() {
   return `
     <div class="container-home">
@@ -380,13 +380,22 @@ export function updateScore(score) {
   const scoreText = document.getElementById("score");
   scoreText.textContent = score;
 }
+let dataCurrency;
+
+fetch('./src/locale/currency/currency.json')
+.then((response)=>response.json())
+.then((data)=>dataCurrency = data)
+.catch((error)=>console.log(error));
 
 export async function initializeHome() {
+  const session = sessionStorage.getItem('session');
+  const sessionId = JSON.parse(session).id;
+  const currencyConfig = await getCurrencyConfig(sessionId);
+  const currencySymbol = dataCurrency[currencyConfig[0].currency].symbol;
   function isMobileDevice() {
     return /Mobi|Android/i.test(navigator.userAgent);
   }
-  const session = sessionStorage.getItem('session');
-  const sessionId = JSON.parse(session).id;
+  
   // Obtener las transacciones y calcular el puntaje
   let transactions;
   if (isMobileDevice()) {
@@ -419,9 +428,9 @@ export async function initializeHome() {
   const finalBalance = totalIncome - totalExpenses;
 
   // Render the values in the DOM
-  document.querySelector('.data-summary-income .value-money').textContent = `$ ${totalIncome}`;
-  document.querySelector('.data-summary-expenses .value-money').textContent = `$ ${totalExpenses}`;
-  document.querySelector('.data-summary-balance .value-money').textContent = `$ ${finalBalance}`;
+  document.querySelector('.data-summary-income .value-money').textContent = `${currencySymbol} ${totalIncome}`;
+  document.querySelector('.data-summary-expenses .value-money').textContent = `${currencySymbol} ${totalExpenses}`;
+  document.querySelector('.data-summary-balance .value-money').textContent = `${currencySymbol} ${finalBalance}`;
 
   function updateCategoryData(transactions) {
   
@@ -442,7 +451,7 @@ export async function initializeHome() {
       return `
         <tr>
           <td id="data-category">${category}</td>
-          <td id="data-amount">$ ${amount}</td>
+          <td id="data-amount">${currencySymbol} ${amount}</td>
           <td id="data-charts">
             <div class="bar-container">
               <div class="bar-progress ${category.toLowerCase()}" style="width: ${percentage}%;">${percentage}%</div>
@@ -460,7 +469,7 @@ export async function initializeHome() {
         .map(transaction => `
           <tr>
             <td>${transaction.categoryId}</td>
-            <td>$${transaction.amount}</td>
+            <td>${currencySymbol} ${transaction.amount}</td>
           </tr>
         `).join('');
 
@@ -469,7 +478,7 @@ export async function initializeHome() {
         .map(transaction => `
           <tr>
             <td>${transaction.description}</td>
-            <td>$${transaction.amount}</td>
+            <td>${currencySymbol} ${transaction.amount}</td>
           </tr>
         `).join('');
 
@@ -481,7 +490,7 @@ export async function initializeHome() {
         ${incomeRows}
         <tr>
           <th>Total Income</th>
-          <th>$${totalIncome}</th>
+          <th>${currencySymbol} ${totalIncome}</th>
         </tr>
       `;
     }
@@ -495,7 +504,7 @@ export async function initializeHome() {
           <tr>
             <td>${transaction.categoryId}</td>
             <td>${transaction.note}</td>
-            <td>$${transaction.amount}</td>
+            <td>${currencySymbol} ${transaction.amount}</td>
           </tr>
         `).join('');
 
@@ -537,12 +546,12 @@ export async function initializeHome() {
 
     const budgetRows = Object.entries(budgetData).map(([category, data]) => {
     const difference = data.budgeted - data.actual;
-    const differenceText = difference >= 0 ? `<span style="color: green;">+$${difference}</span>` : `<span style="color: red;">-$${Math.abs(difference)}</span>`;
+    const differenceText = difference >= 0 ? `<span style="color: green;">+${currencySymbol} ${difference}</span>` : `<span style="color: red;">-${currencySymbol} ${Math.abs(difference)}</span>`;
     return `
       <tr>
       <td>${category}</td>
-      <td>$${data.budgeted}</td>
-      <td>$${data.actual}</td>
+      <td>${currencySymbol} ${data.budgeted}</td>
+      <td>${currencySymbol} ${data.actual}</td>
       <td>${differenceText}</td>
       </tr>
     `;
@@ -572,9 +581,9 @@ export async function initializeHome() {
       return `
         <tr>
           <td>${goal.name}</td>
-          <td>$${goal.amount}</td>
-          <td>$${goal.currentAmount}</td>
-          <td>$${remainingAmount}</td>
+          <td>${currencySymbol} ${goal.amount}</td>
+          <td>${currencySymbol} ${goal.currentAmount}</td>
+          <td>${currencySymbol} ${remainingAmount}</td>
         </tr>
       `;
     }).join('');
@@ -636,7 +645,7 @@ export async function initializeHome() {
       </tr>
       <tr>
         <td>Total Income vs. Expenses</td>
-        <td>$${totalIncome} - $${totalExpenses}</td>
+        <td>${currencySymbol} ${totalIncome} - ${currencySymbol} ${totalExpenses}</td>
       </tr>
       <tr>
         <td>Savings Rate</td>

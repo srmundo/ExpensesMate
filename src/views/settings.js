@@ -53,26 +53,6 @@ export const initializeSettings = () => {
 		});
 	});
 
-        document.getElementById('currency-settings-form').addEventListener('submit', async (event) => {
-                event.preventDefault();
-                const newCurrency = document.getElementById('currency-type').value;
-
-                try {
-                        const session = sessionStorage.getItem('session');
-                        const sessionId = JSON.parse(session).id;
-
-                        if (isMobileDevice()) {
-                                await storageMobile.updateCurrencyConfig(sessionId, newCurrency);
-                        } else {
-                                await updateCurrencyConfig(sessionId, newCurrency);
-                        }
-
-                        alert('Currency settings updated successfully.');
-                } catch (error) {
-                        console.error(error);
-                        alert('Failed to update currency settings.');
-                }
-        });
 };
 
 function renderChangePasswordSection() {
@@ -306,7 +286,7 @@ function showSection(sectionId) {
 		});
                 
         }catch(error){
-                console.error(error);
+                
         }
 
         try{
@@ -349,7 +329,6 @@ function showSection(sectionId) {
                         document.getElementById('update-email-form').reset();
                 });
         }catch(error){
-                console.error(error);
         }
 
         try {
@@ -385,7 +364,38 @@ function showSection(sectionId) {
                                 });
                         });
         } catch (error) {
-                console.error(error);
+        }
+
+        try{
+                document.getElementById('currency-settings-form').addEventListener('submit', async (event) => {
+                        event.preventDefault();
+                        const selectedCurrency = document.getElementById('currency-type').value;
+
+                        console.log(selectedCurrency);
+                        await updateCurrency(sessionId, selectedCurrency);
+
+                });
+
+                async function updateCurrency(sessionId, currencyType) {
+                        let currencyConfig;
+                        currencyConfig = await getCurrencyConfig(sessionId);
+                        currencyConfig.forEach((currency, index)=>{
+                                currency.userId === sessionId ? updateCurrencyConfig(sessionId, currency.id, currencyType) : ''
+                        });
+                        console.log(session)
+                        alert('Currency updated successfully.');
+
+                }
+
+                async function setInitialCurrency() {
+                        let currencyConfig;
+                        currencyConfig = await getCurrencyConfig(sessionId);
+                        document.getElementById('currency-type').value = currencyConfig.map(currency => currency.currency);
+                }
+
+                setInitialCurrency();
+        }catch(error){
+                
         }
         
 }

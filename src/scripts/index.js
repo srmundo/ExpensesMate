@@ -2,23 +2,15 @@
 
 // import { Router } from '../auth/router.js';
 import { LoginPage } from '../public/loginPage.js';
-import { openDatabase, insertCategory, insertCurrencyConfig } from '../data/storage.js';
+import { openDatabase, insertCategory, insertCurrencyConfig, getCurrencyConfig } from '../data/storage.js';
 import * as storageMobile from '../data/storageMobile.js';
-let currencyData;
-fetch('./src/locale/currency/currency.json')
-	.then(response => response.json())
-	.then(data => {
-		currencyData = data;
-		console.log('currencyData', currencyData);
-	})
-	.catch(error => console.error('Error loading currency data:', error));
-
-// import { logoutUser } from '../auth/supabase.js';
 
 if (!sessionStorage.getItem('isLoggedIn')) {
 	sessionStorage.setItem('isLoggedIn', 'false');
 }
-
+function isMobileDevice(){
+	return /Mobi|Android/i.test(navigator.userAgent);
+}
 const categories = {
 		Income: [
 		  "Salary",
@@ -53,39 +45,63 @@ const categories = {
 		  "Investments"
 		]
 	  };
-console.log('currencyData', currencyData);
+
 	  async function insertCategories(userId) {
 		for (const type in categories) {
 			for (const name of categories[type]) {
-				try {
-					if (/Mobi|Android/i.test(navigator.userAgent)) {
-						await storageMobile.insertCategory(userId, name, type);
-					} else
-					await insertCategory(userId, name, type);
-				} catch (error) {
-					console.error(`Error inserting category ${name} for user ${userId}:`, error);
+				if (isMobileDevice()) {
+					await storageMobile.insertCategory(userId, name, type);
 				}
+				await insertCategory(userId, name, type);
 			}
 		}
 	}
 
-function checkLoginStatus() {
+	async function insertUSDCurrency(userId) {
+		try {
+			const usdCurrency = 'USD';
+			if (usdCurrency) {
+				if (isMobileDevice()) {
+					await storageMobile.insertCurrencySettings(userId, usdCurrency);
+				} else {
+					await insertCurrencyConfig(userId, usdCurrency);
+				}
+				console.log('USD currency inserted successfully');
+			} else {
+				console.error('USD currency not found in currency data');
+			}
+		} catch (error) {
+			console.error(`Error inserting USD currency for user ${userId}:`, error);
+		}
+	}
+
+async function checkLoginStatus() {
 	const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
 	const session = sessionStorage.getItem("session");
 	if (isLoggedIn && session) {
 		loadAppHTML();
 
-		if (/Mobi|Android/i.test(navigator.userAgent)) {
+		if (isMobileDevice()) {
 			storageMobile.openDatabase().then(() => {
 				console.log('🔵 Database opened successfully');
-				insertCategories(sessionId);
+				insertCategories(sessionId).then(null).catch(()=>null);
 			});
 		} else {
 			openDatabase();
 		}
 		const sessionId = JSON.parse(session).id;
 
-		insertCategories(sessionId);
+		insertCategories(sessionId).then(null).catch(()=>null);
+
+		getCurrencyConfig(sessionId).then((currencyConfig) => {
+			if (!currencyConfig || currencyConfig.length === 0) {
+				insertUSDCurrency(sessionId);
+			} else {
+				console.log('Currency data already exists for user:', sessionId);
+			}
+		}).catch((error) => {
+			console.error('Error checking currency config:', error);
+		});
 		
 	} else {
 		LoginPage();

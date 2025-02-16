@@ -1,4 +1,4 @@
-import { insertTransaction, getTransactions, deleteTransaction, getCategories, insertCategory, updateCategory, deleteCategory, getGoals, updateGoal, getBudgetTracking, insertBudgetTracking, deleteBudgetTracking } from "../data/storage.js";
+import { insertTransaction, getTransactions, deleteTransaction, getCategories, insertCategory, updateCategory, deleteCategory, getGoals, updateGoal, getBudgetTracking, insertBudgetTracking, deleteBudgetTracking, getCurrencyConfig } from "../data/storage.js";
 import * as storageMobile from "../data/storageMobile.js";
 export function transactions() {
   return `
@@ -246,14 +246,21 @@ export function transactions() {
   `;
 }
 
+let dataCurrency;
 
+fetch('./src/locale/currency/currency.json')
+.then((response)=>response.json())
+.then((data)=>dataCurrency = data)
+.catch((error)=>console.log(error));
 
-export function funcTransactions() {
+export async function funcTransactions() {
+  const session = sessionStorage.getItem("session");
+  const sessionId = JSON.parse(session).id;
+  const currencyConfig = await getCurrencyConfig(sessionId);
+  const currencySymbol = dataCurrency[currencyConfig[0].currency].symbol;
   function isMobileDevice() {
     return /Mobi|Android/i.test(navigator.userAgent);
   }
-  const session = sessionStorage.getItem("session");
-  const sessionId = JSON.parse(session).id;
   
   const containerNewTransactions = document.querySelector(".cont-nav-trans");
   const containerCategoryTransactions = document.querySelector(
@@ -263,11 +270,14 @@ export function funcTransactions() {
   const transactionsTableBody = document.getElementById("body-table-transaction");
 
   async function renderTransactions() {
+
     try {
       let transactions;
       if (isMobileDevice()) {
         transactions = await storageMobile.getTransactions(sessionId);
       }
+      
+      console.log(currencySymbol)
       transactions = await getTransactions(sessionId);
       transactionsTableBody.innerHTML = "";
       transactions.forEach(transaction => {
@@ -275,7 +285,7 @@ export function funcTransactions() {
       row.className = "row-table-transaction";
       row.setAttribute("data-id", transaction.id);
       row.innerHTML = `
-        <td class="col-table-transaction" data-label="Amount">$${transaction.amount}</td>
+        <td class="col-table-transaction" data-label="Amount">${currencySymbol} ${transaction.amount}</td>
         <td class="col-table-transaction" data-label="Date">${transaction.date}</td>
         <td class="col-table-transaction" data-label="Category">${transaction.categoryId}</td>
         <td class="col-table-transaction" data-label="Type">${transaction.type}</td>
@@ -622,7 +632,7 @@ export function funcTransactions() {
       row.setAttribute("data-id", tracking.id);
       row.innerHTML = `
         <td class="col-table-tracking" data-label="Category">${tracking.category}</td>
-        <td class="col-table-tracking" data-label="Budgeted Amount">$${tracking.budgetedAmount}</td>
+        <td class="col-table-tracking" data-label="Budgeted Amount">${currencySymbol} ${tracking.budgetedAmount}</td>
         <td class="col-table-tracking col-btn" data-label="Action">
         <div class="col-btn">
           <button id="btn-remove-tracking">Remove</button>

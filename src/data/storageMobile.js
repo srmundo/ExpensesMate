@@ -6,7 +6,8 @@ function getData(userId, storeName) {
 }
 
 function setData(userId, storeName, data) {
-    localStorage.setItem(`${dbName}_${userId}_${storeName}`, JSON.stringify(data));
+    const uniqueData = Array.from(new Set(data.map(item => JSON.stringify(item)))).map(item => JSON.parse(item));
+    localStorage.setItem(`${dbName}_${userId}_${storeName}`, JSON.stringify(uniqueData));
 }
 
 export function openDatabase() {

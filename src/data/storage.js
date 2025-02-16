@@ -67,7 +67,8 @@ export function openDatabase() {
                 autoIncrement: true
             });
             currencyConfigStore.createIndex("userId", "userId", { unique: false });
-            currencyConfigStore.createIndex("currency", "currency", { unique: false });
+            currencyConfigStore.createIndex("currency", "currency", { unique: false});
+            currencyConfigStore.createIndex('userId_currency', ['userId', 'currency'], { unique: true });
 
             // Crear la tabla de configuración de lenguaje
             const languageConfigStore = db.createObjectStore("languageConfig", {
@@ -76,6 +77,7 @@ export function openDatabase() {
             });
             languageConfigStore.createIndex("userId", "userId", { unique: false });
             languageConfigStore.createIndex("language", "language", { unique: false });
+            languageConfigStore.createIndex('userId_language', ['userId', 'language'], { unique: true });
         };
 
         request.onsuccess = (event) => {
