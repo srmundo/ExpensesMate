@@ -1,5 +1,5 @@
 import { useState } from '../scripts/useState.js';
-import { insertGoal, getGoals, updateGoal, deleteGoal } from '../data/storage.js';
+import { insertGoal, getGoals, updateGoal, deleteGoal, getCurrencyConfig } from '../data/storage.js';
 import * as storageMobile from '../data/storageMobile.js';
 export function goals() {
   return `
@@ -30,13 +30,21 @@ export function goals() {
         </div>
     `;
 }
+let dataCurrency;
 
-export function initializeGoals() {
+fetch('./src/locale/currency/currency.json')
+.then((response)=>response.json())
+.then((data)=>dataCurrency = data)
+.catch((error)=>console.log(error));
+
+export async function initializeGoals() {
     function isMobileDevice() {
         return /Mobi|Android/i.test(navigator.userAgent);
     }
     const session = sessionStorage.getItem('session');
     const sessionId =JSON.parse(session).id;
+    const currencyConfig = await getCurrencyConfig(sessionId);
+    const currencySymbol = dataCurrency[currencyConfig[0].currency].symbol;
     const [goals, setGoals] = useState([]);
 
     const btnAddGoal = document.getElementById('btn-add-goal');
@@ -159,8 +167,8 @@ export function initializeGoals() {
             ${fetchedGoals.map(goal => `
             <tr id='${goal.id}'>
                 <td data-label="Goal Name">${goal.name}</td>
-                <td data-label="Amount">$${goal.amount}</td>
-                <td data-label="Current Amount">$${goal.currentAmount}</td>
+                <td data-label="Amount">${currencySymbol} ${goal.amount}</td>
+                <td data-label="Current Amount">${currencySymbol} ${goal.currentAmount}</td>
                 <td data-label="Target Date">${goal.date}</td>
                 <td data-label="Progress">${(goal.currentAmount / goal.amount * 100).toFixed(2)}%</td>
                 <td data-label="Actions"><button class="btn-delete-goal" type="button">Delete</button></td>

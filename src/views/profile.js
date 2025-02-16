@@ -1,5 +1,5 @@
 import { loadView } from "../app.js";
-import { getGoals, updateUser, getUsers } from "../data/storage.js";
+import { getGoals, updateUser, getUsers, getCurrencyConfig } from "../data/storage.js";
 import * as storageMobile from "../data/storageMobile.js";
 export function profile() {
     return `
@@ -257,5 +257,11 @@ export async function initializeProfile() {
         alert('Profile updated successfully!');
     });
     
+    const userData = await getUserDataBySessionId();
+
+    const currencyConfig = await getCurrencyConfig(userData.id);
+
+    const currencyCell = document.querySelector('.profile-settings tbody tr:nth-child(1) td:nth-child(2)');
+    currencyCell.textContent = currencyConfig[0].currency;
     
 }

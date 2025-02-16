@@ -1,5 +1,5 @@
 import { useState } from "../scripts/useState.js";
-import { getCategories, getTransactions, getGoals } from "../data/storage.js";
+import { getCategories, getTransactions, getGoals, getCurrencyConfig } from "../data/storage.js";
 async function loadJsPDF() {
   if (!window.jspdf) {
       await import("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js") || await import("../lib/jspdf.umd.min.js");
@@ -36,8 +36,17 @@ export function reports() {
           </div>
       `;
 }
+let dataCurrency;
+fetch('./src/locale/currency/currency.json')
+.then((response)=>response.json())
+.then((data)=>dataCurrency = data)
+.catch((error)=>console.log(error));
 
-export function funcReport() {
+export async function funcReport() {
+  const session = sessionStorage.getItem("session");
+  const sessionId = JSON.parse(session).id;
+  const currencyConfig = await getCurrencyConfig(sessionId);
+  const currencySymbol = dataCurrency[currencyConfig[0].currency].symbol;
   function isMobileDevice() {
     return /Mobi|Android/i.test(navigator.userAgent);
   }
@@ -240,9 +249,6 @@ export function funcReport() {
 //     exportToXLSX(nameDoc);
 //   });
 
-  const session = sessionStorage.getItem("session");
-  const sessionId = JSON.parse(session).id;
-
   async function fetchDataAndFillTables(reportType) {
     let categories;
     if (isMobileDevice()) {
@@ -263,17 +269,17 @@ export function funcReport() {
     let tableContent = '';
 
     if (reportType === 'monthly') {
-      tableContent = generateMonthlyReport(categories, transactions, goals);
+      tableContent = generateMonthlyReport(categories, transactions, goals, currencySymbol);
     } else if (reportType === 'quarterly') {
-      tableContent = generateQuarterlyReport(categories, transactions, goals);
+      tableContent = generateQuarterlyReport(categories, transactions, goals, currencySymbol);
     } else if (reportType === 'annual') {
-      tableContent = generateAnnualReport(categories, transactions, goals);
+      tableContent = generateAnnualReport(categories, transactions, goals, currencySymbol);
     }
 
     document.querySelector(".cont-report-table").innerHTML = tableContent;
   }
 
-  function generateMonthlyReport(categories, transactions, goals) {
+  function generateMonthlyReport(categories, transactions, goals, currency) {
     let incomeTotal = 0;
     let expenseTotal = 0;
     let incomeRows = '';
@@ -286,7 +292,7 @@ export function funcReport() {
         <tr>
         <td class="report-cell" data-label="Category">${transaction.categoryId}</td>
         <td class="report-cell" data-label="Description">${transaction.note}</td>
-        <td class="report-cell" data-label="Amount">$${Number(transaction.amount).toFixed(2)}</td>
+        <td class="report-cell" data-label="Amount">${currency} ${Number(transaction.amount).toFixed(2)}</td>
         </tr>
       `;
       } else if (transaction.type === 'Expense') {
@@ -295,7 +301,7 @@ export function funcReport() {
         <tr>
         <td class="report-cell" data-label="Category">${transaction.categoryId}</td>
         <td class="report-cell" data-label="Description">${transaction.note}</td>
-        <td class="report-cell" data-label="Amount">$${Number(transaction.amount).toFixed(2)}</td>
+        <td class="report-cell" data-label="Amount">${currency} ${Number(transaction.amount).toFixed(2)}</td>
         </tr>
       `;
       }
@@ -324,7 +330,7 @@ export function funcReport() {
       <tr>
         <td class="report-cell" data-label="Category"><b>Total Income</b></td>
         <td class="report-cell" data-label="Description"></td>
-        <td class="report-cell" data-label="Amount"><b>$${incomeTotal.toFixed(2)}</b></td>
+        <td class="report-cell" data-label="Amount"><b>${currency} ${incomeTotal.toFixed(2)}</b></td>
       </tr>
       <tr>
         <td class="report-cell" data-label="Category"><b>Expenses</b></td>
@@ -335,12 +341,12 @@ export function funcReport() {
       <tr>
         <td class="report-cell" data-label="Category"><b>Total Expenses</b></td>
         <td class="report-cell" data-label="Description"></td>
-        <td class="report-cell" data-label="Amount"><b>$${expenseTotal.toFixed(2)}</b></td>
+        <td class="report-cell" data-label="Amount"><b>${currency} ${expenseTotal.toFixed(2)}</b></td>
       </tr>
       <tr>
         <td class="report-cell" data-label="Category"><b>Net Monthly Balance</b></td>
         <td class="report-cell" data-label="Description">Total Income - Total Expenses</td>
-        <td class="report-cell" data-label="Amount"><b>$${netBalance.toFixed(2)}</b></td>
+        <td class="report-cell" data-label="Amount"><b>${currency} ${netBalance.toFixed(2)}</b></td>
       </tr>
       </table>
 
@@ -372,7 +378,7 @@ export function funcReport() {
     `;
   }
 
-  function generateQuarterlyReport(categories, transactions, goals) {
+  function generateQuarterlyReport(categories, transactions, goals, currency) {
     let incomeTotal = 0;
     let expenseTotal = 0;
     let incomeRows = '';
@@ -396,7 +402,7 @@ export function funcReport() {
             <td class="report-cell" data-label="Category">${transaction.categoryId}</td>
             <td class="report-cell" data-label="Description">${transaction.note}</td>
             <td class="report-cell" data-label="Month">${month}</td>
-            <td class="report-cell" data-label="Amount">$${Number(transaction.amount).toFixed(2)}</td>
+            <td class="report-cell" data-label="Amount">${currency} ${Number(transaction.amount).toFixed(2)}</td>
           </tr>
         `;
       }
@@ -409,9 +415,9 @@ export function funcReport() {
       return `
         <tr>
           <td class="report-cell" data-label="Month">${month}</td>
-          <td class="report-cell" data-label="Total Income">$${income.toFixed(2)}</td>
-          <td class="report-cell" data-label="Total Expenses">$${expense.toFixed(2)}</td>
-          <td class="report-cell" data-label="Net Balance">$${(income - expense).toFixed(2)}</td>
+          <td class="report-cell" data-label="Total Income">${currency} ${income.toFixed(2)}</td>
+          <td class="report-cell" data-label="Total Expenses">${currency} ${expense.toFixed(2)}</td>
+          <td class="report-cell" data-label="Net Balance">${currency} ${(income - expense).toFixed(2)}</td>
         </tr>
       `;
     }).join('');
@@ -434,9 +440,9 @@ export function funcReport() {
         <tr>
           <td class="report-cell" data-label="Quarter"><b>Total</b></td>
           <td class="report-cell" data-label="Month"><b>Quarter 1</b></td>
-          <td class="report-cell" data-label="Total Expenses"><b>$${expenseTotal.toFixed(2)}</b></td>
-          <td class="report-cell" data-label="Total Income"><b>$${incomeTotal.toFixed(2)}</b></td>
-          <td class="report-cell" data-label="Net Balance"><b>$${netBalance.toFixed(2)}</b></td>
+          <td class="report-cell" data-label="Total Expenses"><b>${currency} ${expenseTotal.toFixed(2)}</b></td>
+          <td class="report-cell" data-label="Total Income"><b>${currency} ${incomeTotal.toFixed(2)}</b></td>
+          <td class="report-cell" data-label="Net Balance"><b>${currency} ${netBalance.toFixed(2)}</b></td>
         </tr>
       </table>
 
@@ -479,7 +485,7 @@ export function funcReport() {
     `;
   }
 
-  function generateAnnualReport(categories, transactions, goals) {
+  function generateAnnualReport(categories, transactions, goals, currency) {
     let incomeTotal = 0;
     let expenseTotal = 0;
     let monthlyTotals = {};
@@ -512,9 +518,9 @@ export function funcReport() {
       return `
       <tr>
         <td class="report-cell" data-label="Month">${month}</td>
-        <td class="report-cell" data-label="Total Income">$${income.toFixed(2)}</td>
-        <td class="report-cell" data-label="Total Expenses">$${expense.toFixed(2)}</td>
-        <td class="report-cell" data-label="Net Balance">$${(income - expense).toFixed(2)}</td>
+        <td class="report-cell" data-label="Total Income">${currency} ${income.toFixed(2)}</td>
+        <td class="report-cell" data-label="Total Expenses">${currency} ${expense.toFixed(2)}</td>
+        <td class="report-cell" data-label="Net Balance">${currency} ${(income - expense).toFixed(2)}</td>
       </tr>
       `;
     }).join('');
@@ -525,7 +531,7 @@ export function funcReport() {
       return `
       <tr>
         <td class="report-cell">${category}</td>
-        <td class="report-cell">$${total.toFixed(2)}</td>
+        <td class="report-cell">${currency} ${total.toFixed(2)}</td>
         <td class="report-cell">${percentage}%</td>
       </tr>
       `;
@@ -550,9 +556,9 @@ export function funcReport() {
       ${monthlyRows}
       <tr>
       <td class="report-cell" data-label="Month"><b>Annual Total</b></td>
-      <td class="report-cell" data-label="Total Income"><b>$${incomeTotal.toFixed(2)}</b></td>
-      <td class="report-cell" data-label="Total Expenses"><b>$${expenseTotal.toFixed(2)}</b></td>
-      <td class="report-cell" data-label="Net Balance"><b>$${netBalance.toFixed(2)}</b></td>
+      <td class="report-cell" data-label="Total Income"><b>${currency} ${incomeTotal.toFixed(2)}</b></td>
+      <td class="report-cell" data-label="Total Expenses"><b>${currency} ${expenseTotal.toFixed(2)}</b></td>
+      <td class="report-cell" data-label="Net Balance"><b>${currency} ${netBalance.toFixed(2)}</b></td>
       </tr>
       </table>
 
@@ -581,7 +587,7 @@ export function funcReport() {
       <tr>
       <td>
       <ul class="report-list">
-        <li><b>Annual Savings:</b> $${netBalance.toFixed(2)}, equivalent to ${(netBalance / incomeTotal * 100).toFixed(2)}% of the total annual income.</li>
+        <li><b>Annual Savings:</b> ${currency} ${netBalance.toFixed(2)}, equivalent to ${(netBalance / incomeTotal * 100).toFixed(2)}% of the total annual income.</li>
         <li><b>Debts Reduced:</b> 20% reduction in outstanding debts.</li>
         <li><b>Investments Made:</b> $2,000.00 in long-term investment funds.</li>
       </ul>
