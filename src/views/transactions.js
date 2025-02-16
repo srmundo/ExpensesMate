@@ -275,6 +275,7 @@ export async function funcTransactions() {
       let transactions;
       if (isMobileDevice()) {
         transactions = await storageMobile.getTransactions(sessionId);
+        console.log("Transactions:", transactions);
       }
       
       console.log(currencySymbol)
