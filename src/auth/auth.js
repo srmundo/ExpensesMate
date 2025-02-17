@@ -15,59 +15,13 @@ export function registerSessionData(nickname, name, password) {
             password: password,
             photo: '../src/assets/icon/avatar-boy-svgrepo-com.svg'
         };
-
-        if (isMobileDevice()) {
-            storageMobile.openDatabase().then(() => {
-                console.log('🔵 Database opened successfully');
-                storageMobile.insertUser(session.name, session.nickname, session.email, session.password, session.photo).then(() => {
-                    console.log('User registered successfully');
-                    storageMobile.getUsers().then(users => {
-                        const user = users.find(user => user.nick === session.nickname && user.password === session.password);
-                        if (user) {
-                            session.id = user.id;
-                            sessionStorage.setItem('session', JSON.stringify(session));
-                        } else {
-                            console.error('User not found after registration');
-                        }
-                    }).catch(error => {
-                        console.error('Error retrieving user after registration', error);
-                    });
-                    sessionStorage.setItem('isLoggedIn', 'true');
-                    try {
-                        window.location.reload();
-                    } catch (error) {
-                        console.error('Error reloading the page', error);
-                    }
-                }).catch(error => {
-                    console.error('Error registering user', error);
-                });
-
-        });
-        }
-
         // const insertUserFunction = isMobileDevice() ? storageMobile.insertUser : insertUser;
-
-        insertUser(session.name, session.nickname, session.email, session.password, session.photo).then(() => {
+        api.addUser(session.name, session.nickname, session.email, session.photo, session.password).then(() => {
             console.log('User registered successfully');
-            getUsers().then(users => {
-                const user = users.find(user => user.nick === session.nickname && user.password === session.password);
-                if (user) {
-                    session.id = user.id;
-                    sessionStorage.setItem('session', JSON.stringify(session));
-                } else {
-                    console.error('User not found after registration');
-                }
-            }).catch(error => {
-                console.error('Error retrieving user after registration', error);
-            });
-            sessionStorage.setItem('isLoggedIn', 'true');
-            try {
-                window.location.reload();
-            } catch (error) {
-                console.error('Error reloading the page', error);
-            }
+            return true;
         }).catch(error => {
             console.error('Error registering user', error);
+            return false;
         });
     } else {
         console.log('Sorry, your browser does not support Web Storage...');
@@ -77,39 +31,6 @@ export function registerSessionData(nickname, name, password) {
 export function loginSession(nickname, password) {
     if (typeof(Storage) !== "undefined") {
         // const getUsersFunction = isMobileDevice() ? storageMobile.getUsers : getUsers;
-        if (isMobileDevice()) {
-            storageMobile.openDatabase().then(() => {
-                console.log('🔵 Database opened successfully');
-                storageMobile.getUsers().then(users => {
-                    const user = users.find(user => user.nick === nickname && user.password === password);
-                    console.log(user);
-                    if (user) {
-                        const session = {
-                            nickname: user.nick,
-                            name: user.name,
-                            email: user.email,
-                            photo: user.photo,
-                            id: user.id,
-                        };
-                        sessionStorage.setItem('session', JSON.stringify(session));
-                        if (sessionStorage.getItem('session')) {
-                            sessionStorage.setItem('isLoggedIn', 'true');
-                        }
-                        
-                        console.log('Login successful');
-                        try {
-                            window.location.reload();
-                        } catch (error) {
-                            console.error('Error reloading the page', error);
-                        }
-                    } else {
-                        console.log('Invalid nickname or password');
-                    }
-                }).catch(error => {
-                    console.error('Error logging in', error);
-                });
-            });
-        }
         getUsers().then(users => {
             const user = users.find(user => user.nick === nickname && user.password === password);
             console.log(user);
@@ -138,6 +59,39 @@ export function loginSession(nickname, password) {
                 return false;
             }
         }).catch(error => {
+            console.error('Error logging in', error);
+            return false;
+        });
+
+        api.getUsers().then(users => {
+            const user = users.find(user => user.nick === nickname && user.password === password);
+            console.log(user);
+            if (user) {
+                const session = {
+                    nickname: user.nick,
+                    name: user.name,
+                    email: user.email,
+                    photo: user.photo,
+                    id: user.id,
+                };
+                if (user) {
+                    sessionStorage.setItem('session', JSON.stringify(session));
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                }
+                
+                console.log('Login successful');
+                try {
+                    window.location.reload();
+                } catch (error) {
+                    console.error('Error reloading the page', error);
+                }
+                return true;
+            } else {
+                console.log('Invalid nickname or password');
+                return false;
+            }
+        }
+        ).catch(error => {
             console.error('Error logging in', error);
             return false;
         });

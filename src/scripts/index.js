@@ -1,5 +1,4 @@
 /** @format */
-
 // import { Router } from '../auth/router.js';
 import { LoginPage } from '../public/loginPage.js';
 import { openDatabase, insertCategory, insertCurrencyConfig, getCurrencyConfig } from '../data/storage.js';
@@ -8,9 +7,7 @@ import * as storageMobile from '../data/storageMobile.js';
 if (!sessionStorage.getItem('isLoggedIn')) {
 	sessionStorage.setItem('isLoggedIn', 'false');
 }
-function isMobileDevice(){
-	return /Mobi|Android/i.test(navigator.userAgent);
-}
+
 const categories = {
 		Income: [
 		  "Salary",
@@ -49,9 +46,6 @@ const categories = {
 	  async function insertCategories(userId) {
 		for (const type in categories) {
 			for (const name of categories[type]) {
-				if (isMobileDevice()) {
-					await storageMobile.insertCategory(userId, name, type);
-				}
 				await insertCategory(userId, name, type);
 			}
 		}
@@ -61,11 +55,8 @@ const categories = {
 		try {
 			const usdCurrency = 'USD';
 			if (usdCurrency) {
-				if (isMobileDevice()) {
-					await storageMobile.insertCurrencySettings(userId, usdCurrency);
-				} else {
 					await insertCurrencyConfig(userId, usdCurrency);
-				}
+				
 				console.log('USD currency inserted successfully');
 			} else {
 				console.error('USD currency not found in currency data');
@@ -81,14 +72,7 @@ async function checkLoginStatus() {
 	if (isLoggedIn && session) {
 		loadAppHTML();
 
-		if (isMobileDevice()) {
-			storageMobile.openDatabase().then(() => {
-				console.log('🔵 Database opened successfully');
-				insertCategories(sessionId).then(null).catch(()=>null);
-			});
-		} else {
-			openDatabase();
-		}
+		openDatabase();
 		const sessionId = JSON.parse(session).id;
 
 		insertCategories(sessionId).then(null).catch(()=>null);
