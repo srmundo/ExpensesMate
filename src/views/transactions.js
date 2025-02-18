@@ -258,6 +258,8 @@ export async function funcTransactions() {
   const sessionId = JSON.parse(session).id;
   const currencyConfig = await getCurrencyConfig(sessionId);
   const currencySymbol = dataCurrency[currencyConfig[0].currency].symbol;
+
+  
   
   const containerNewTransactions = document.querySelector(".cont-nav-trans");
   const containerCategoryTransactions = document.querySelector(
@@ -270,27 +272,54 @@ export async function funcTransactions() {
 
     try {
       let transactions;
+      let transactionsApi;
       // console.log(currencySymbol)
       transactions = await getTransactions(sessionId);
+      transactionsApi = await getTransactions();
+      const filteredTransactionsApi = transactionsApi.filter(transaction => transaction.userId === sessionId);
+      console.log('transacciones de la api:  ', filteredTransactionsApi)
+      console.log()
       transactionsTableBody.innerHTML = "";
-      transactions.forEach(transaction => {
-      const row = document.createElement("tr");
-      row.className = "row-table-transaction";
-      row.setAttribute("data-id", transaction.id);
-      row.innerHTML = `
-        <td class="col-table-transaction" data-label="Amount">${currencySymbol} ${transaction.amount}</td>
-        <td class="col-table-transaction" data-label="Date">${transaction.date}</td>
-        <td class="col-table-transaction" data-label="Category">${transaction.categoryId}</td>
-        <td class="col-table-transaction" data-label="Type">${transaction.type}</td>
-        <td class="col-table-transaction" data-label="Description">${transaction.note}</td>
-        <td class="col-table-transaction col-btn" data-label="Action">
-        <div class="col-btn">
-          <button id="btn-remove-transaction">Remove</button>
-        </div>
-        </td>
-      `;
-      transactionsTableBody.appendChild(row);
-      });
+      try{
+        transactions.forEach(transaction => {
+          const row = document.createElement("tr");
+          row.className = "row-table-transaction";
+          row.setAttribute("data-id", transaction.id || filteredTransactionsApi.id);
+          row.innerHTML = `
+            <td class="col-table-transaction" data-label="Amount">${currencySymbol} ${transaction.amount}</td>
+            <td class="col-table-transaction" data-label="Date">${transaction.date}</td>
+            <td class="col-table-transaction" data-label="Category">${transaction.categoryId}</td>
+            <td class="col-table-transaction" data-label="Type">${transaction.type}</td>
+            <td class="col-table-transaction" data-label="Description">${transaction.note}</td>
+            <td class="col-table-transaction col-btn" data-label="Action">
+            <div class="col-btn">
+              <button id="btn-remove-transaction">Remove</button>
+            </div>
+            </td>
+          `;
+          transactionsTableBody.appendChild(row);
+          });
+      }catch (error) {
+        console.log(error, 'we use the APIStorage')
+        filteredTransactionsApi.forEach(transaction => {
+          const row = document.createElement("tr");
+          row.className = "row-table-transaction";
+          row.setAttribute("data-id", transaction.id);
+          row.innerHTML = `
+            <td class="col-table-transaction" data-label="Amount">${currencySymbol} ${transaction.amount}</td>
+            <td class="col-table-transaction" data-label="Date">${transaction.date}</td>
+            <td class="col-table-transaction" data-label="Category">${transaction.categoryId}</td>
+            <td class="col-table-transaction" data-label="Type">${transaction.type}</td>
+            <td class="col-table-transaction" data-label="Description">${transaction.note}</td>
+            <td class="col-table-transaction col-btn" data-label="Action">
+            <div class="col-btn">
+              <button id="btn-remove-transaction">Remove</button>
+            </div>
+            </td>
+          `;
+          transactionsTableBody.appendChild(row);
+          });
+      }
     } catch (error) {
       console.error("Error fetching transactions:", error);
     }
@@ -341,7 +370,13 @@ export async function funcTransactions() {
       try {
         // const session = sessionStorage.getItem("session");
         let categories;
+        let categoriesApi;
         categories = await getCategories(sessionId);
+
+        categoriesApi = await api.getCategories();
+
+        console.log(categoriesApi)
+
         const categoryList = document.querySelector(".cont-list-category ul");
         categoryList.innerHTML = "";
         categories.forEach(category => {
@@ -443,18 +478,26 @@ export async function funcTransactions() {
         return;
       }
 
+      api.addTransaction(sessionId, amount, date, category, type, note)
       insertTransaction(sessionId, amount, date, category, type, note);
       
       async function updateGoalIfMatch(categoryName, amount) {
         console.log("Category:", categoryName);
         try {
             let goals;
+            let goalsApi;
+
             goals = await getGoals(sessionId);
-          console.log("Goals:", goals);
+
+            goalsApi = await api.getGoals();          
+            console.log("Goals:", goals);
+
           const goal = goals.find(goal => goal.name === categoryName);
           if (goal) {
           const newCurrentAmount = goal.currentAmount + parseFloat(amount);
  
+          await api.updateGoal(goal.id, sessionId, goal.name, goal.amount, newCurrentAmount, goal.date)
+
           await updateGoal(sessionId, goal.id, goal.name, goal.amount, newCurrentAmount, goal.date);
           console.log(`Goal updated: ${goal.name}, new current amount: ${newCurrentAmount}`);
           }
@@ -493,6 +536,10 @@ export async function funcTransactions() {
   async function renderGoals() {
     try {
       let goals;
+      let goalsApi;
+
+      goalsApi = api.getGoals();
+
       goals = await getGoals(sessionId); // Assuming you have a function to get goals from the database
       const optionsCategory = document.getElementById("options-category");
       const type = document.getElementById("options-type").value;
@@ -519,6 +566,9 @@ export async function funcTransactions() {
   async function renderCategories() {
     try {
       let categories;
+      let categoriesApi;
+
+      categoriesApi = await api.getCategories();
 
       categories = await getCategories(sessionId);
       const optionsCategory = document.getElementById("options-category");

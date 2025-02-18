@@ -356,8 +356,8 @@ export async function getUsers() {
     });
 }
 
-export function insertUser(name, nickname, email, password, photo) {
-    return insertData("users", { name, nick: nickname, email, password, photo });
+export function insertUser(id, name, nickname, email, password, photo) {
+    return insertData("users", {id, name, nick: nickname, email, password, photo });
 }
 
 export async function updateUser(id, newName, newNick, newEmail, newPassword, newPhoto) {

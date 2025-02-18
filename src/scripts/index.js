@@ -47,6 +47,7 @@ const categories = {
 		for (const type in categories) {
 			for (const name of categories[type]) {
 				await insertCategory(userId, name, type);
+				await api.addCategory(userId, name, type)
 			}
 		}
 	}
@@ -56,7 +57,7 @@ const categories = {
 			const usdCurrency = 'USD';
 			if (usdCurrency) {
 					await insertCurrencyConfig(userId, usdCurrency);
-				
+					await api.addCurrencyConfig(userId, usdCurrency)
 				console.log('USD currency inserted successfully');
 			} else {
 				console.error('USD currency not found in currency data');
@@ -86,6 +87,7 @@ async function checkLoginStatus() {
 		}).catch((error) => {
 			console.error('Error checking currency config:', error);
 		});
+
 		
 	} else {
 		LoginPage();
