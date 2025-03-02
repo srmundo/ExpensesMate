@@ -11,17 +11,14 @@ let exampleStorage = ["default-style"];
 export function main() {
   const userSession = JSON.parse(sessionStorage.getItem("session"));
   const avatarNavApp = document.querySelector(".avatar-nav-app");
-  // Añadir el menú flotante al contenedor .cont-btn-profile-nav
+
   if (userSession && userSession.photo) {
     avatarNavApp.src = userSession.photo;
   }
+  
   const [getActiveButton, setActiveButton] = useState(0);
   const containerView = document.querySelector(".section-app");
 
-
-  // if (exampleStorage[0] === "default-style") {
-  //   createLinkStyle("./src/css/default-styles.css");
-  // }
   loadView("home", containerView);
   initializeHome();
 
@@ -44,7 +41,6 @@ export function main() {
         switch (button.id) {
           case "btn-home":
             loadView("home", containerView);
-            // updateScore(75);
             initializeHome();
             break;
           case "btn-transactions":

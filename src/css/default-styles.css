@@ -407,6 +407,7 @@ ul {
   left: 0%;
   background-color: #56478f80;
   z-index: 4000;
+  display: none;
 }
 
 .body-transactions .nav-transactions {
@@ -416,6 +417,7 @@ ul {
   width: 40%;
   height: 85%;
   padding: 20px;
+  margin: auto;
   background-color: #fff;
   justify-content: space-around;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
@@ -577,7 +579,7 @@ select:focus,
 .body-transactions .cont-categories-list {
   width: 100%;
   height: 100%;
-  display: flex;
+  display: none;
   align-items: top;
   justify-content: center;
   position: absolute;
@@ -599,6 +601,7 @@ select:focus,
   position: relative;
   font-family: poppins-regular;
   font-size: 12px;
+  margin: auto;
 }
 .body-transactions .category-list input {
   padding-left: 10px;
@@ -723,6 +726,7 @@ select:focus,
   top: 0%;
   left: 0%;
   width: 100%;
+  display: none;
   height: 100%;
 }
 
@@ -1639,6 +1643,7 @@ input[type="number"]::-webkit-inner-spin-button,
     left: 0%;
     background-color: #56478f80;
     z-index: 4000;
+    display: none;
   }
 
   .cont-nav-trans-tracking h4{
@@ -1663,6 +1668,7 @@ input[type="number"]::-webkit-inner-spin-button,
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     position: relative;
+    margin: auto;
   }
 
   .cont-all-input{

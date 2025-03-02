@@ -1,55 +1,69 @@
+import { LoginPage } from "../public/loginPage.js";
+function init() {
+  const userLogged = localStorage.getItem("userLogged");
+
+  if (userLogged === null) {
+    localStorage.setItem("userLogged", "false");
+    // window.location.href = "../public/login.html";
+	LoginPage();
+  } else if (userLogged === "true") {
+    loadAppHTML();
+  } else {
+    // window.location.href = "../public/login.html";
+	LoginPage();
+  }
+}
 
 export function loadAppHTML() {
-	console.log('🔵 Cargando app.html...');
-		
-	fetch('./src/app.html')
-		.then((response) => response.text())
-		.then((html) => {
-			// Crear un elemento temporal para procesar el HTML
-			const tempDiv = document.createElement('div');
-			tempDiv.innerHTML = html;
+  console.log("🔵 Cargando app.html...");
 
-			// Extraer y aplicar los estilos manualmente antes de modificar el body
-			const styles = tempDiv.querySelectorAll('link[rel="stylesheet"]');
-			const additionalStyles = [
-				'./src/css/default-styles.css',
-				'./src/assets/fonts/Poppins/fonts.css',
-				'./src/assets/icon/fonts/style.css',
-			];
+  fetch("./src/app.html")
+    .then((response) => response.text())
+    .then((html) => {
+      // Crear un elemento temporal para procesar el HTML
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = html;
 
-			styles.forEach((style) => {
-				if (!document.querySelector(`link[href="${style.href}"]`)) {
-					document.head.appendChild(style.cloneNode(true));
-				}
-			});
+      // Extraer y aplicar los estilos manualmente antes de modificar el body
+      const styles = tempDiv.querySelectorAll('link[rel="stylesheet"]');
+      const additionalStyles = [
+        "./src/css/default-styles.css",
+        "./src/assets/fonts/Poppins/fonts.css",
+        "./src/assets/icon/fonts/style.css",
+      ];
 
-			additionalStyles.forEach((href) => {
-				if (!document.querySelector(`link[href="${href}"]`)) {
-					const link = document.createElement('link');
-					link.rel = 'stylesheet';
-					link.href = href;
-					document.head.appendChild(link);
-				}
-			});
+      styles.forEach((style) => {
+        if (!document.querySelector(`link[href="${style.href}"]`)) {
+          document.head.appendChild(style.cloneNode(true));
+        }
+      });
 
-			// Reemplazar el contenido del body con el HTML cargado
-			document.body.innerHTML = tempDiv.innerHTML;
+      additionalStyles.forEach((href) => {
+        if (!document.querySelector(`link[href="${href}"]`)) {
+          const link = document.createElement("link");
+          link.rel = "stylesheet";
+          link.href = href;
+          document.head.appendChild(link);
+        }
+      });
 
-			// Forzar la recarga de estilos con un pequeño retraso
-			setTimeout(() => {
-				document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
-					link.href = link.href; // Esto fuerza al navegador a recargar los estilos
-				});
-			}, 50);
+      // Reemplazar el contenido del body con el HTML cargado
+      document.body.innerHTML = tempDiv.innerHTML;
 
-			// Asegurar que los scripts de la app se ejecuten después de inyectar el HTML
-			loadAppScripts();
+      // Forzar la recarga de estilos con un pequeño retraso
+      setTimeout(() => {
+        document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
+          link.href = link.href; // Esto fuerza al navegador a recargar los estilos
+        });
+      }, 50);
 
-			const userSession = JSON.parse(sessionStorage.getItem('session'));
+      // Asegurar que los scripts de la app se ejecuten después de inyectar el HTML
+      loadAppScripts();
 
+      const userSession = JSON.parse(sessionStorage.getItem("session"));
 
-            // Crear el menú flotante
-            const profileMenu  = `
+      // Crear el menú flotante
+      const profileMenu = `
                 <div class="menuFloatOptionsNone">
                     <div class="profile-header">
                     <img src="" alt="User Photo" class="profile-photo">
@@ -64,76 +78,69 @@ export function loadAppHTML() {
                 </div>
             `;
 
-			
+      const contMenuFloatOptions = document.getElementById(
+        "cont-btn-propile-nav"
+      );
+      contMenuFloatOptions.innerHTML += profileMenu;
 
-            const contMenuFloatOptions = document.getElementById('cont-btn-propile-nav');
-            contMenuFloatOptions.innerHTML += profileMenu;
+      document.getElementById("btnLogout").addEventListener("click", () => {
+        console.log("🔵 Logout button clicked");
+        logoutUser();
+      });
+      const menu = document.querySelector(".menuFloatOptionsNone");
 
-            // // Añadir eventos a los botones del menú
-            // document.getElementById('btnProfile').addEventListener('click', () => {
-            //     console.log('🔵 Profile button clicked');
-            //     // Aquí puedes añadir la lógica para abrir la página de perfil
-            // });
+      document.getElementById("btnProfileOpt").addEventListener("click", () => {
+        if (menu.classList.contains("menuFloatOptions")) {
+          menu.classList.remove("menuFloatOptions");
+          menu.classList.add("menuFloatOptionsNone");
+        } else {
+          menu.classList.remove("menuFloatOptionsNone");
+          menu.classList.add("menuFloatOptions");
+        }
+        anime({
+          targets: menu,
+          opacity: [0, 1],
+          translateY: [-20, 0],
+          duration: 500,
+          easing: "easeOutQuad",
+        });
+      });
 
-            document.getElementById('btnLogout').addEventListener('click', () => {
-                console.log('🔵 Logout button clicked');
-                logoutUser();
-            });
-            const menu = document.querySelector('.menuFloatOptionsNone');
+      if (userSession && userSession.photo) {
+        const imgProfile = document.querySelector(".profile-photo");
+        imgProfile.src = userSession.photo;
+      }
 
-            document.getElementById('btnProfileOpt').addEventListener('click', () => {
-                if (menu.classList.contains('menuFloatOptions')) {
-                    menu.classList.remove('menuFloatOptions');
-                    menu.classList.add('menuFloatOptionsNone');
-                } else {
-                    menu.classList.remove('menuFloatOptionsNone');
-                    menu.classList.add('menuFloatOptions');
-                }
-            anime({
-                targets: menu,
-                opacity: [0, 1],
-                translateY: [-20, 0],
-                duration: 500,
-                easing: 'easeOutQuad'
-            });
-            });
+      if (userSession && userSession.name) {
+        const nameProfile = document.querySelector(".profile-name");
+        nameProfile.innerHTML = userSession.name;
+      }
 
-    		if (userSession && userSession.photo) {
-    		    const imgProfile = document.querySelector('.profile-photo');
-    		    imgProfile.src = userSession.photo;
-    		}
-
-			if(userSession && userSession.name){
-				const nameProfile = document.querySelector('.profile-name');
-    		    nameProfile.innerHTML = userSession.name;
-			}
-
-			if(userSession && userSession.nickname){
-				const nickProfile = document.querySelector('.profile-nick');
-    		    nickProfile.innerHTML = userSession.nickname;
-			}
-
-		})
-		.catch((error) => console.error('Error loading app.html:', error));
+      if (userSession && userSession.nickname) {
+        const nickProfile = document.querySelector(".profile-nick");
+        nickProfile.innerHTML = userSession.nickname;
+      }
+    })
+    .catch((error) => console.error("Error loading app.html:", error));
 }
 
 function loadAppScripts() {
-	const scripts = [
-		'./src/lib/jspdf.umd.min.js',
-		'./src/lib/jspdf.plugin.autotable.min.js',
-		'./src/lib/html2pdf.bundle.min.js',
-		'./src/lib/html2canvas.js',
-		'./src/lib/exceljs.min.js',
-		'./src/lib/xlsx.full.min.js',
-		'./src/app.js',
-	];
+  const scripts = [
+    "./src/lib/jspdf.umd.min.js",
+    "./src/lib/jspdf.plugin.autotable.min.js",
+    "./src/lib/html2pdf.bundle.min.js",
+    "./src/lib/html2canvas.js",
+    "./src/lib/exceljs.min.js",
+    "./src/lib/xlsx.full.min.js",
+    "./src/app.js",
+  ];
 
-	scripts.forEach((src) => {
-		const script = document.createElement('script');
-		script.src = src;
-		script.type = 'module';
-		document.body.appendChild(script);
-	});
+  scripts.forEach((src) => {
+    const script = document.createElement("script");
+    script.src = src;
+    script.type = "module";
+    document.body.appendChild(script);
+  });
 }
 
-globalThis.addEventListener('DOMContentLoaded', loadAppHTML());
+globalThis.addEventListener("DOMContentLoaded", init);

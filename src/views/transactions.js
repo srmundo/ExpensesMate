@@ -1,6 +1,5 @@
-
 export function transactions() {
-  return `
+  return /*HTML*/ `
     <div class="container-transactions">
       <span class="title-transactions"><h4>Transactions</h4></span>
       <div class="body-transactions">
@@ -16,44 +15,44 @@ export function transactions() {
         </span>
         <div class="cont-nav-trans-tracking">
           <nav class="nav-transactions-tracking">
-      <h4 class="title-add-trans-tracking">Add Budget Tracking</h4>
-      <div class="cont-all-input">
-        <div class="cont-input-category-tracking div-cont">
-        <label for="options-category-tracking">Select a category:</label>
-        <div class="input-category">
-          <select id="options-category-tracking" name="options-category-tracking">
-          </select>
-        </div>
-      </div>
-      <div class="cont-input-amount-tracking div-cont">
-        <label for="input-amount-tracking">Budgeted Amount:</label>
-        <input id="input-amount-tracking" type="number" placeholder="Insert an amount" />
-      </div>
-      </div>
-      <div class="cont-btn-add-cancel-tracking">
-        <button id="btn-add-tracking">
-          <span class="icon-plus"></span>
-          <p>Add</p>
-        </button>
-        <button id="btn-cancel-tracking">
-          <span class="icon-x"></span>
-          <p>Back</p>
-        </button>
-      </div>
-      <div class="cont-list-tracking">
-      <table class="cont-table-tracking">
-        <thead>
-          <tr class="head-table-tracking">
-            <th>Category</th>
-            <th>Budgeted Amount</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="body-table-tracking">
-        </tbody>
-      </table>
-    </div>
-    </nav>
+            <h4 class="title-add-trans-tracking">Add Budget Tracking</h4>
+            <div class="cont-all-input">
+              <div class="cont-input-category-tracking div-cont">
+              <label for="options-category-tracking">Select a category:</label>
+              <div class="input-category">
+                <select id="options-category-tracking" name="options-category-tracking">
+                </select>
+              </div>
+            </div>
+            <div class="cont-input-amount-tracking div-cont">
+              <label for="input-amount-tracking">Budgeted Amount:</label>
+              <input id="input-amount-tracking" type="number" placeholder="Insert an amount" />
+            </div>
+            </div>
+            <div class="cont-btn-add-cancel-tracking">
+              <button id="btn-add-tracking">
+                <span class="icon-plus"></span>
+                <p>Add</p>
+              </button>
+              <button id="btn-cancel-tracking">
+                <span class="icon-x"></span>
+                <p>Back</p>
+              </button>
+            </div>
+            <div class="cont-list-tracking">
+            <table class="cont-table-tracking">
+              <thead>
+                <tr class="head-table-tracking">
+                  <th>Category</th>
+                  <th>Budgeted Amount</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="body-table-tracking">
+              </tbody>
+            </table>
+          </div>
+        </nav>
         </div>
         <div class="cont-nav-trans">
           <nav class="nav-transactions">
@@ -181,7 +180,7 @@ export function transactions() {
               </div>
               <div class="cont-btn-cancel-add-cat">
                 <!--<button id="btn-add-category">Add</button>-->
-                <button id="btn-cancel-category">Ok</button>
+                <button id="btn-ok-category">Ok</button>
               </div>
             </div>
           </div>
@@ -253,6 +252,51 @@ fetch("./src/locale/currency/currency.json")
   .catch((error) => console.log(error));
 
 export async function funcTransactions() {
-
+  const containerFormTransactions = document.querySelector(".cont-nav-trans");
+  const containerFormTracking = document.querySelector(".cont-nav-trans-tracking");
+  const btnNewTransactions = document.getElementById("btn-new-transactions");
+  const btnNewTracking = document.getElementById("btn-new-tracking");
+  const containerCategories = document.querySelector(".cont-categories-list");
+  const btnNewCategory = document.getElementById("btn-new-category");
+  const btnOkCategory = document.getElementById("btn-ok-category");
+  const btnCancelTransaction = document.getElementById("btn-cancel-transaction");
+  const btnCancelTracking = document.getElementById("btn-cancel-tracking");
   
+  containerFormTransactions.style.display = "none";
+  containerCategories.style.display = "none";
+
+  // Add new transactions
+  btnNewTransactions.addEventListener("click", () => {
+    containerFormTransactions.style.display = "block";
+
+    // Add new category
+    btnNewCategory.addEventListener("click", () => {
+      containerCategories.style.display = "block";
+
+      // Ok category
+      btnOkCategory.addEventListener("click", () => {
+        containerCategories.style.display = "none";
+      }
+      )
+    }
+    )
+
+    // Cancel transaction
+    btnCancelTransaction.addEventListener("click", () => {
+      containerFormTransactions.style.display = "none";
+    }
+    )
+  });
+
+  // Budget tracking
+  btnNewTracking.addEventListener("click", () => {
+    containerFormTracking.style.display = "block";
+
+    // Cancel tracking
+    btnCancelTracking.addEventListener("click", () => {
+      containerFormTracking.style.display = "none";
+    }
+    )
+  }
+  )
 }

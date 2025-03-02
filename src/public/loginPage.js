@@ -1,6 +1,4 @@
-import { loadAppHTML } from "../scripts/index.js";
-import { registerSessionData, loginSession } from "../auth/auth.js";
-import { getUsers } from "../data/storage.js";
+import { addUser } from "../auth/auth.js";
 export const LoginPage = function() {
     const app = document.getElementById('app');
     const style = document.createElement('style');
@@ -83,30 +81,12 @@ export const LoginPage = function() {
             </form>
             <p>Don't have an account? <a href="#" id="showRegisterForm">Register</a></p>
         `;
-        // document.getElementById('loginForm').addEventListener('submit', function(event) {
-        //     event.preventDefault();
-        //     const nicknameOrEmail = document.getElementById('nicknameOrEmail').value;
-        //     const password = document.getElementById('password').value;
-
-        //     // Simulate authentication logic
-        //     const storedUser = JSON.parse(sessionStorage.getItem('userSession'));
-        //     if (storedUser && storedUser.nicknameOrEmail === nicknameOrEmail && storedUser.password === password) {
-        //     console.log('Login successful');
-        //     sessionStorage.setItem('isLoggedIn', 'true');
-        //     loadAppHTML()
-        //     window.location.reload();
-        //     } else {
-        //     console.log('Invalid credentials');
-        //     alert('Invalid nickname/email or password. Please try again.');
-        //     }
-        // });
 
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const name = document.getElementById('nicknameOrEmail').value;
             const password = document.getElementById('password').value;
 
-            loginSession(name, password);
         });
 
         document.getElementById('showRegisterForm').addEventListener('click', function(event) {
@@ -152,32 +132,6 @@ export const LoginPage = function() {
             <p>Already have an account? <a href="#" id="showLoginForm">Login</a></p>
         `;
 
-        // document.getElementById('registerForm').addEventListener('submit', function(event) {
-        //     event.preventDefault();
-        //     const nickname = document.getElementById('nickname').value;
-        //     const email = document.getElementById('email').value;
-        //     const password = document.getElementById('password').value;
-        //     const repeatPassword = document.getElementById('repeatPassword').value;
-
-        //     if (password !== repeatPassword) {
-        //     alert('Passwords do not match. Please try again.');
-        //     return;
-        //     }
-
-        //     const newUser = {
-        //     photo: '../src/assets/icon/avatar-boy-svgrepo-com.svg',
-        //     nicknameOrEmail: nickname,
-        //     email: email,
-        //     password: password
-        //     };
-
-        //     sessionStorage.setItem('userSession', JSON.stringify(newUser));
-        //     console.log('User registered successfully');
-        //     // loadAppHTML();
-        //     alert('Registration successful. You can now log in.');
-        //     createLoginForm();
-        // });
-
         document.getElementById('registerForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const name = document.getElementById('nickname').value;
@@ -191,9 +145,8 @@ export const LoginPage = function() {
                 return;
             }
 
-            registerSessionData(name, fullName, password);
+            addUser(fullName, name, '', photo, password);
 
-        
             createLoginForm();
         });
         
