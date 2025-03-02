@@ -1,7 +1,7 @@
 import { createLinkStyle } from "./scripts/createLinkStyle.js";
 import { home, updateScore, initializeHome } from "./views/home.js";
 import { transactions, funcTransactions } from "./views/transactions.js";
-import { reports, funcReport } from "./views/reports.js";
+import { reports, initializeReport } from "./views/reports.js";
 import { goals, initializeGoals } from "./views/goals.js";
 import { settings, initializeSettings } from "./views/settings.js";
 import { profile, initializeProfile } from "./views/profile.js";
@@ -53,7 +53,7 @@ export function main() {
             break;
           case "btn-reports":
             loadView("reports", containerView);
-            funcReport();
+            initializeReport();
             break;
           case "btn-goals":
             loadView("goals", containerView);
