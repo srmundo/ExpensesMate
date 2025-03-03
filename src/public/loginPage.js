@@ -1,4 +1,4 @@
-import { addUser } from "../auth/auth.js";
+import { addUser, getUsers } from "../auth/auth.js";
 export const LoginPage = function() {
     const app = document.getElementById('app');
     const style = document.createElement('style');
@@ -114,26 +114,28 @@ export const LoginPage = function() {
         });
     }
 
-    function createRegisterForm() {
+    async function createRegisterForm() {
         app.innerHTML = `
             <h2>ExpensesMate</h2>
             <form id="registerForm">
             <h4>Register</h4>
             <input type="text" id="nickname" name="nickname" placeholder="Nickname" required>
+            <strong style="color: red; display:none; font-size: 12px;" id="alert-mess">User is not available, try another.</strong>
             <br>
             <input type="text" id="name" name="name" placeholder="Full name" required>
             <br>
             <input type="password" id="password" name="password" placeholder="Password" required>
             <br>
             <input type="password" id="repeatPassword" name="repeatPassword" placeholder="Repeat Password" required>
+            <strong style="color: red; display:none; font-size: 12px;" id="alert-mess-pass">the password do not match</strong>
             <br>
             <button type="submit">Register</button>
             </form>
             <p>Already have an account? <a href="#" id="showLoginForm">Login</a></p>
         `;
 
-        document.getElementById('registerForm').addEventListener('submit', function(event) {
-            // event.preventDefault();
+        document.getElementById('registerForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
             const name = document.getElementById('nickname').value;
             const fullName = document.getElementById('name').value;
             const password = document.getElementById('password').value;
@@ -141,11 +143,19 @@ export const LoginPage = function() {
             const photo = '../src/assets/icon/avatar-boy-svgrepo-com.svg'; // Imagen por defecto
         
             if (password !== repeatPassword) {
-                alert('Las contraseñas no coinciden.');
+                document.getElementById('alert-mess-pass').style.display = 'block';
+                document.getElementById('password').style.borderColor = 'red';
+                document.getElementById('repeatPassword').style.borderColor = 'red';
                 return;
             }
-
-            addUser(fullName, name, '', photo, password);
+            const users = await getUsers();
+            const userExists = users.some(user => user.nick === name);
+            if (userExists) {
+                document.getElementById('alert-mess').style.display = 'block';
+                document.getElementById('nickname').style.borderColor = 'red';
+                return;
+            }
+            addUser(fullName, name, `${name}@example.com`, photo, password);
 
             createLoginForm();
         });
