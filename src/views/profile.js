@@ -78,7 +78,38 @@ function previewImage(event) {
 
 export async function initializeProfile() {
 const userData = JSON.parse(localStorage.getItem('userData'));
+const currency = localStorage.getItem('currency') || 'USD';
+const goals = JSON.parse(localStorage.getItem('goals')) || [];
+document.querySelector('.profile-settings tbody').innerHTML = `
+    <tr>
+        <td>Currency</td>
+        <td>${currency}</td>
+    </tr>
+    <tr>
+        <td>Language</td>
+        <td>English</td>
+    </tr>
+`;
 
+const goalsTableBody = document.querySelector('.profile-goals tbody');
+goals.forEach(goal => {
+    const goalTransactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    const goalAmount = parseFloat(goal.amount);
+    const goalProgress = goalTransactions
+        .filter(transaction => transaction.category.toLowerCase().includes(goal.name.toLowerCase()))
+        .reduce((sum, transaction) => sum + transaction.amount, 0);
+    goal.progress = ((goalProgress / goalAmount) * 100).toFixed(0) + '%';
+    goal.status = goalProgress >= goalAmount ? 'Completed' : 'In Progress';
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td>${goal.name}</td>
+        <td>${goal.amount}</td>
+        <td>${goal.date}</td>
+        <td>${goal.progress}</td>
+        <td style="color:${goal.status === 'Completed' ? 'green' : 'orange'};">${goal.status}</td>
+    `;
+    goalsTableBody.appendChild(row);
+});
 if (userData) {
     document.getElementById('name').value = userData.name;
     document.getElementById('image-preview').src = userData.photo;
@@ -97,6 +128,8 @@ document.querySelector('button[type="submit"]').addEventListener('click', async 
     try {
         await editUser(updatedUser);
         localStorage.setItem('userData', JSON.stringify(updatedUser));
+        document.querySelector('.avatar-nav-app').src = photo;
+        document.querySelector('.profile-photo').src = photo;
         alert('Profile updated successfully!');
     } catch (error) {
         console.error('Error updating profile:', error);

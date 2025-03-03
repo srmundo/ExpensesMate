@@ -9,13 +9,11 @@ import { useState } from "./scripts/useState.js";
 let exampleStorage = ["default-style"];
 
 export function main() {
-  const userSession = JSON.parse(sessionStorage.getItem("session"));
+  const userSession = JSON.parse(localStorage.getItem("userData"));
   const avatarNavApp = document.querySelector(".avatar-nav-app");
 
-  if (userSession && userSession.photo) {
-    avatarNavApp.src = userSession.photo;
-  }
-  
+  avatarNavApp.src = userSession.photo;
+
   const [getActiveButton, setActiveButton] = useState(0);
   const containerView = document.querySelector(".section-app");
 

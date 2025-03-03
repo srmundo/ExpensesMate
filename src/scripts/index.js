@@ -138,7 +138,7 @@ export function loadAppHTML() {
       // Asegurar que los scripts de la app se ejecuten después de inyectar el HTML
       loadAppScripts();
 
-      const userSession = JSON.parse(sessionStorage.getItem("session"));
+      const userSession = JSON.parse(localStorage.getItem("userData"));
 
       // Crear el menú flotante
       const profileMenu = `
@@ -161,9 +161,10 @@ export function loadAppHTML() {
       );
       contMenuFloatOptions.innerHTML += profileMenu;
 
+
+
       document.getElementById("btnLogout").addEventListener("click", () => {
         console.log("🔵 Logout button clicked");
-        logoutUser();
       });
       const menu = document.querySelector(".menuFloatOptionsNone");
 
@@ -184,20 +185,14 @@ export function loadAppHTML() {
         });
       });
 
-      if (userSession && userSession.photo) {
+
         const imgProfile = document.querySelector(".profile-photo");
         imgProfile.src = userSession.photo;
-      }
-
-      if (userSession && userSession.name) {
         const nameProfile = document.querySelector(".profile-name");
         nameProfile.innerHTML = userSession.name;
-      }
-
-      if (userSession && userSession.nickname) {
         const nickProfile = document.querySelector(".profile-nick");
-        nickProfile.innerHTML = userSession.nickname;
-      }
+        nickProfile.innerHTML = userSession.nick;
+      
     })
     .catch((error) => console.error("Error loading app.html:", error));
 }
