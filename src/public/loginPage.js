@@ -1,4 +1,4 @@
-import { addUser } from "../auth/auth.js";
+// import { addUser } from "../auth/auth.js";
 export const LoginPage = function() {
     const app = document.getElementById('app');
     const style = document.createElement('style');
@@ -145,7 +145,7 @@ export const LoginPage = function() {
                 return;
             }
 
-            addUser(fullName, name, '', photo, password);
+            // addUser(fullName, name, '', photo, password);
 
             createLoginForm();
         });

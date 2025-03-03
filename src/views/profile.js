@@ -1,4 +1,4 @@
-
+import { editUser } from "../auth/auth.js";
 export function profile() {
     return `
                 <div class="container-profile">
@@ -77,5 +77,31 @@ function previewImage(event) {
 }
 
 export async function initializeProfile() {
-   
+const userData = JSON.parse(localStorage.getItem('userData'));
+
+if (userData) {
+    document.getElementById('name').value = userData.name;
+    document.getElementById('image-preview').src = userData.photo;
+}
+
+document.getElementById('profile-image').addEventListener('change', previewImage);
+
+document.querySelector('button[type="submit"]').addEventListener('click', async (event) => {
+    event.preventDefault();
+    
+    const name = document.getElementById('name').value;
+    const photo = document.getElementById('image-preview').src;
+
+    const updatedUser = { name, photo };
+
+    try {
+        await editUser(updatedUser);
+        localStorage.setItem('userData', JSON.stringify(updatedUser));
+        alert('Profile updated successfully!');
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        alert('Failed to update profile. Please try again.');
+    }
+});
+
 }

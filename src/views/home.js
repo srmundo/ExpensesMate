@@ -1,5 +1,5 @@
 export function home() {
-  return `
+  return /*html*/ `
     <div class="container-home">
       <div class="container-summary">
         <div class="container-summary-exp-inc">
@@ -381,11 +381,299 @@ export function updateScore(score) {
 }
 let dataCurrency;
 
-fetch('./src/locale/currency/currency.json')
-.then((response)=>response.json())
-.then((data)=>dataCurrency = data)
-.catch((error)=>console.log(error));
+fetch("./src/locale/currency/currency.json")
+  .then((response) => response.json())
+  .then((data) => (dataCurrency = data))
+  .catch((error) => console.log(error));
 
 export async function initializeHome() {
-  
+  const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+  const goals = JSON.parse(localStorage.getItem("goals")) || [];
+  const budgetTracking =
+    JSON.parse(localStorage.getItem("budgetTracking")) || [];
+
+  let totalIncome = 0;
+  let totalExpenses = 0;
+  let totalSavings = 0;
+  let totalDebt = 0;
+  let totalBalance = 0;
+
+  transactions.forEach((transaction) => {
+    console.log(transaction.type)
+    if (transaction.type === "Income") {
+      totalIncome += parseFloat(transaction.amount);
+    } else if (transaction.type === "Expense") {
+      totalExpenses += parseFloat(transaction.amount);
+    }
+  });
+
+  totalBalance = totalIncome - totalExpenses;
+
+  document.querySelector(".data-summary-income .value-money").textContent = `$ ${totalIncome.toFixed(2)}`;
+  document.querySelector(".data-summary-expenses .value-money").textContent = `$ ${totalExpenses.toFixed(2)}`;
+  document.querySelector(".data-summary-balance .value-money").textContent = `$ ${totalBalance.toFixed(2)}`;
+
+  const summaryCategoriesContainer = document.querySelector('.summary-cat');
+  summaryCategoriesContainer.innerHTML = '';
+
+  function fillSummaryCategories(transactions) {
+    const categories = {};
+
+    transactions.forEach((transaction) => {
+      if (transaction.type === "Expense") {
+        if (!categories[transaction.category]) {
+          categories[transaction.category] = 0;
+        }
+        categories[transaction.category] += parseFloat(transaction.amount);
+      }
+    });
+
+    const totalExpenses = Object.values(categories).reduce((acc, amount) => acc + amount, 0);
+
+    Object.keys(categories).forEach((category) => {
+      const amount = categories[category];
+      const percentage = ((amount / totalExpenses) * 100).toFixed(2);
+
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td id="data-category">${category}</td>
+        <td id="data-amount">$ ${amount.toFixed(2)}</td>
+        <td id="data-charts">
+          <div class="bar-container">
+            <div class="bar-progress ${category.toLowerCase()}" style="width: ${percentage}%;">${percentage}%</div>
+          </div>
+        </td>
+      `;
+      summaryCategoriesContainer.appendChild(row);
+    });
+  }
+
+  fillSummaryCategories(transactions);
+
+  const calculateFinancialHealthScore = (transactions) => {
+    let income = 0;
+    let expenses = 0;
+    let savings = goals.reduce((acc, goal) => acc + parseFloat(goal.amount), 0);
+    transactions.forEach((transaction) => {
+      if (transaction.type === "goals" && goals.some(goal => goal.name === transaction.category)) {
+      totalSavings += parseFloat(transaction.amount);
+      }
+    });
+    let debt = 0;
+
+    transactions.forEach((transaction) => {
+      if (transaction.type === "Income") {
+        income += parseFloat(transaction.amount);
+      } else if (transaction.type === "Expense") {
+        expenses += parseFloat(transaction.amount);
+      } else if (transaction.type === "goals") {
+        savings += parseFloat(transaction.amount);
+      }
+    });
+
+    const savingsRate = (savings / income) * 100;
+    const debtToIncomeRatio = (debt / income) * 100;
+    const expenseToIncomeRatio = (expenses / income) * 100;
+
+    let score = 100;
+
+    if (savingsRate < 20) {
+      score -= (20 - savingsRate) * 2;
+    }
+
+    if (debtToIncomeRatio > 30) {
+      score -= (debtToIncomeRatio - 30) * 2;
+    }
+
+    if (expenseToIncomeRatio > 50) {
+      score -= (expenseToIncomeRatio - 50) * 2;
+    }
+
+    return Math.max(score, 0);
+  };
+
+  const financialHealthScore = calculateFinancialHealthScore(transactions);
+  updateScore(financialHealthScore.toFixed(0));
+
+  function fillIncomeTable(transactions) {
+    const incomeTable = document.querySelector(".income-data table");
+    incomeTable.innerHTML = `
+      <tr>
+        <th>Category/th>
+        <th>Description</th>
+        <th>Amount</th>
+      </tr>
+    `;
+
+    let totalIncome = 0;
+
+    transactions.forEach((transaction) => {
+      if (transaction.type === "Income") {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${transaction.category}</td>
+          <td>${transaction.note}</td>
+          <td>$${parseFloat(transaction.amount).toFixed(2)}</td>
+        `;
+        incomeTable.appendChild(row);
+        totalIncome += parseFloat(transaction.amount);
+      }
+    });
+
+    const totalRow = document.createElement("tr");
+    totalRow.innerHTML = `
+      <th>Total Income</th>
+      <th>$${totalIncome.toFixed(2)}</th>
+    `;
+    incomeTable.appendChild(totalRow);
+  }
+
+  fillIncomeTable(transactions);
+
+  function fillCategoriesTable(transactions) {
+    const categoriesTable = document.querySelector(".categories table");
+    categoriesTable.innerHTML = `
+      <tr>
+        <th>Category</th>
+        <th>Description</th>
+        <th>Amount</th>
+      </tr>
+    `;
+
+    const categories = {};
+
+    transactions.forEach((transaction) => {
+      if (transaction.type === "Expense") {
+        if (!categories[transaction.category]) {
+          categories[transaction.category] = {
+            description: transaction.note || "",
+            amount: 0,
+          };
+        }
+        categories[transaction.category].amount += parseFloat(transaction.amount);
+      }
+    });
+
+    Object.keys(categories).forEach((category) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${category}</td>
+        <td>${categories[category].description}</td>
+        <td>$${categories[category].amount.toFixed(2)}</td>
+      `;
+      categoriesTable.appendChild(row);
+    });
+  }
+
+  fillCategoriesTable(transactions);
+
+  function fillBudgetTrackingTable(budgetTracking) {
+    const budgetTable = document.querySelector(".budget table");
+    budgetTable.innerHTML = `
+      <tr>
+        <th>Category</th>
+        <th>Budgeted Amount</th>
+        <th>Actual Spent</th>
+        <th>Difference</th>
+      </tr>
+    `;
+
+    budgetTracking.forEach((item) => {
+      console.log(item)
+      const difference = parseFloat(item.amount) - parseFloat(item.actualSpent);
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${item.category}</td>
+        <td>$${item.amount}</td>
+        <td>$${item.actualSpent}</td>
+        <td style="color:${difference >= 0 ? "green" : "red"};">${difference >= 0 ? "+" : ""}$${difference.toFixed(2)}</td>
+      `;
+      budgetTable.appendChild(row);
+    });
+  }
+
+  fillBudgetTrackingTable(budgetTracking);
+
+  function fillSavingsGoalsTable(goals) {
+    const savingsTable = document.querySelector(".saving-tables table");
+    savingsTable.innerHTML = `
+      <tr>
+        <th>Goal</th>
+        <th>Target Amount</th>
+        <th>Current Savings</th>
+        <th>Remaining Amount</th>
+      </tr>
+    `;
+
+    goals.forEach((goal) => {
+      const matchingTransactions = transactions.filter(transaction => transaction.category === goal.name);
+      const currentSavings = matchingTransactions.reduce((acc, transaction) => acc + parseFloat(transaction.amount), 0);
+      const remainingAmount = parseFloat(goal.amount) - parseFloat(currentSavings);
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${goal.name}</td>
+        <td>$${parseFloat(goal.amount).toFixed(2)}</td>
+        <td style="color:${parseFloat(currentSavings).toFixed(2) >= parseFloat(goal.amount).toFixed(2) ? "green" : "orange"};">$${parseFloat(currentSavings).toFixed(2)}</td>
+        <td style="color:${remainingAmount.toFixed(2) <= 0 ? "green" : "orange"};">$${remainingAmount.toFixed(2)}</td>
+      `;
+      savingsTable.appendChild(row);
+    });
+  }
+
+  fillSavingsGoalsTable(goals);
+
+  function fillSummaryIndicators(transactions) {
+    const summaryTable = document.querySelector(".summary-table table");
+    summaryTable.innerHTML = `
+      <tr>
+        <th>Indicator</th>
+        <th>Value</th>
+      </tr>
+    `;
+
+    let totalIncome = 0;
+    let totalExpenses = 0;
+    let totalSavings = goals.reduce((acc, goal) => acc + parseFloat(goal.amount), 0);
+    transactions.forEach((transaction) => {
+      if (transaction.type === "goals" && goals.some(goal => goal.name === transaction.category)) {
+      totalSavings += parseFloat(transaction.amount);
+      }
+    });
+    let totalDebt = 0;
+
+    transactions.forEach((transaction) => {
+      if (transaction.type === "Income") {
+        totalIncome += parseFloat(transaction.amount);
+      } else if (transaction.type === "Expense") {
+        totalExpenses += parseFloat(transaction.amount);
+      } else if (transaction.type === "Savings") {
+        totalSavings += parseFloat(transaction.amount);
+      } else if (transaction.type === "Debt") {
+        totalDebt += parseFloat(transaction.amount);
+      }
+    });
+
+    const savingsRate = ((totalSavings / totalIncome) * 100).toFixed(2);
+    const debtToIncomeRatio = ((totalDebt / totalIncome) * 100).toFixed(2);
+    const financialHealthScore = calculateFinancialHealthScore(transactions).toFixed(0);
+
+    const indicators = [
+      { name: "Total Income vs. Expenses", value: `$${totalIncome.toFixed(2)} - $${totalExpenses.toFixed(2)}` },
+      { name: "Savings Rate", value: `${savingsRate}%` },
+      { name: "Debt-to-Income Ratio", value: `${debtToIncomeRatio}%` },
+      { name: "Financial Health Score", value: `${financialHealthScore}/100` },
+    ];
+
+    indicators.forEach((indicator) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${indicator.name}</td>
+        <td>${indicator.value}</td>
+      `;
+      summaryTable.appendChild(row);
+    });
+  }
+
+  fillSummaryIndicators(transactions);
+
 }

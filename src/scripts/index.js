@@ -1,16 +1,94 @@
 import { LoginPage } from "../public/loginPage.js";
+
+if (localStorage.getItem("currency") === null) {
+	localStorage.setItem("currency", "USD");
+}
+const budgetCategories = 
+  {
+    "income": [
+      {
+        name: "Salary",
+        description: "Income from a regular job or employment.",
+      },
+      {
+        name: "Freelance",
+        description: "Income from freelance or self-employment work.",
+      },
+      {
+        name: "Investments",
+        description:
+          "Income from investments like stocks, bonds, or dividends.",
+      },
+      {
+        name: "Other Income",
+        description: "Any other form of income not categorized elsewhere.",
+      },
+    ],
+    "expense": [
+      {
+        name: "Housing",
+        description: "Rent, mortgage payments, and home maintenance.",
+      },
+      {
+        name: "Food",
+        description: "Groceries, dining out, and other food-related expenses.",
+      },
+      {
+        name: "Transportation",
+        description:
+          "Public transportation, fuel, car maintenance, and parking.",
+      },
+      {
+        name: "Utilities",
+        description:
+          "Electricity, water, gas, internet, and other essential services.",
+      },
+      {
+        name: "Healthcare",
+        description:
+          "Medical expenses, health insurance, prescriptions, and treatments.",
+      },
+      {
+        name: "Education",
+        description:
+          "Tuition fees, books, courses, and other educational costs.",
+      },
+      {
+        name: "Entertainment",
+        description:
+          "Movies, concerts, subscriptions to streaming services, hobbies.",
+      },
+      {
+        name: "Savings",
+        description: "Money set aside for future savings or investments.",
+      },
+      {
+        name: "Debt Repayments",
+        description:
+          "Payments for loans, credit cards, mortgages, and other debts.",
+      },
+      {
+        name: "Other Expenses",
+        description: "Expenses that don't fit into the above categories.",
+      },
+    ],
+  };
+
+console.log(budgetCategories);
+
 function init() {
   const userLogged = localStorage.getItem("userLogged");
 
   if (userLogged === null) {
     localStorage.setItem("userLogged", "false");
     // window.location.href = "../public/login.html";
-	LoginPage();
+    LoginPage();
   } else if (userLogged === "true") {
     loadAppHTML();
+    localStorage.setItem("budgetCategories", JSON.stringify(budgetCategories));
   } else {
     // window.location.href = "../public/login.html";
-	LoginPage();
+    LoginPage();
   }
 }
 

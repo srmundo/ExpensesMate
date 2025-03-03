@@ -261,6 +261,8 @@ export async function funcTransactions() {
   const btnOkCategory = document.getElementById("btn-ok-category");
   const btnCancelTransaction = document.getElementById("btn-cancel-transaction");
   const btnCancelTracking = document.getElementById("btn-cancel-tracking");
+  const selectCategory = document.getElementById("options-category");
+  const selectType = document.getElementById("options-type");
   
   containerFormTransactions.style.display = "none";
   containerCategories.style.display = "none";
@@ -299,4 +301,364 @@ export async function funcTransactions() {
     )
   }
   )
+
+  const budgetCategories = JSON.parse(localStorage.getItem('budgetCategories'));
+
+  function renderCategories(type) {
+    const selectCategory = document.getElementById("options-category");
+    selectCategory.innerHTML = ""; // Clear existing options
+
+    if (budgetCategories && budgetCategories[type]) {
+      budgetCategories[type].forEach(category => {
+      const option = document.createElement("option");
+      option.value = category.name;
+      option.textContent = category.name;
+      selectCategory.appendChild(option);
+      });
+    }
+
+    if (type === "goals") {
+      const goals = JSON.parse(localStorage.getItem('goals')) || [];
+      goals.forEach(goal => {
+      const option = document.createElement("option");
+      option.value = goal.name;
+      option.textContent = goal.name;
+      selectCategory.appendChild(option);
+      });
+    }
+    selectCategory.addEventListener("change", (event) => {
+      const selectedCategory = event.target.value;
+      const category = budgetCategories[selectType.value.toLowerCase()].find(cat => cat.name === selectedCategory);
+      const inputNote = document.getElementById("input-note");
+      inputNote.value = category ? category.description : "";
+    });
+  }
+
+  selectType.addEventListener("change", (event) => {
+    renderCategories(event.target.value.toLowerCase());
+  });
+
+  // Initial render based on default selected type
+  renderCategories(selectType.value.toLowerCase());
+
+  const btnAddTransactions = document.getElementById("btn-add-transactions");
+
+  //validation form transactions
+  btnAddTransactions.addEventListener("click", () => {
+    const inputAmount = document.getElementById("input-amount");
+    const inputDate = document.getElementById("input-date");
+    const selectType = document.getElementById("options-type");
+    const selectCategory = document.getElementById("options-category");
+    const inputNote = document.getElementById("input-note");
+
+    let isValid = true;
+
+    if (!inputAmount.value) {
+      inputAmount.style.border = "1px solid red";
+      isValid = false;
+    } else {
+      inputAmount.style.border = "";
+    }
+
+    if (!inputDate.value) {
+      inputDate.style.border = "1px solid red";
+      isValid = false;
+    } else {
+      inputDate.style.border = "";
+    }
+
+    if (!selectType.value) {
+      selectType.style.border = "1px solid red";
+      isValid = false;
+    } else {
+      selectType.style.border = "";
+    }
+
+    if (!selectCategory.value) {
+      selectCategory.style.border = "1px solid red";
+      isValid = false;
+    } else {
+      selectCategory.style.border = "";
+    }
+
+    if (isValid) {
+      // Proceed with adding the transaction
+      console.log("Transaction added successfully");
+      const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+      const newTransaction = {
+        amount: inputAmount.value,
+        date: inputDate.value,
+        type: selectType.value,
+        category: selectCategory.value,
+        note: inputNote.value
+      };
+      transactions.push(newTransaction);
+      const budgetTracking = JSON.parse(localStorage.getItem('budgetTracking')) || [];
+      const tracking = budgetTracking.find(track => track.category === newTransaction.category);
+      if (tracking) {
+        tracking.actualSpent += parseFloat(newTransaction.amount);
+        localStorage.setItem('budgetTracking', JSON.stringify(budgetTracking));
+      }
+      localStorage.setItem('transactions', JSON.stringify(transactions));
+      renderTransactions();
+      console.log("Transaction saved to localStorage");
+      // Clear the form
+      inputAmount.value = "";
+      inputDate.value = "";
+      selectType.value = "Income";
+      selectCategory.value = "";
+      inputNote.value = "";
+      containerFormTransactions.style.display = 'none';
+
+
+    } else {
+      console.log("Please fill in all fields");
+    }
+
+  });
+
+  function renderTransactions() {
+    const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    const tbody = document.getElementById('body-table-transaction');
+    tbody.innerHTML = ''; // Clear existing rows
+
+    transactions.forEach(transaction => {
+      const row = document.createElement('tr');
+      row.classList.add('row-table-transaction');
+
+      row.innerHTML = `
+        <td class="col-table-transaction" data-label="Amount">$ ${transaction.amount}</td>
+        <td class="col-table-transaction" data-label="Date">${transaction.date}</td>
+        <td class="col-table-transaction" data-label="Category">${transaction.category}</td>
+        <td class="col-table-transaction" data-label="Type">${transaction.type}</td>
+        <td class="col-table-transaction" data-label="Description">${transaction.note}</td>
+        <td class="col-table-transaction col-btn" data-label="Action">
+          <div class="col-btn">
+            <button class="btn-edit-transaction">Edit</button>
+            <button class="btn-remove-transaction">Remove</button>
+          </div>
+        </td>
+      `;
+
+      tbody.appendChild(row);
+
+      //Remove transactions
+      const btnRemoveTransaction = row.querySelector('.btn-remove-transaction');
+      btnRemoveTransaction.addEventListener('click', () => {
+      const index = transactions.indexOf(transaction);
+      if (index > -1) {
+      transactions.splice(index, 1);
+      localStorage.setItem('transactions', JSON.stringify(transactions));
+      renderTransactions();
+      }
+    });
+    });
+
+    
+  }
+
+  function renderCategoryList() {
+    const ul = document.querySelector(".cont-list-category ul");
+    ul.innerHTML = ""; // Clear existing list
+
+    if (budgetCategories) {
+      Object.keys(budgetCategories).forEach(type => {
+        budgetCategories[type].forEach(category => {
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <input type="checkbox" name="${category.name}" id="${category.name}" />
+            <label for="${category.name}">${category.name}</label>
+          `;
+          ul.appendChild(li);
+        });
+      });
+    }
+  }
+
+  const btnAddCategory = document.getElementById("btn-add-category");
+  btnAddCategory.addEventListener("click", () => {
+    const inputAddCat = document.getElementById("input-add-cat");
+    const selectTypeC = document.getElementById("options-type-c");
+
+    if (inputAddCat.value && selectTypeC.value) {
+      const newCategory = {
+        name: inputAddCat.value,
+        description: ""
+      };
+
+      if (!budgetCategories[selectTypeC.value.toLowerCase()]) {
+        budgetCategories[selectTypeC.value.toLowerCase()] = [];
+      }
+
+      budgetCategories[selectTypeC.value.toLowerCase()].push(newCategory);
+      localStorage.setItem('budgetCategories', JSON.stringify(budgetCategories));
+      renderCategoryList();
+      renderCategories(selectType.value.toLowerCase());
+      inputAddCat.value = "";
+    }
+  });
+
+  const btnDropItemCat = document.getElementById("btn-drop-item-cat");
+  btnDropItemCat.addEventListener("click", () => {
+    const checkboxes = document.querySelectorAll(".cont-list-category ul input[type='checkbox']:checked");
+
+    checkboxes.forEach(checkbox => {
+      const type = Object.keys(budgetCategories).find(type => budgetCategories[type].some(cat => cat.name === checkbox.name));
+      if (type) {
+        budgetCategories[type] = budgetCategories[type].filter(cat => cat.name !== checkbox.name);
+      }
+    });
+
+    localStorage.setItem('budgetCategories', JSON.stringify(budgetCategories));
+    renderCategoryList();
+    renderCategories(selectType.value.toLowerCase());
+  });
+
+  renderCategoryList();
+
+  renderTransactions();
+
+  function renderBudgetTrackingCategories() {
+    const selectCategoryTracking = document.getElementById("options-category-tracking");
+    selectCategoryTracking.innerHTML = ""; // Clear existing options
+
+    if (budgetCategories) {
+      Object.keys(budgetCategories).forEach(type => {
+        budgetCategories[type].forEach(category => {
+          const option = document.createElement("option");
+          option.value = category.name;
+          option.textContent = category.name;
+          selectCategoryTracking.appendChild(option);
+        });
+      });
+    }
+  }
+
+  const btnAddTracking = document.getElementById("btn-add-tracking");
+
+  btnAddTracking.addEventListener("click", () => {
+    const selectCategoryTracking = document.getElementById("options-category-tracking");
+    const inputAmountTracking = document.getElementById("input-amount-tracking");
+
+    let isValid = true;
+
+    if (!selectCategoryTracking.value) {
+      selectCategoryTracking.style.border = "1px solid red";
+      isValid = false;
+    } else {
+      selectCategoryTracking.style.border = "";
+    }
+
+    if (!inputAmountTracking.value) {
+      inputAmountTracking.style.border = "1px solid red";
+      isValid = false;
+    } else {
+      inputAmountTracking.style.border = "";
+    }
+
+    if (isValid) {
+      const budgetTracking = JSON.parse(localStorage.getItem('budgetTracking')) || [];
+      const newTracking = {
+        category: selectCategoryTracking.value,
+        amount: inputAmountTracking.value,
+        actualSpent: 0
+      };
+      budgetTracking.push(newTracking);
+      localStorage.setItem('budgetTracking', JSON.stringify(budgetTracking));
+      renderBudgetTracking();
+      // containerFormTracking.style.display = 'none';
+      selectCategoryTracking.value = "";
+      inputAmountTracking.value = "";
+    } else {
+      console.log("Please fill in all fields");
+    }
+  });
+
+  function renderBudgetTracking() {
+    const budgetTracking = JSON.parse(localStorage.getItem('budgetTracking')) || [];
+    const tbody = document.getElementById('body-table-tracking');
+    tbody.innerHTML = ''; // Clear existing rows
+
+    budgetTracking.forEach(tracking => {
+      const row = document.createElement('tr');
+      row.classList.add('row-table-tracking');
+
+      row.innerHTML = `
+        <td class="col-table-tracking" data-label="Category">${tracking.category}</td>
+        <td class="col-table-tracking" data-label="Budgeted Amount">$ ${tracking.amount}</td>
+        <td class="col-table-tracking col-btn" data-label="Action">
+          <div class="col-btn">
+            <button class="btn-remove-tracking">Remove</button>
+          </div>
+        </td>
+      `;
+
+      tbody.appendChild(row);
+
+      const btnRemoveTracking = row.querySelector('.btn-remove-tracking');
+      btnRemoveTracking.addEventListener('click', () => {
+        const index = budgetTracking.indexOf(tracking);
+        if (index > -1) {
+          budgetTracking.splice(index, 1);
+          localStorage.setItem('budgetTracking', JSON.stringify(budgetTracking));
+          renderBudgetTracking();
+        }
+      });
+    });
+  }
+
+  renderBudgetTrackingCategories();
+  renderBudgetTracking();
+
+  const filterSearch = document.getElementById("filter-search");
+
+  filterSearch.addEventListener("input", () => {
+    const searchTerm = filterSearch.value.toLowerCase();
+    const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    const filteredTransactions = transactions.filter(transaction => {
+      return (
+        transaction.category.toLowerCase().includes(searchTerm) ||
+        transaction.note.toLowerCase().includes(searchTerm) ||
+        transaction.type.toLowerCase().includes(searchTerm)
+      );
+    });
+    renderFilteredTransactions(filteredTransactions);
+  });
+
+  function renderFilteredTransactions(transactions) {
+    const tbody = document.getElementById('body-table-transaction');
+    tbody.innerHTML = ''; // Clear existing rows
+
+    transactions.forEach(transaction => {
+      const row = document.createElement('tr');
+      row.classList.add('row-table-transaction');
+
+      row.innerHTML = `
+        <td class="col-table-transaction" data-label="Amount">$ ${transaction.amount}</td>
+        <td class="col-table-transaction" data-label="Date">${transaction.date}</td>
+        <td class="col-table-transaction" data-label="Category">${transaction.category}</td>
+        <td class="col-table-transaction" data-label="Type">${transaction.type}</td>
+        <td class="col-table-transaction" data-label="Description">${transaction.note}</td>
+        <td class="col-table-transaction col-btn" data-label="Action">
+          <div class="col-btn">
+            <button class="btn-edit-transaction">Edit</button>
+            <button class="btn-remove-transaction">Remove</button>
+          </div>
+        </td>
+      `;
+
+      tbody.appendChild(row);
+
+      // Remove transactions
+      const btnRemoveTransaction = row.querySelector('.btn-remove-transaction');
+      btnRemoveTransaction.addEventListener('click', () => {
+        const index = transactions.indexOf(transaction);
+        if (index > -1) {
+          transactions.splice(index, 1);
+          localStorage.setItem('transactions', JSON.stringify(transactions));
+          renderFilteredTransactions(transactions);
+        }
+      });
+    });
+  }
 }
