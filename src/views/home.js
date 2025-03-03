@@ -387,6 +387,8 @@ fetch("./src/locale/currency/currency.json")
   .catch((error) => console.log(error));
 
 export async function initializeHome() {
+  const currencyData = JSON.parse(localStorage.getItem('currency')) || {};
+    const currencySymbol = currencyData.symbol;
   const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
   const goals = JSON.parse(localStorage.getItem("goals")) || [];
   const budgetTracking =
@@ -409,9 +411,9 @@ export async function initializeHome() {
 
   totalBalance = totalIncome - totalExpenses;
 
-  document.querySelector(".data-summary-income .value-money").textContent = `$ ${totalIncome.toFixed(2)}`;
-  document.querySelector(".data-summary-expenses .value-money").textContent = `$ ${totalExpenses.toFixed(2)}`;
-  document.querySelector(".data-summary-balance .value-money").textContent = `$ ${totalBalance.toFixed(2)}`;
+  document.querySelector(".data-summary-income .value-money").textContent = `${currencySymbol} ${totalIncome.toFixed(2)}`;
+  document.querySelector(".data-summary-expenses .value-money").textContent = `${currencySymbol} ${totalExpenses.toFixed(2)}`;
+  document.querySelector(".data-summary-balance .value-money").textContent = `${currencySymbol} ${totalBalance.toFixed(2)}`;
 
   const summaryCategoriesContainer = document.querySelector('.summary-cat');
   summaryCategoriesContainer.innerHTML = '';
@@ -437,7 +439,7 @@ export async function initializeHome() {
       const row = document.createElement("tr");
       row.innerHTML = `
         <td id="data-category">${category}</td>
-        <td id="data-amount">$ ${amount.toFixed(2)}</td>
+        <td id="data-amount">${currencySymbol} ${amount.toFixed(2)}</td>
         <td id="data-charts">
           <div class="bar-container">
             <div class="bar-progress ${category.toLowerCase()}" style="width: ${percentage}%;">${percentage}%</div>
@@ -513,7 +515,7 @@ export async function initializeHome() {
         row.innerHTML = `
           <td>${transaction.category}</td>
           <td>${transaction.note}</td>
-          <td>$${parseFloat(transaction.amount).toFixed(2)}</td>
+          <td>${currencySymbol} ${parseFloat(transaction.amount).toFixed(2)}</td>
         `;
         incomeTable.appendChild(row);
         totalIncome += parseFloat(transaction.amount);
@@ -523,7 +525,7 @@ export async function initializeHome() {
     const totalRow = document.createElement("tr");
     totalRow.innerHTML = `
       <th>Total Income</th>
-      <th>$${totalIncome.toFixed(2)}</th>
+      <th>${currencySymbol} ${totalIncome.toFixed(2)}</th>
     `;
     incomeTable.appendChild(totalRow);
   }
@@ -559,7 +561,7 @@ export async function initializeHome() {
       row.innerHTML = `
         <td>${category}</td>
         <td>${categories[category].description}</td>
-        <td>$${categories[category].amount.toFixed(2)}</td>
+        <td>${currencySymbol} ${categories[category].amount.toFixed(2)}</td>
       `;
       categoriesTable.appendChild(row);
     });
@@ -584,8 +586,8 @@ export async function initializeHome() {
       const row = document.createElement("tr");
       row.innerHTML = `
         <td>${item.category}</td>
-        <td>$${item.amount}</td>
-        <td>$${item.actualSpent}</td>
+        <td>${currencySymbol} ${item.amount}</td>
+        <td>${currencySymbol} ${item.actualSpent}</td>
         <td style="color:${difference >= 0 ? "green" : "red"};">${difference >= 0 ? "+" : ""}$${difference.toFixed(2)}</td>
       `;
       budgetTable.appendChild(row);
@@ -612,9 +614,9 @@ export async function initializeHome() {
       const row = document.createElement("tr");
       row.innerHTML = `
         <td>${goal.name}</td>
-        <td>$${parseFloat(goal.amount).toFixed(2)}</td>
-        <td style="color:${parseFloat(currentSavings).toFixed(2) >= parseFloat(goal.amount).toFixed(2) ? "green" : "orange"};">$${parseFloat(currentSavings).toFixed(2)}</td>
-        <td style="color:${remainingAmount.toFixed(2) <= 0 ? "green" : "orange"};">$${remainingAmount.toFixed(2)}</td>
+        <td>${currencySymbol} ${parseFloat(goal.amount).toFixed(2)}</td>
+        <td style="color:${parseFloat(currentSavings).toFixed(2) >= parseFloat(goal.amount).toFixed(2) ? "green" : "orange"};">${currencySymbol} ${parseFloat(currentSavings).toFixed(2)}</td>
+        <td style="color:${remainingAmount.toFixed(2) <= 0 ? "green" : "orange"};">${currencySymbol} ${remainingAmount.toFixed(2)}</td>
       `;
       savingsTable.appendChild(row);
     });
@@ -658,7 +660,7 @@ export async function initializeHome() {
     const financialHealthScore = calculateFinancialHealthScore(transactions).toFixed(0);
 
     const indicators = [
-      { name: "Total Income vs. Expenses", value: `$${totalIncome.toFixed(2)} - $${totalExpenses.toFixed(2)}` },
+      { name: "Total Income vs. Expenses", value: `${currencySymbol} ${totalIncome.toFixed(2)} - ${currencySymbol} ${totalExpenses.toFixed(2)}` },
       { name: "Savings Rate", value: `${savingsRate}%` },
       { name: "Debt-to-Income Ratio", value: `${debtToIncomeRatio}%` },
       { name: "Financial Health Score", value: `${financialHealthScore}/100` },

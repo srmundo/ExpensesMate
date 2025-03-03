@@ -1,7 +1,7 @@
 import { LoginPage } from "../public/loginPage.js";
 
 if (localStorage.getItem("currency") === null) {
-	localStorage.setItem("currency", "USD");
+	localStorage.setItem("currency", JSON.stringify({ symbol: "$", name: "USD" }));
 }
 const budgetCategories = 
   {

@@ -252,6 +252,8 @@ fetch("./src/locale/currency/currency.json")
   .catch((error) => console.log(error));
 
 export async function funcTransactions() {
+  const currencyData = JSON.parse(localStorage.getItem('currency')) || {};
+  const currencySymbol = currencyData.symbol;
   const containerFormTransactions = document.querySelector(".cont-nav-trans");
   const containerFormTracking = document.querySelector(".cont-nav-trans-tracking");
   const btnNewTransactions = document.getElementById("btn-new-transactions");
@@ -427,7 +429,7 @@ export async function funcTransactions() {
       row.classList.add('row-table-transaction');
 
       row.innerHTML = `
-        <td class="col-table-transaction" data-label="Amount">$ ${transaction.amount}</td>
+        <td class="col-table-transaction" data-label="Amount">${currencySymbol} ${transaction.amount}</td>
         <td class="col-table-transaction" data-label="Date">${transaction.date}</td>
         <td class="col-table-transaction" data-label="Category">${transaction.category}</td>
         <td class="col-table-transaction" data-label="Type">${transaction.type}</td>
@@ -585,7 +587,7 @@ export async function funcTransactions() {
 
       row.innerHTML = `
         <td class="col-table-tracking" data-label="Category">${tracking.category}</td>
-        <td class="col-table-tracking" data-label="Budgeted Amount">$ ${tracking.amount}</td>
+        <td class="col-table-tracking" data-label="Budgeted Amount">${currencySymbol} ${tracking.amount}</td>
         <td class="col-table-tracking col-btn" data-label="Action">
           <div class="col-btn">
             <button class="btn-remove-tracking">Remove</button>
@@ -634,7 +636,7 @@ export async function funcTransactions() {
       row.classList.add('row-table-transaction');
 
       row.innerHTML = `
-        <td class="col-table-transaction" data-label="Amount">$ ${transaction.amount}</td>
+        <td class="col-table-transaction" data-label="Amount">${currencySymbol} ${transaction.amount}</td>
         <td class="col-table-transaction" data-label="Date">${transaction.date}</td>
         <td class="col-table-transaction" data-label="Category">${transaction.category}</td>
         <td class="col-table-transaction" data-label="Type">${transaction.type}</td>

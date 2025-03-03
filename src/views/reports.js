@@ -42,6 +42,20 @@ fetch('./src/locale/currency/currency.json')
 .catch((error)=>console.log(error));
 
 export async function initializeReport() {
+  const currentDate = new Date();
+  const currentMonth = currentDate.toLocaleString('default', { month: 'long' });
+  const currentYear = currentDate.getFullYear();
+  const currentMonthYear = `${currentMonth} - ${currentYear}`;
+
+  const currentMonthIndex = currentDate.getMonth() + 1;
+  const isFirstSemester = currentMonthIndex <= 6;
+  const semesterStartMonth = isFirstSemester ? 'January' : 'July';
+  const semesterEndMonth = isFirstSemester ? 'June' : 'December';
+  const currentSemester = `${semesterStartMonth} - ${semesterEndMonth} ${currentYear}`;
+  const currentSemesterLabel = isFirstSemester ? 'First Semester' : 'Second Semester';
+
+  const currencyData = JSON.parse(localStorage.getItem('currency')) || {};
+  const currencySymbol = currencyData.symbol;
   const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
   const goals = JSON.parse(localStorage.getItem('goals')) || [];
   const budgetTracking = JSON.parse(localStorage.getItem('budgetTracking')) || [];
@@ -60,7 +74,7 @@ export async function initializeReport() {
       <tr>
       <td>${transaction.category}</td>
       <td>${budgetCategories.income.find(cat => cat.name === transaction.category)?.description || ''}</td>
-      <td>$${transaction.amount}</td>
+      <td>${currencySymbol} ${transaction.amount}</td>
       </tr>
     `).join('');
 
@@ -68,7 +82,7 @@ export async function initializeReport() {
       <tr>
       <td>${transaction.category}</td>
       <td>${budgetCategories.expense.find(cat => cat.name === transaction.category)?.description || ''}</td>
-      <td>$${transaction.amount}</td>
+      <td>${currencySymbol} ${transaction.amount}</td>
       </tr>
     `).join('');
 
@@ -76,15 +90,15 @@ export async function initializeReport() {
       <div class="container">
       <h1>Monthly Personal Finance Report</h1>
       <div class="report-header">
-        <h3>March 2025</h3>
-        <p>Period: March 2025</p>
+        <h3>${currentMonthYear}</h3>
+        <p>Period: ${currentMonthYear}</p>
       </div>
       <table>
         <thead>
         <tr>
           <th>Category</th>
           <th>Description</th>
-          <th>Amount ($)</th>
+          <th>Amount (${currencySymbol})</th>
         </tr>
         </thead>
         <tbody>
@@ -99,27 +113,27 @@ export async function initializeReport() {
         <tr class="total-row">
           <td>Total Income</td>
           <td></td>
-          <td>$${totalIncome.toFixed(2)}</td>
+          <td>${currencySymbol} ${totalIncome.toFixed(2)}</td>
         </tr>
         <tr class="total-row">
           <td>Total Expenses</td>
           <td></td>
-          <td>$${totalExpenses.toFixed(2)}</td>
+          <td>${currencySymbol} ${totalExpenses.toFixed(2)}</td>
         </tr>
         <tr class="highlight">
           <td>Balance</td>
           <td></td>
-          <td>$${balance.toFixed(2)}</td>
+          <td>${currencySymbol} ${balance.toFixed(2)}</td>
         </tr>
         </tbody>
       </table>
       <div class="summary">
         <h3>Summary</h3>
-        <p><strong>Total Income:</strong> $${totalIncome.toFixed(2)}</p>
-        <p><strong>Total Expenses:</strong> $${totalExpenses.toFixed(2)}</p>
-        <p><strong>Balance:</strong> <span class="highlight">$${balance.toFixed(2)}</span></p>
+        <p><strong>Total Income:</strong> ${currencySymbol} ${totalIncome.toFixed(2)}</p>
+        <p><strong>Total Expenses:</strong> ${currencySymbol} ${totalExpenses.toFixed(2)}</p>
+        <p><strong>Balance:</strong> <span class="highlight">${currencySymbol} ${balance.toFixed(2)}</span></p>
         <p><strong>Savings:</strong> <span class="highlight">${((totalIncome - totalExpenses) / totalIncome * 100).toFixed(2)}%</span></p>
-        <p><strong>Remaining Debt:</strong> $${goals.reduce((sum, goal) => sum + parseFloat(goal.amount), 0)}</p>
+        <p><strong>Remaining Debt:</strong> ${currencySymbol} ${goals.reduce((sum, goal) => sum + parseFloat(goal.amount), 0)}</p>
       </div>
       </div>
     `;
@@ -143,7 +157,7 @@ export async function initializeReport() {
       <tr>
       <td>${transaction.category}</td>
       <td>${budgetCategories.income.find(cat => cat.name === transaction.category)?.description || ''}</td>
-      <td>$${transaction.amount}</td>
+      <td>${currencySymbol}${transaction.amount}</td>
       <td></td>
       </tr>
     `).join('');
@@ -152,24 +166,24 @@ export async function initializeReport() {
       <tr>
       <td>${transaction.category}</td>
       <td>${budgetCategories.expense.find(cat => cat.name === transaction.category)?.description || ''}</td>
-      <td>$${transaction.amount}</td>
+      <td>${currencySymbol}${transaction.amount}</td>
       <td></td>
       </tr>
     `).join('');
 
     reportContainer.innerHTML = `
       <div class="container">
-      <h1>Personal Finance Report - First Semester 2025</h1>
+      <h1>Personal Finance Report - ${currentSemesterLabel} ${currentYear}</h1>
       <div class="report-header">
-        <h3>January - June 2025</h3>
-        <p>Period: First Semester</p>
+        <h3>${currentSemester}</h3>
+        <p>Period: ${currentSemesterLabel}</p>
       </div>
       <table>
         <thead>
         <tr>
           <th>Category</th>
           <th>Description</th>
-          <th>Amount ($)</th>
+          <th>Amount (${currencySymbol})</th>
           <th>Comparison (Last Semester)</th>
         </tr>
         </thead>
@@ -185,37 +199,37 @@ export async function initializeReport() {
         <tr class="total-row">
           <td>Total Income</td>
           <td></td>
-          <td>$${totalIncome.toFixed(2)}</td>
+          <td>${currencySymbol} ${totalIncome.toFixed(2)}</td>
           <td></td>
         </tr>
         <tr class="total-row">
           <td>Total Expenses</td>
           <td></td>
-          <td>$${totalExpenses.toFixed(2)}</td>
+          <td>${currencySymbol} ${totalExpenses.toFixed(2)}</td>
           <td></td>
         </tr>
         <tr class="highlight">
           <td>Balance</td>
           <td></td>
-          <td>$${balance.toFixed(2)}</td>
+          <td>${currencySymbol} ${balance.toFixed(2)}</td>
           <td></td>
         </tr>
         </tbody>
       </table>
       <div class="summary">
         <h3>Summary</h3>
-        <p><strong>Total Income:</strong> $${totalIncome.toFixed(2)}</p>
-        <p><strong>Total Expenses:</strong> $${totalExpenses.toFixed(2)}</p>
-        <p><strong>Balance:</strong> <span class="highlight">$${balance.toFixed(2)}</span></p>
+        <p><strong>Total Income:</strong> ${currencySymbol} ${totalIncome.toFixed(2)}</p>
+        <p><strong>Total Expenses:</strong> ${currencySymbol} ${totalExpenses.toFixed(2)}</p>
+        <p><strong>Balance:</strong> <span class="highlight">${currencySymbol} ${balance.toFixed(2)}</span></p>
         <p><strong>Savings:</strong> <span class="highlight">${((totalIncome - totalExpenses) / totalIncome * 100).toFixed(2)}%</span></p>
-        <p><strong>Remaining Debt:</strong> $${goals.reduce((sum, goal) => sum + parseFloat(goal.amount), 0)}</p>
+        <p><strong>Remaining Debt:</strong> ${currencySymbol} ${goals.reduce((sum, goal) => sum + parseFloat(goal.amount), 0)}</p>
       </div>
-      <div class="comparing-periods">
+      <!-- <div class="comparing-periods">
         <h3>Comparison to Previous Semester</h3>
         <p><strong>Income Change:</strong> +12%</p>
         <p><strong>Expenses Change:</strong> +5%</p>
         <p><strong>Balance Change:</strong> +15%</p>
-      </div>
+      </div> -->
       </div>
     `;
   });
@@ -234,7 +248,7 @@ export async function initializeReport() {
       <tr>
       <td>${transaction.category}</td>
       <td>${budgetCategories.income.find(cat => cat.name === transaction.category)?.description || ''}</td>
-      <td>$${transaction.amount}</td>
+      <td>${currencySymbol} ${transaction.amount}</td>
       <td></td>
       </tr>
     `).join('');
@@ -243,16 +257,16 @@ export async function initializeReport() {
       <tr>
       <td>${transaction.category}</td>
       <td>${budgetCategories.expense.find(cat => cat.name === transaction.category)?.description || ''}</td>
-      <td>$${transaction.amount}</td>
+      <td>${currencySymbol} ${transaction.amount}</td>
       <td></td>
       </tr>
     `).join('');
 
     reportContainer.innerHTML = `
       <div class="container">
-      <h1>Personal Finance Report - 2025</h1>
+      <h1>Personal Finance Report - ${currentYear}</h1>
       <div class="report-header">
-        <h3>Year: 2025</h3>
+        <h3>Year: ${currentYear}</h3>
         <p>Period: Full Year</p>
       </div>
       <table>
@@ -260,7 +274,7 @@ export async function initializeReport() {
         <tr>
           <th>Category</th>
           <th>Description</th>
-          <th>Amount ($)</th>
+          <th>Amount (${currencySymbol})</th>
           <th>Comparison (Last Year)</th>
         </tr>
         </thead>
@@ -276,37 +290,37 @@ export async function initializeReport() {
         <tr class="total-row">
           <td>Total Income</td>
           <td></td>
-          <td>$${totalIncome.toFixed(2)}</td>
+          <td>${currencySymbol} ${totalIncome.toFixed(2)}</td>
           <td></td>
         </tr>
         <tr class="total-row">
           <td>Total Expenses</td>
           <td></td>
-          <td>$${totalExpenses.toFixed(2)}</td>
+          <td>${currencySymbol} ${totalExpenses.toFixed(2)}</td>
           <td></td>
         </tr>
         <tr class="highlight">
           <td>Balance</td>
           <td></td>
-          <td>$${balance.toFixed(2)}</td>
+          <td>${currencySymbol} ${balance.toFixed(2)}</td>
           <td></td>
         </tr>
         </tbody>
       </table>
       <div class="summary">
         <h3>Summary</h3>
-        <p><strong>Total Income:</strong> $${totalIncome.toFixed(2)}</p>
-        <p><strong>Total Expenses:</strong> $${totalExpenses.toFixed(2)}</p>
-        <p><strong>Balance:</strong> <span class="highlight">$${balance.toFixed(2)}</span></p>
+        <p><strong>Total Income:</strong> ${currencySymbol} ${totalIncome.toFixed(2)}</p>
+        <p><strong>Total Expenses:</strong> ${currencySymbol} ${totalExpenses.toFixed(2)}</p>
+        <p><strong>Balance:</strong> <span class="highlight">${currencySymbol} ${balance.toFixed(2)}</span></p>
         <p><strong>Savings:</strong> <span class="highlight">${((totalIncome - totalExpenses) / totalIncome * 100).toFixed(2)}%</span></p>
-        <p><strong>Remaining Debt:</strong> $${goals.reduce((sum, goal) => sum + parseFloat(goal.amount), 0)}</p>
+        <p><strong>Remaining Debt:</strong> ${currencySymbol} ${goals.reduce((sum, goal) => sum + parseFloat(goal.amount), 0)}</p>
       </div>
-      <div class="comparing-periods">
+      <!-- <div class="comparing-periods">
         <h3>Comparison to Previous Year</h3>
         <p><strong>Income Change:</strong> +14%</p>
         <p><strong>Expenses Change:</strong> +7%</p>
         <p><strong>Balance Change:</strong> +20%</p>
-      </div>
+      </div> -->
       </div>
     `;
   });
@@ -335,7 +349,7 @@ export async function initializeReport() {
         ['Remaining Debt', summary.querySelector('p:nth-child(6)').innerText.split(': ')[1]],
           ],
           theme: 'grid',
-          styles: { fontSize: 10, cellPadding: 3 },
+          styles: { fontSize: 10, cellPadding: 2 },
         });
       }
       const comparison = reportContainer.querySelector('.comparing-periods');
@@ -352,7 +366,7 @@ export async function initializeReport() {
         ['Balance Change', comparison.querySelector('p:nth-child(4)').innerText.split(': ')[1]],
           ],
           theme: 'grid',
-          styles: { fontSize: 10, cellPadding: 3 },
+          styles: { fontSize: 10, cellPadding: 2 },
         });
       }
       doc.save('report.pdf');

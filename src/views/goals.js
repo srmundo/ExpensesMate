@@ -50,6 +50,11 @@ fetch('./src/locale/currency/currency.json')
 
 export async function initializeGoals() {
 
+    const currencyData = JSON.parse(localStorage.getItem('currency')) || {};
+    const currencySymbol = currencyData.symbol;
+
+    console.log(currencySymbol);
+
     document.getElementById('btn-add-goal').addEventListener('click', addGoal);
     document.getElementById('btn-cancel-goal').addEventListener('click', clearForm);
 
@@ -115,8 +120,8 @@ export async function initializeGoals() {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td data-label="Goal Name">${goal.name}</td>
-                <td data-label="Goal Amount">${goal.amount}</td>
-                <td data-label="Current Amount" style="color: ${currentAmount >= parseFloat(goal.amount) ? 'green' : 'orange'};">${currentAmount}</td>
+                <td data-label="Goal Amount">${currencySymbol} ${goal.amount}</td>
+                <td data-label="Current Amount" style="color: ${currentAmount >= parseFloat(goal.amount) ? 'green' : 'orange'};">${currencySymbol} ${currentAmount}</td>
                 <td data-label="Target Date">${goal.date}</td>
                 <td data-label="Action"><button id="btn-delete-goal">Delete</button></td>
             `;

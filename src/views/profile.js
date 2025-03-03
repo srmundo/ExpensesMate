@@ -77,13 +77,15 @@ function previewImage(event) {
 }
 
 export async function initializeProfile() {
+    const currencyData = JSON.parse(localStorage.getItem('currency')) || {};
+    const currencySymbol = currencyData.symbol;
 const userData = JSON.parse(localStorage.getItem('userData'));
 const currency = localStorage.getItem('currency') || 'USD';
 const goals = JSON.parse(localStorage.getItem('goals')) || [];
 document.querySelector('.profile-settings tbody').innerHTML = `
     <tr>
         <td>Currency</td>
-        <td>${currency}</td>
+        <td>Code: ${currencyData.name} | Symbol: ${currencyData.symbol}</td>
     </tr>
     <tr>
         <td>Language</td>
@@ -103,7 +105,7 @@ goals.forEach(goal => {
     const row = document.createElement('tr');
     row.innerHTML = `
         <td>${goal.name}</td>
-        <td>${goal.amount}</td>
+        <td>${currencySymbol} ${goal.amount}</td>
         <td>${goal.date}</td>
         <td>${goal.progress}</td>
         <td style="color:${goal.status === 'Completed' ? 'green' : 'orange'};">${goal.status}</td>

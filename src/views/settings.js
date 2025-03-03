@@ -226,5 +226,44 @@ function showSection(sectionId) {
 		initializeSettings();
 	});
 
+        document.getElementById('currency-settings-form').addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const currencyCode = document.getElementById('currency-type').value;
+                const currencyData = await fetchCurrencyData();
+                updateLocalStorageCurrency(currencyCode, currencyData);
+        });
+
+        const savedCurrency = JSON.parse(localStorage.getItem('currency'));
+        if (savedCurrency) {
+                document.getElementById('currency-type').value = savedCurrency.name;
+        }
+
 	
 }
+
+async function fetchCurrencyData() {
+        try {
+                const response = await fetch('../src/locale/currency/currency.json');
+                if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                }
+                return await response.json();
+        } catch (error) {
+                console.error('Failed to fetch currency data:', error);
+                return null;
+        }
+}
+
+function updateLocalStorageCurrency(currencyCode, currencyData) {
+        if (currencyData && currencyData[currencyCode]) {
+                const selectedCurrency = {
+                        symbol: currencyData[currencyCode].symbol,
+                        name: currencyCode,
+                };
+                localStorage.setItem('currency', JSON.stringify(selectedCurrency));
+                alert('Currency updated successfully!');
+        } else {
+                alert('Invalid currency code');
+        }
+}
+

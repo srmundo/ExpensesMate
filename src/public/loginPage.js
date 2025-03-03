@@ -133,7 +133,7 @@ export const LoginPage = function() {
         `;
 
         document.getElementById('registerForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+            // event.preventDefault();
             const name = document.getElementById('nickname').value;
             const fullName = document.getElementById('name').value;
             const password = document.getElementById('password').value;
