@@ -3,76 +3,100 @@ import { LoginPage } from "../public/loginPage.js";
 if (localStorage.getItem("currency") === null) {
 	localStorage.setItem("currency", JSON.stringify({ symbol: "$", name: "USD" }));
 }
-const budgetCategories = 
-  {
-    "income": [
-      {
-        name: "Salary",
-        description: "Income from a regular job or employment.",
-      },
-      {
-        name: "Freelance",
-        description: "Income from freelance or self-employment work.",
-      },
-      {
-        name: "Investments",
-        description:
-          "Income from investments like stocks, bonds, or dividends.",
-      },
-      {
-        name: "Other Income",
-        description: "Any other form of income not categorized elsewhere.",
-      },
-    ],
-    "expense": [
-      {
-        name: "Housing",
-        description: "Rent, mortgage payments, and home maintenance.",
-      },
-      {
-        name: "Food",
-        description: "Groceries, dining out, and other food-related expenses.",
-      },
-      {
-        name: "Transportation",
-        description:
-          "Public transportation, fuel, car maintenance, and parking.",
-      },
-      {
-        name: "Utilities",
-        description:
-          "Electricity, water, gas, internet, and other essential services.",
-      },
-      {
-        name: "Healthcare",
-        description:
-          "Medical expenses, health insurance, prescriptions, and treatments.",
-      },
-      {
-        name: "Education",
-        description:
-          "Tuition fees, books, courses, and other educational costs.",
-      },
-      {
-        name: "Entertainment",
-        description:
-          "Movies, concerts, subscriptions to streaming services, hobbies.",
-      },
-      {
-        name: "Savings",
-        description: "Money set aside for future savings or investments.",
-      },
-      {
-        name: "Debt Repayments",
-        description:
-          "Payments for loans, credit cards, mortgages, and other debts.",
-      },
-      {
-        name: "Other Expenses",
-        description: "Expenses that don't fit into the above categories.",
-      },
-    ],
-  };
+if (localStorage.getItem("language") === null) {
+  localStorage.setItem("language", JSON.stringify({ lang: "en" }));
+}
+const language = JSON.parse(localStorage.getItem("language")).lang;
+let languageData = {};
+
+if (language === "en") {
+  fetch("../src/locale/lang/en.json")
+    .then((response) => response.json())
+    .then((data) => {
+      languageData = data;
+      // You can use the fetched data here
+    })
+    .catch((error) => console.error("Error fetching language file:", error));
+} else if (language === "es") {
+  fetch("../src/locale/lang/es.json")
+    .then((response) => response.json())
+    .then((data) => {
+      languageData = data;
+      // You can use the fetched data here
+    })
+    .catch((error) => console.error("Error fetching language file:", error));
+} else if (language === "pt") {
+  fetch("../src/locale/lang/pt.json")
+    .then((response) => response.json())
+    .then((data) => {
+      languageData = data;
+      // You can use the fetched data here
+    })
+    .catch((error) => console.error("Error fetching language file:", error));
+}
+
+const budgetCategories = {
+  income: [
+    {
+      name: "Salary",
+      description: "Income from a regular job or employment.",
+    },
+    {
+      name: "Freelance",
+      description: "Income from freelance or self-employment work.",
+    },
+    {
+      name: "Investments",
+      description: "Income from investments like stocks, bonds, or dividends.",
+    },
+    {
+      name: "Other Income",
+      description: "Any other form of income not categorized elsewhere.",
+    },
+  ],
+  expense: [
+    {
+      name: "Housing",
+      description: "Rent, mortgage payments, and home maintenance.",
+    },
+    {
+      name: "Food",
+      description: "Groceries, dining out, and other food-related expenses.",
+    },
+    {
+      name: "Transportation",
+      description: "Public transportation, fuel, car maintenance, and parking.",
+    },
+    {
+      name: "Utilities",
+      description: "Electricity, water, gas, internet, and other essential services.",
+    },
+    {
+      name: "Healthcare",
+      description: "Medical expenses, health insurance, prescriptions, and treatments.",
+    },
+    {
+      name: "Education",
+      description: "Tuition fees, books, courses, and other educational costs.",
+    },
+    {
+      name: "Entertainment",
+      description: "Movies, concerts, subscriptions to streaming services, hobbies.",
+    },
+    {
+      name: "Savings",
+      description: "Money set aside for future savings or investments.",
+    },
+    {
+      name: "Debt Repayments",
+      description: "Payments for loans, credit cards, mortgages, and other debts.",
+    },
+    {
+      name: "Other Expenses",
+      description: "Expenses that don't fit into the above categories.",
+    },
+  ],
+};
 
 console.log(budgetCategories);
 
@@ -153,7 +177,7 @@ export function loadAppHTML() {
                     </div>
                 </div>
                 <div class="profile-actions">
-                    <button id="btnLogout">Logout</button>
+                    <button id="btnLogout">${languageData.profile.actions.logout}</button>
                 </div>
                 </div>
             `;

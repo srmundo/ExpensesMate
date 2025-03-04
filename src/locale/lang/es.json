@@ -1,0 +1,33 @@
+{
+    "title": "ExpenseMate",
+    "nav": {
+        "notification": "Notificación",
+        "profile": "Perfil"
+    },
+    "aside": {
+        "home": "Inicio",
+        "transactions": "Transacciones",
+        "reports": "Informes",
+        "goals": "Objetivos",
+        "settings": "Configuraciones",
+        "profile": "Perfil"
+    },
+    "footer": {
+        "version": "versión 1.0.0",
+        "user": "nombre de usuario",
+        "date": "0000-00-00",
+        "time": "00:00",
+        "license": "Licencia MIT 2024",
+        "developedBy": "Desarrollado por Whoami"
+    },
+    "profile": {
+        "header": {
+            "photoAlt": "Foto del Usuario",
+            "name": "Nombre",
+            "nick": "Apodo"
+        },
+        "actions": {
+            "logout": "Cerrar sesión"
+        }
+    }
+}

@@ -1,0 +1,55 @@
+{
+    "mainApp": {
+        "navApp": {
+            "titleApp": "ExpenseMate",
+            "menuNavApp": {
+                "btnNotification": {
+                    "ariaLabel": "Notificações"
+                },
+                "btnProfileOpt": {
+                    "ariaLabel": "Opções de Perfil",
+                    "avatarAlt": "avatar"
+                }
+            }
+        },
+        "asideSectionApp": {
+            "asideApp": {
+                "asideMenuApp": {
+                    "btnHome": {
+                        "text": "Início",
+                        "icon": "icon-home"
+                    },
+                    "btnTransactions": {
+                        "text": "Transações",
+                        "icon": "icon-dollar-sign"
+                    },
+                    "btnReports": {
+                        "text": "Relatórios",
+                        "icon": "icon-book"
+                    },
+                    "btnGoals": {
+                        "text": "Metas",
+                        "icon": "icon-target"
+                    },
+                    "btnSettings": {
+                        "text": "Configurações",
+                        "icon": "icon-settings"
+                    },
+                    "btnProfile": {
+                        "text": "Perfil",
+                        "icon": "icon-user"
+                    }
+                }
+            },
+            "sectionApp": {}
+        },
+        "footerApp": {
+            "version": "versão 1.0.0",
+            "userName": "nome do usuário",
+            "date": "0000-00-00",
+            "time": "00:00",
+            "license": "Licença MIT 2024",
+            "developedBy": "Desenvolvido por Whoami"
+        }
+    }
+}

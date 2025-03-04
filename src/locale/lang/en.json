@@ -1,0 +1,34 @@
+{
+    "title": "ExpenseMate",
+    "nav": {
+        "notification": "Notification",
+        "profile": "Profile"
+    },
+    "aside": {
+        "home": "Home",
+        "transactions": "Transactions",
+        "reports": "Reports",
+        "goals": "Goals",
+        "settings": "Settings",
+        "profile": "Profile"
+    },
+    "footer": {
+        "version": "version 1.0.0",
+        "user": "name user",
+        "date": "0000-00-00",
+        "time": "00:00",
+        "license": "MIT License 2024",
+        "developedBy": "Developed by Whoami"
+    }
+    ,
+    "profile": {
+        "header": {
+            "photoAlt": "User Photo",
+            "name": "Name",
+            "nick": "Nickname"
+        },
+        "actions": {
+            "logout": "Logout"
+        }
+    }
+}

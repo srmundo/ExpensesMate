@@ -234,6 +234,8 @@ function showSection(sectionId) {
                 initUpdateEmail();
         } else if (sectionId === 'delete-account') {
                 initDeleteAccount();
+        } else if (sectionId === 'language-settings') {
+                initLanguageSettings();
         }
 	
 }
@@ -362,4 +364,18 @@ function initDeleteAccount(){
                         alert('Please type "DELETE" to confirm.');
                 }
         });
+}
+
+function initLanguageSettings() {
+        document.getElementById('language-settings-form').addEventListener('submit', (event) => {
+                event.preventDefault();
+                const selectedLanguage = document.getElementById('language-type').value;
+                localStorage.setItem('language', JSON.stringify({ lang: selectedLanguage }));
+                alert('Language updated successfully!');
+        });
+
+        const savedLanguage = JSON.parse(localStorage.getItem('language'));
+        if (savedLanguage) {
+                document.getElementById('language-type').value = savedLanguage.lang;
+        }
 }
