@@ -61,7 +61,12 @@ export async function initializeGoals() {
     const btnNewGoal = document.getElementById('btn-new-goals');
     const goalForm = document.getElementById('goal-form');
 
-    goalForm.style.display = 'none';
+    // goalForm.style.display = 'none';
+    if (window.innerWidth <= 768) {
+        goalForm.style.display = 'none';
+    } else {
+        goalForm.style.display = 'flex';
+    }
 
     btnNewGoal.addEventListener('click', ()=>{
         goalForm.style.display = 'block'

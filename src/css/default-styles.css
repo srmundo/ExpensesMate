@@ -1073,7 +1073,7 @@ td {
 }
 
 #goal-form {
-  width: 90%;
+  width: 95%;
   display: flex;
   padding: 10px;
   background-color: #f9f9f9;
@@ -1088,7 +1088,7 @@ td {
   margin-bottom: 10px;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 28%;
 }
 
 #goal-form .form-group label {
@@ -1616,6 +1616,10 @@ td {
 
 #btn-new-goals{
   display: none;
+}
+
+#goal-form{
+  display: flex;
 }
 
 #btn-cancel-goal{
@@ -2251,7 +2255,7 @@ input[type="number"]::-webkit-inner-spin-button,
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 10
+    gap: 10;
     background-color: rebeccapurple;
   }
   .account-deleted {
