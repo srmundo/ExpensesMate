@@ -31,4 +31,55 @@
             "logout": "Logout"
         }
     }
+    ,
+    "home": {
+        "summary": {
+            "income": "Income",
+            "totalIncome": "Total Income",
+            "expenses": "Expenses",
+            "totalMonthlyExpenses": "Total Monthly Expenses",
+            "balance": "Balance",
+            "finalBalance": "Final Balance",
+            "expensesByCategory": "Expenses by category",
+            "financialHealthScore": "Financial Health Score",
+            "incomeData": {
+                "title": "Income",
+                "monthlyIncome": "Monthly Income",
+                "freelanceWork": "Freelance Work",
+                "investments": "Investments",
+                "totalIncome": "Total Income"
+            },
+            "categories": {
+                "title": "Categories",
+                "housing": "Housing",
+                "transportation": "Transportation",
+                "groceries": "Groceries",
+                "entertainment": "Entertainment",
+                "health": "Health",
+                "education": "Education",
+                "others": "Others"
+            },
+            "budgetTracking": {
+                "title": "Budget Tracking",
+                "category": "Category",
+                "budgetedAmount": "Budgeted Amount",
+                "actualSpent": "Actual Spent",
+                "difference": "Difference"
+            },
+            "savingsGoals": {
+                "title": "Savings Goals",
+                "goal": "Goal",
+                "targetAmount": "Target Amount",
+                "currentSavings": "Current Savings",
+                "remainingAmount": "Remaining Amount"
+            },
+            "summaryIndicators": {
+                "title": "Summary Indicators",
+                "totalIncomeVsExpenses": "Total Income vs. Expenses",
+                "savingsRate": "Savings Rate",
+                "debtToIncomeRatio": "Debt-to-Income Ratio",
+                "financialHealthScore": "Financial Health Score"
+            }
+        }
+    }
 }

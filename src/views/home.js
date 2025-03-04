@@ -386,6 +386,11 @@ fetch("./src/locale/currency/currency.json")
   .then((data) => (dataCurrency = data))
   .catch((error) => console.log(error));
 
+  const language = JSON.parse(localStorage.getItem("language")).lang;
+let languageData = {};
+
+
+
 export async function initializeHome() {
   const currencyData = JSON.parse(localStorage.getItem('currency')) || {};
     const currencySymbol = currencyData.symbol;
@@ -394,6 +399,211 @@ export async function initializeHome() {
   const budgetTracking =
     JSON.parse(localStorage.getItem("budgetTracking")) || [];
 
+    // const incomeElement = document.querySelector(".data-summary-income .value-money");
+    // const expensesElement = document.querySelector(".data-summary-expenses .value-money");
+    // const balanceElement = document.querySelector(".data-summary-balance .value-money");
+    // const categoryElements = document.querySelectorAll(".summary-cat tr");
+
+    // const incomeText = incomeElement.innerText;
+    // const expensesText = expensesElement.innerText;
+    // const balanceText = balanceElement.innerText;
+
+    // const categoryData = Array.from(categoryElements).map(row => {
+    //   const category = row.querySelector("#data-category").innerText;
+    //   const amount = row.querySelector("#data-amount").innerText;
+    //   const chart = row.querySelector("#data-charts .bar-progress").innerText;
+    //   return { category, amount, chart };
+    // });
+
+    const categoryElements = document.querySelectorAll(".summary-cat tr");
+
+    if (language === "en") {
+      fetch("../src/locale/lang/en.json")
+        .then((response) => response.json())
+        .then((data) => {
+          languageData = data;
+          const titleIncomeSummary = document.querySelector(".title-income-summary");
+    if (titleIncomeSummary) titleIncomeSummary.textContent = languageData.home.summary.income;
+    const idenIncome = document.querySelector(".iden-income");
+    if (idenIncome) idenIncome.textContent = languageData.home.summary.totalIncome;
+    const titleExpensesSummary = document.querySelector(".title-expenses-summary");
+    if (titleExpensesSummary) titleExpensesSummary.textContent = languageData.home.summary.expenses;
+    const idenExpenses = document.querySelector(".iden-expenses");
+    if (idenExpenses) idenExpenses.textContent = languageData.home.summary.totalMonthlyExpenses;
+    const titleBalanceSummary = document.querySelector(".title-balance-summary");
+    if (titleBalanceSummary) titleBalanceSummary.textContent = languageData.home.summary.balance;
+    const dataSummaryBalanceIdenExpenses = document.querySelector(".data-summary-balance .iden-expenses");
+    if (dataSummaryBalanceIdenExpenses) dataSummaryBalanceIdenExpenses.textContent = languageData.home.summary.finalBalance;
+    const titleSummaryCat = document.querySelector(".title-summary-cat");
+    if (titleSummaryCat) titleSummaryCat.textContent = languageData.home.summary.expensesByCategory;
+    const titleHealthFinance = document.querySelector(".title-health-finance");
+    if (titleHealthFinance) titleHealthFinance.textContent = languageData.home.summary.financialHealthScore;
+
+    const categoryMapping = {
+      "Housing": languageData.home.summary.categories.housing,
+      "Transportation": languageData.home.summary.categories.transportation,
+      "Groceries": languageData.home.summary.categories.groceries,
+      "Entertainment": languageData.home.summary.categories.entertainment,
+      "Health": languageData.home.summary.categories.health,
+      "Education": languageData.home.summary.categories.education,
+      "Others": languageData.home.summary.categories.others
+    };
+
+    categoryElements.forEach(row => {
+      const categoryElement = row.querySelector("#data-category");
+      if (categoryMapping[categoryElement.innerText]) {
+        categoryElement.textContent = categoryMapping[categoryElement.innerText];
+      }
+    });
+
+    document.querySelector(".income-data h3").textContent = languageData.home.summary.incomeData.title;
+    const incomeTable = document.querySelector(".income-data table");
+    const monthlyIncomeElement = incomeTable.querySelector("tr:nth-child(2) th");
+    if (monthlyIncomeElement) {
+        monthlyIncomeElement.textContent = languageData.home.summary.incomeData.monthlyIncome;
+    }
+    const freelanceWorkElement = incomeTable.querySelector("tr:nth-child(3) th");
+    if (freelanceWorkElement) {
+        freelanceWorkElement.textContent = languageData.home.summary.incomeData.freelanceWork;
+    }
+    const investmentsElement = incomeTable.querySelector("tr:nth-child(4) td:nth-child(1)");
+    if (investmentsElement) {
+        investmentsElement.textContent = languageData.home.summary.incomeData.investments;
+    }
+    const totalIncomeElement = incomeTable.querySelector("tr:nth-child(5) th");
+    if (totalIncomeElement) {
+        totalIncomeElement.textContent = languageData.home.summary.incomeData.totalIncome;
+    }
+
+    document.querySelector(".categories h3").textContent = languageData.home.summary.categories.title;
+
+    document.querySelector(".budget h3").textContent = languageData.home.summary.budgetTracking.title;
+    const budgetTable = document.querySelector(".budget table");
+    budgetTable.querySelector("tr:nth-child(1) th:nth-child(1)").textContent = languageData.home.summary.budgetTracking.category;
+    budgetTable.querySelector("tr:nth-child(1) th:nth-child(2)").textContent = languageData.home.summary.budgetTracking.budgetedAmount;
+    budgetTable.querySelector("tr:nth-child(1) th:nth-child(3)").textContent = languageData.home.summary.budgetTracking.actualSpent;
+    budgetTable.querySelector("tr:nth-child(1) th:nth-child(4)").textContent = languageData.home.summary.budgetTracking.difference;
+
+    document.querySelector(".saving-tables h3").textContent = languageData.home.summary.savingsGoals.title;
+    const savingsTable = document.querySelector(".saving-tables table");
+    savingsTable.querySelector("tr:nth-child(1) th:nth-child(1)").textContent = languageData.home.summary.savingsGoals.goal;
+    savingsTable.querySelector("tr:nth-child(1) th:nth-child(2)").textContent = languageData.home.summary.savingsGoals.targetAmount;
+    savingsTable.querySelector("tr:nth-child(1) th:nth-child(3)").textContent = languageData.home.summary.savingsGoals.currentSavings;
+    savingsTable.querySelector("tr:nth-child(1) th:nth-child(4)").textContent = languageData.home.summary.savingsGoals.remainingAmount;
+
+    document.querySelector(".summary-table h3").textContent = languageData.home.summary.summaryIndicators.title;
+    const summaryTable = document.querySelector(".summary-table table");
+    summaryTable.querySelector("tr:nth-child(1) th:nth-child(1)").textContent = languageData.home.summary.summaryIndicators.totalIncomeVsExpenses;
+    summaryTable.querySelector("tr:nth-child(1) th:nth-child(2)").textContent = languageData.home.summary.summaryIndicators.savingsRate;
+    const debtToIncomeRatioElement = summaryTable.querySelector("tr:nth-child(1) th:nth-child(3)");
+    if (debtToIncomeRatioElement) {
+        debtToIncomeRatioElement.textContent = languageData.home.summary.summaryIndicators.debtToIncomeRatio;
+    }
+    const financialHealthScoreElement = summaryTable.querySelector("tr:nth-child(1) th:nth-child(4)");
+    if (financialHealthScoreElement) {
+        financialHealthScoreElement.textContent = languageData.home.summary.summaryIndicators.financialHealthScore;
+    }
+
+          // You can use the fetched data here
+        })
+        .catch((error) => console.error("Error fetching language file:", error));
+    } else if (language === "es") {
+      fetch("../src/locale/lang/es.json")
+        .then((response) => response.json())
+        .then((data) => {
+          languageData = data;
+          document.querySelector(".title-income-summary").textContent = languageData.home.summary.income;
+    document.querySelector(".iden-income").textContent = languageData.home.summary.totalIncome;
+    document.querySelector(".title-expenses-summary").textContent = languageData.home.summary.expenses;
+    document.querySelector(".iden-expenses").textContent = languageData.home.summary.totalMonthlyExpenses;
+    document.querySelector(".title-balance-summary").textContent = languageData.home.summary.balance;
+    document.querySelector(".data-summary-balance .iden-expenses").textContent = languageData.home.summary.finalBalance;
+    document.querySelector(".title-summary-cat").textContent = languageData.home.summary.expensesByCategory;
+    document.querySelector(".title-health-finance").textContent = languageData.home.summary.financialHealthScore;
+
+    const categoryMapping = {
+      "Housing": languageData.home.summary.categories.housing,
+      "Transportation": languageData.home.summary.categories.transportation,
+      "Groceries": languageData.home.summary.categories.groceries,
+      "Entertainment": languageData.home.summary.categories.entertainment,
+      "Health": languageData.home.summary.categories.health,
+      "Education": languageData.home.summary.categories.education,
+      "Others": languageData.home.summary.categories.others
+    };
+
+    categoryElements.forEach(row => {
+      const categoryElement = row.querySelector("#data-category");
+      if (categoryMapping[categoryElement.innerText]) {
+        categoryElement.textContent = categoryMapping[categoryElement.innerText];
+      }
+    });
+
+    document.querySelector(".income-data h3").textContent = languageData.home.summary.incomeData.title;
+    const incomeTable = document.querySelector(".income-data table");
+    const monthlyIncomeElement = incomeTable.querySelector("tr:nth-child(2) th");
+    if (monthlyIncomeElement) {
+        monthlyIncomeElement.textContent = languageData.home.summary.incomeData.monthlyIncome;
+    }
+    const freelanceWorkElement = incomeTable.querySelector("tr:nth-child(3) th");
+    if (freelanceWorkElement) {
+        freelanceWorkElement.textContent = languageData.home.summary.incomeData.freelanceWork;
+    }
+    const investmentsElement = incomeTable.querySelector("tr:nth-child(4) td:nth-child(1)");
+    if (investmentsElement) {
+        investmentsElement.textContent = languageData.home.summary.incomeData.investments;
+    }
+    // const investmentsElement = incomeTable.querySelector("tr:nth-child(4) td:nth-child(1)");
+    if (investmentsElement) {
+        investmentsElement.textContent = languageData.home.summary.incomeData.investments;
+    }
+    const totalIncomeElement = incomeTable.querySelector("tr:nth-child(5) th");
+    if (totalIncomeElement) {
+        totalIncomeElement.textContent = languageData.home.summary.incomeData.totalIncome;
+    }
+
+    document.querySelector(".categories h3").textContent = languageData.home.summary.categories.title;
+
+    document.querySelector(".budget h3").textContent = languageData.home.summary.budgetTracking.title;
+    const budgetTable = document.querySelector(".budget table");
+    budgetTable.querySelector("tr:nth-child(1) th:nth-child(1)").textContent = languageData.home.summary.budgetTracking.category;
+    budgetTable.querySelector("tr:nth-child(1) th:nth-child(2)").textContent = languageData.home.summary.budgetTracking.budgetedAmount;
+    budgetTable.querySelector("tr:nth-child(1) th:nth-child(3)").textContent = languageData.home.summary.budgetTracking.actualSpent;
+    budgetTable.querySelector("tr:nth-child(1) th:nth-child(4)").textContent = languageData.home.summary.budgetTracking.difference;
+
+    document.querySelector(".saving-tables h3").textContent = languageData.home.summary.savingsGoals.title;
+    const savingsTable = document.querySelector(".saving-tables table");
+    savingsTable.querySelector("tr:nth-child(1) th:nth-child(1)").textContent = languageData.home.summary.savingsGoals.goal;
+    savingsTable.querySelector("tr:nth-child(1) th:nth-child(2)").textContent = languageData.home.summary.savingsGoals.targetAmount;
+    savingsTable.querySelector("tr:nth-child(1) th:nth-child(3)").textContent = languageData.home.summary.savingsGoals.currentSavings;
+    savingsTable.querySelector("tr:nth-child(1) th:nth-child(4)").textContent = languageData.home.summary.savingsGoals.remainingAmount;
+
+    document.querySelector(".summary-table h3").textContent = languageData.home.summary.summaryIndicators.title;
+    const summaryTable = document.querySelector(".summary-table table");
+    summaryTable.querySelector("tr:nth-child(1) th:nth-child(1)").textContent = languageData.home.summary.summaryIndicators.totalIncomeVsExpenses;
+    summaryTable.querySelector("tr:nth-child(1) th:nth-child(2)").textContent = languageData.home.summary.summaryIndicators.savingsRate;
+    const debtToIncomeRatioElement = summaryTable.querySelector("tr:nth-child(1) th:nth-child(3)");
+    if (debtToIncomeRatioElement) {
+        debtToIncomeRatioElement.textContent = languageData.home.summary.summaryIndicators.debtToIncomeRatio;
+    }
+    const financialHealthScoreElement = summaryTable.querySelector("tr:nth-child(1) th:nth-child(4)");
+    if (financialHealthScoreElement) {
+        financialHealthScoreElement.textContent = languageData.home.summary.summaryIndicators.financialHealthScore;
+    }
+
+          // You can use the fetched data here
+        })
+        .catch((error) => console.error("Error fetching language file:", error));
+    } else if (language === "pt") {
+      fetch("../src/locale/lang/pt.json")
+        .then((response) => response.json())
+        .then((data) => {
+          languageData = data;
+          // You can use the fetched data here
+        })
+        .catch((error) => console.error("Error fetching language file:", error));
+    }
+
+    
   let totalIncome = 0;
   let totalExpenses = 0;
   let totalSavings = 0;
@@ -501,7 +711,7 @@ export async function initializeHome() {
     const incomeTable = document.querySelector(".income-data table");
     incomeTable.innerHTML = `
       <tr>
-        <th>Category/th>
+        <th>Category</th>
         <th>Description</th>
         <th>Amount</th>
       </tr>

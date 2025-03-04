@@ -8,13 +8,13 @@
         "home": "Inicio",
         "transactions": "Transacciones",
         "reports": "Informes",
-        "goals": "Objetivos",
+        "goals": "Metas",
         "settings": "Configuraciones",
         "profile": "Perfil"
     },
     "footer": {
         "version": "versión 1.0.0",
-        "user": "nombre de usuario",
+        "user": "nombre usuario",
         "date": "0000-00-00",
         "time": "00:00",
         "license": "Licencia MIT 2024",
@@ -28,6 +28,56 @@
         },
         "actions": {
             "logout": "Cerrar sesión"
+        }
+    },
+    "home": {
+        "summary": {
+            "income": "Ingresos",
+            "totalIncome": "Ingresos Totales",
+            "expenses": "Gastos",
+            "totalMonthlyExpenses": "Gastos Mensuales Totales",
+            "balance": "Balance",
+            "finalBalance": "Balance Final",
+            "expensesByCategory": "Gastos por categoría",
+            "financialHealthScore": "Puntuación de Salud Financiera",
+            "incomeData": {
+                "title": "Ingresos",
+                "monthlyIncome": "Ingresos Mensuales",
+                "freelanceWork": "Trabajo Freelance",
+                "investments": "Inversiones",
+                "totalIncome": "Ingresos Totales"
+            },
+            "categories": {
+                "title": "Categorías",
+                "housing": "Vivienda",
+                "transportation": "Transporte",
+                "groceries": "Comestibles",
+                "entertainment": "Entretenimiento",
+                "health": "Salud",
+                "education": "Educación",
+                "others": "Otros"
+            },
+            "budgetTracking": {
+                "title": "Seguimiento del Presupuesto",
+                "category": "Categoría",
+                "budgetedAmount": "Cantidad Presupuestada",
+                "actualSpent": "Gasto Real",
+                "difference": "Diferencia"
+            },
+            "savingsGoals": {
+                "title": "Metas de Ahorro",
+                "goal": "Meta",
+                "targetAmount": "Cantidad Objetivo",
+                "currentSavings": "Ahorros Actuales",
+                "remainingAmount": "Cantidad Restante"
+            },
+            "summaryIndicators": {
+                "title": "Indicadores de Resumen",
+                "totalIncomeVsExpenses": "Ingresos Totales vs. Gastos",
+                "savingsRate": "Tasa de Ahorro",
+                "debtToIncomeRatio": "Relación Deuda-Ingreso",
+                "financialHealthScore": "Puntuación de Salud Financiera"
+            }
         }
     }
 }
