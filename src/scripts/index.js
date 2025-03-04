@@ -92,6 +92,8 @@ function init() {
   }
 }
 
+
+
 export function loadAppHTML() {
   console.log("🔵 Cargando app.html...");
 
@@ -192,6 +194,15 @@ export function loadAppHTML() {
         nameProfile.innerHTML = userSession.name;
         const nickProfile = document.querySelector(".profile-nick");
         nickProfile.innerHTML = userSession.nick;
+
+        function logout() {
+          localStorage.removeItem("userLogged");
+          localStorage.removeItem("userData");
+          localStorage.clear();
+          window.location.reload();
+        }
+
+        document.getElementById("btnLogout").addEventListener("click", logout);
       
     })
     .catch((error) => console.error("Error loading app.html:", error));

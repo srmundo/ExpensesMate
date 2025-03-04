@@ -1,4 +1,4 @@
-
+import { getUsers, deleteUser, updateUser } from "../auth/auth.js";
 export function settings() {
 	return `
                     <div class="container-settings">
@@ -226,18 +226,15 @@ function showSection(sectionId) {
 		initializeSettings();
 	});
 
-        document.getElementById('currency-settings-form').addEventListener('submit', async (event) => {
-                event.preventDefault();
-                const currencyCode = document.getElementById('currency-type').value;
-                const currencyData = await fetchCurrencyData();
-                updateLocalStorageCurrency(currencyCode, currencyData);
-        });
-
-        const savedCurrency = JSON.parse(localStorage.getItem('currency'));
-        if (savedCurrency) {
-                document.getElementById('currency-type').value = savedCurrency.name;
+        if (sectionId === 'currency-settings') {
+                initCurrency();
+        } else if (sectionId === 'change-password') {
+                initChangePassword();
+        } else if (sectionId === 'update-email') {
+                initUpdateEmail();
+        } else if (sectionId === 'delete-account') {
+                initDeleteAccount();
         }
-
 	
 }
 
@@ -267,3 +264,102 @@ function updateLocalStorageCurrency(currencyCode, currencyData) {
         }
 }
 
+function initCurrency(){
+        document.getElementById('currency-settings-form').addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const currencyCode = document.getElementById('currency-type').value;
+                const currencyData = await fetchCurrencyData();
+                updateLocalStorageCurrency(currencyCode, currencyData);
+             });
+        
+             const savedCurrency = JSON.parse(localStorage.getItem('currency'));
+             if (savedCurrency) {
+                     document.getElementById('currency-type').value = savedCurrency.name;
+             }
+}
+
+function initChangePassword(){
+        document.getElementById('change-password-form').addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const currentPassword = document.getElementById('current-password').value;
+                const password = document.getElementById('new-password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+        
+                if (password !== confirmPassword) {
+                        alert('New passwords do not match.');
+                        return;
+                }
+        
+                try {
+                        const userData = JSON.parse(localStorage.getItem('userData'));
+                        const userNick = userData ? userData.nick : null;
+                        if (!userNick) {
+                                alert('User not found. Please log in again.');
+                                return;
+                        }
+        
+                        await updateUser({ nick: userNick, currentPassword, password });
+                        alert('Password updated successfully!');
+                        document.getElementById('change-password-form').reset();
+                } catch (error) {
+                        console.error('Failed to update password:', error);
+                        alert('Failed to update password. Please try again.');
+                }
+        });
+}
+
+function initUpdateEmail(){
+        document.getElementById('btn-update-email').addEventListener('click', async (event) => {
+                event.preventDefault();
+                const currentEmail = document.getElementById('current-email').value;
+                const newEmail = document.getElementById('new-email').value;
+        
+                try {
+                        const users = await getUsers();
+                        const userData = users.find(user => user.nick === JSON.parse(localStorage.getItem('userData')).nick);
+                        const userPassword = userData ? userData.password : null;
+                        const userNick = userData ? userData.nick : null;
+                        if (!userNick) {
+                                alert('User not found. Please log in again.');
+                                return;
+                        }
+                        if (userData.email !== currentEmail) {
+                                        alert('Current email is incorrect.');
+                                        return;
+                        }
+        
+                        await updateUser({ nick: userNick, email: newEmail, password: userPassword });
+                        alert('Email updated successfully!');
+                        document.getElementById('update-email-form').reset();
+                } catch (error) {
+                        console.error('Failed to update email:', error);
+                        alert('Failed to update email. Please try again.');
+                }
+        });
+}
+
+function initDeleteAccount(){
+        document.getElementById('delete-account-form').addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const confirmationText = document.getElementById('confirm-delete').value;
+                if (confirmationText === 'DELETE') {
+                        try {
+                                const userData = JSON.parse(localStorage.getItem('userData'));
+                                const userNick = userData ? userData.nick : null;
+                                if (!userNick) {
+                                        alert('User not found. Please log in again.');
+                                        return;
+                                }
+                                await deleteUser(userNick);
+                                alert('Account deleted successfully!');
+                                // Redirect to login or home page after account deletion
+                                window.location.reload();
+                        } catch (error) {
+                                console.error('Failed to delete account:', error);
+                                alert('Failed to delete account. Please try again.');
+                        }
+                } else {
+                        alert('Please type "DELETE" to confirm.');
+                }
+        });
+}

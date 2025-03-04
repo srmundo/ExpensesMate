@@ -1,4 +1,4 @@
-import { editUser } from "../auth/auth.js";
+import { editUser,updateUser, getUsers } from "../auth/auth.js";
 export function profile() {
     return `
                 <div class="container-profile">
@@ -80,6 +80,8 @@ export async function initializeProfile() {
     const currencyData = JSON.parse(localStorage.getItem('currency')) || {};
     const currencySymbol = currencyData.symbol;
 const userData = JSON.parse(localStorage.getItem('userData'));
+const users = await getUsers();
+const currentUser = users.find(user => user.nick === userData.nick);
 const currency = localStorage.getItem('currency') || 'USD';
 const goals = JSON.parse(localStorage.getItem('goals')) || [];
 document.querySelector('.profile-settings tbody').innerHTML = `
@@ -125,11 +127,13 @@ document.querySelector('button[type="submit"]').addEventListener('click', async 
     const name = document.getElementById('name').value;
     const photo = document.getElementById('image-preview').src;
 
-    const updatedUser = { name, photo };
+    const updatedUser = { name, nick:currentUser.nick, photo };
+    const updatedUserData = {name, nick:currentUser.nick, photo, password: currentUser.password};
 
     try {
         await editUser(updatedUser);
-        localStorage.setItem('userData', JSON.stringify(updatedUser));
+        await updateUser(updatedUserData);
+        // localStorage.setItem('userData', JSON.stringify(updatedUser));
         document.querySelector('.avatar-nav-app').src = photo;
         document.querySelector('.profile-photo').src = photo;
         alert('Profile updated successfully!');

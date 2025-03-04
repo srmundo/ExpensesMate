@@ -1,4 +1,4 @@
-import { addUser, getUsers } from "../auth/auth.js";
+import { addUser, getUsers, loginUser } from "../auth/auth.js";
 export const LoginPage = function() {
     const app = document.getElementById('app');
     const style = document.createElement('style');
@@ -82,11 +82,16 @@ export const LoginPage = function() {
             <p>Don't have an account? <a href="#" id="showRegisterForm">Register</a></p>
         `;
 
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             const name = document.getElementById('nicknameOrEmail').value;
             const password = document.getElementById('password').value;
-
+            const success = await loginUser(name, password);
+            if (success) {
+                window.location.reload();
+            } else {
+                alert('Error in credentials');
+            }
         });
 
         document.getElementById('showRegisterForm').addEventListener('click', function(event) {
@@ -156,7 +161,7 @@ export const LoginPage = function() {
                 return;
             }
             addUser(fullName, name, `${name}@example.com`, photo, password);
-
+            // window.location.reload();
             createLoginForm();
         });
         
@@ -180,6 +185,8 @@ export const LoginPage = function() {
                 }
             });
             // createLoginForm();
+
+            
             
     
         });
