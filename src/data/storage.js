@@ -1,4 +1,4 @@
-const api = new APIClient('https://apistorageforexpensesmate.onrender.com') ;
+const api = new APIClient('https://apistorageforexpensesmate-production.up.railway.app') ;
 
 async function getUserByNick() {
     const userData = JSON.parse(localStorage.getItem('userData'));
