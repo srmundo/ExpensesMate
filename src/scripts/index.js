@@ -1,4 +1,7 @@
 import { LoginPage } from "../public/loginPage.js";
+import { checkAndStoreTransactions, syncLocalTransactionsWithAPI } from "../data/storage.js";
+
+checkAndStoreTransactions();
 
 if (localStorage.getItem("currency") === null) {
 	localStorage.setItem("currency", JSON.stringify({ symbol: "$", name: "USD" }));

@@ -633,26 +633,26 @@ export async function initializeHome() {
 
     transactions.forEach((transaction) => {
       if (transaction.type === "Expense") {
-        if (!categories[transaction.category]) {
-          categories[transaction.category] = 0;
+        if (!categories[transaction.categoryId]) {
+          categories[transaction.categoryId] = 0;
         }
-        categories[transaction.category] += parseFloat(transaction.amount);
+        categories[transaction.categoryId] += parseFloat(transaction.amount);
       }
     });
 
     const totalExpenses = Object.values(categories).reduce((acc, amount) => acc + amount, 0);
 
-    Object.keys(categories).forEach((category) => {
-      const amount = categories[category];
+    Object.keys(categories).forEach((categoryId) => {
+      const amount = categories[categoryId];
       const percentage = ((amount / totalExpenses) * 100).toFixed(2);
 
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td id="data-category">${category}</td>
+        <td id="data-category">${categoryId}</td>
         <td id="data-amount">${currencySymbol} ${amount.toFixed(2)}</td>
         <td id="data-charts">
           <div class="bar-container">
-            <div class="bar-progress ${category.toLowerCase()}" style="width: ${percentage}%;">${percentage}%</div>
+            <div class="bar-progress ${categoryId.toLowerCase()}" style="width: ${percentage}%;">${percentage}%</div>
           </div>
         </td>
       `;
@@ -667,7 +667,7 @@ export async function initializeHome() {
     let expenses = 0;
     let savings = goals.reduce((acc, goal) => acc + parseFloat(goal.amount), 0);
     transactions.forEach((transaction) => {
-      if (transaction.type === "goals" && goals.some(goal => goal.name === transaction.category)) {
+      if (transaction.type === "goals" && goals.some(goal => goal.name === transaction.categoryId)) {
       totalSavings += parseFloat(transaction.amount);
       }
     });
@@ -723,7 +723,7 @@ export async function initializeHome() {
       if (transaction.type === "Income") {
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td>${transaction.category}</td>
+          <td>${transaction.categoryId}</td>
           <td>${transaction.note}</td>
           <td>${currencySymbol} ${parseFloat(transaction.amount).toFixed(2)}</td>
         `;
@@ -756,13 +756,13 @@ export async function initializeHome() {
 
     transactions.forEach((transaction) => {
       if (transaction.type === "Expense") {
-        if (!categories[transaction.category]) {
-          categories[transaction.category] = {
+        if (!categories[transaction.categoryId]) {
+          categories[transaction.categoryId] = {
             description: transaction.note || "",
             amount: 0,
           };
         }
-        categories[transaction.category].amount += parseFloat(transaction.amount);
+        categories[transaction.categoryId].amount += parseFloat(transaction.amount);
       }
     });
 

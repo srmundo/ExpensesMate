@@ -1,3 +1,4 @@
+import { addTransaction } from "../data/storage.js";
 export function transactions() {
   return /*HTML*/ `
     <div class="container-transactions">
@@ -401,8 +402,12 @@ export async function funcTransactions() {
         tracking.actualSpent += parseFloat(newTransaction.amount);
         localStorage.setItem('budgetTracking', JSON.stringify(budgetTracking));
       }
-      localStorage.setItem('transactions', JSON.stringify(transactions));
-      renderTransactions();
+      // localStorage.setItem('transactions', JSON.stringify(transactions));
+      addTransaction(newTransaction.amount, newTransaction.date, newTransaction.category, newTransaction.type, newTransaction.note, null).then(() => {
+        // console.log("Transaction saved to API");
+        renderTransactions();
+      }
+      );
       console.log("Transaction saved to localStorage");
       // Clear the form
       inputAmount.value = "";
@@ -431,7 +436,7 @@ export async function funcTransactions() {
       row.innerHTML = `
         <td class="col-table-transaction" data-label="Amount">${currencySymbol} ${transaction.amount}</td>
         <td class="col-table-transaction" data-label="Date">${transaction.date}</td>
-        <td class="col-table-transaction" data-label="Category">${transaction.category}</td>
+        <td class="col-table-transaction" data-label="Category">${transaction.categoryId}</td>
         <td class="col-table-transaction" data-label="Type">${transaction.type}</td>
         <td class="col-table-transaction" data-label="Description">${transaction.note}</td>
         <td class="col-table-transaction col-btn" data-label="Action">

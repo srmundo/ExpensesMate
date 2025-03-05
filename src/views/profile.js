@@ -100,7 +100,7 @@ goals.forEach(goal => {
     const goalTransactions = JSON.parse(localStorage.getItem('transactions')) || [];
     const goalAmount = parseFloat(goal.amount);
     const goalProgress = goalTransactions
-        .filter(transaction => transaction.category.toLowerCase().includes(goal.name.toLowerCase()))
+        .filter(transaction => transaction.categoryId.toLowerCase().includes(goal.name.toLowerCase()))
         .reduce((sum, transaction) => sum + transaction.amount, 0);
     goal.progress = ((goalProgress / goalAmount) * 100).toFixed(0) + '%';
     goal.status = goalProgress >= goalAmount ? 'Completed' : 'In Progress';

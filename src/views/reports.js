@@ -72,16 +72,16 @@ export async function initializeReport() {
 
     const incomeRows = incomeTransactions.map(transaction => `
       <tr>
-      <td>${transaction.category}</td>
-      <td>${budgetCategories.income.find(cat => cat.name === transaction.category)?.description || ''}</td>
+      <td>${transaction.categoryId}</td>
+      <td>${budgetCategories.income.find(cat => cat.name === transaction.categoryId)?.description || ''}</td>
       <td>${currencySymbol} ${transaction.amount}</td>
       </tr>
     `).join('');
 
     const expenseRows = expenseTransactions.map(transaction => `
       <tr>
-      <td>${transaction.category}</td>
-      <td>${budgetCategories.expense.find(cat => cat.name === transaction.category)?.description || ''}</td>
+      <td>${transaction.categoryId}</td>
+      <td>${budgetCategories.expense.find(cat => cat.name === transaction.categoryId)?.description || ''}</td>
       <td>${currencySymbol} ${transaction.amount}</td>
       </tr>
     `).join('');
@@ -155,8 +155,8 @@ export async function initializeReport() {
 
     const incomeRows = incomeTransactions.map(transaction => `
       <tr>
-      <td>${transaction.category}</td>
-      <td>${budgetCategories.income.find(cat => cat.name === transaction.category)?.description || ''}</td>
+      <td>${transaction.categoryId}</td>
+      <td>${budgetCategories.income.find(cat => cat.name === transaction.categoryId)?.description || ''}</td>
       <td>${currencySymbol}${transaction.amount}</td>
       <td></td>
       </tr>
@@ -164,8 +164,8 @@ export async function initializeReport() {
 
     const expenseRows = expenseTransactions.map(transaction => `
       <tr>
-      <td>${transaction.category}</td>
-      <td>${budgetCategories.expense.find(cat => cat.name === transaction.category)?.description || ''}</td>
+      <td>${transaction.categoryId}</td>
+      <td>${budgetCategories.expense.find(cat => cat.name === transaction.categoryId)?.description || ''}</td>
       <td>${currencySymbol}${transaction.amount}</td>
       <td></td>
       </tr>
@@ -246,8 +246,8 @@ export async function initializeReport() {
 
     const incomeRows = incomeTransactions.map(transaction => `
       <tr>
-      <td>${transaction.category}</td>
-      <td>${budgetCategories.income.find(cat => cat.name === transaction.category)?.description || ''}</td>
+      <td>${transaction.categoryId}</td>
+      <td>${budgetCategories.income.find(cat => cat.name === transaction.categoryId)?.description || ''}</td>
       <td>${currencySymbol} ${transaction.amount}</td>
       <td></td>
       </tr>
@@ -255,8 +255,8 @@ export async function initializeReport() {
 
     const expenseRows = expenseTransactions.map(transaction => `
       <tr>
-      <td>${transaction.category}</td>
-      <td>${budgetCategories.expense.find(cat => cat.name === transaction.category)?.description || ''}</td>
+      <td>${transaction.categoryId}</td>
+      <td>${budgetCategories.expense.find(cat => cat.name === transaction.categoryId)?.description || ''}</td>
       <td>${currencySymbol} ${transaction.amount}</td>
       <td></td>
       </tr>
