@@ -1,4 +1,4 @@
-const api = new APIClient('https://apistorageforexpensesmate.onrender.com') ;
+const api = new APIClient('https://apistorageforexpensesmate.fly.dev') ;
 
 export async function addUser(name, nick, email, photo, password){
     localStorage.setItem('userLogged', 'true');

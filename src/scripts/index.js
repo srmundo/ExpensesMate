@@ -9,32 +9,6 @@ if (localStorage.getItem("language") === null) {
 const language = JSON.parse(localStorage.getItem("language")).lang;
 let languageData = {};
 
-if (language === "en") {
-  fetch("../src/locale/lang/en.json")
-    .then((response) => response.json())
-    .then((data) => {
-      languageData = data;
-      // You can use the fetched data here
-    })
-    .catch((error) => console.error("Error fetching language file:", error));
-} else if (language === "es") {
-  fetch("../src/locale/lang/es.json")
-    .then((response) => response.json())
-    .then((data) => {
-      languageData = data;
-      // You can use the fetched data here
-    })
-    .catch((error) => console.error("Error fetching language file:", error));
-} else if (language === "pt") {
-  fetch("../src/locale/lang/pt.json")
-    .then((response) => response.json())
-    .then((data) => {
-      languageData = data;
-      // You can use the fetched data here
-    })
-    .catch((error) => console.error("Error fetching language file:", error));
-}
-
 const budgetCategories = {
   income: [
     {
@@ -177,7 +151,7 @@ export function loadAppHTML() {
                     </div>
                 </div>
                 <div class="profile-actions">
-                    <button id="btnLogout">${languageData.profile.actions.logout}</button>
+                    <button id="btnLogout">Logout</button>
                 </div>
                 </div>
             `;
@@ -187,7 +161,33 @@ export function loadAppHTML() {
       );
       contMenuFloatOptions.innerHTML += profileMenu;
 
-
+      if (language === "en") {
+        fetch("../src/locale/lang/en.json")
+          .then((response) => response.json())
+          .then((data) => {
+            languageData = data;
+            document.getElementById("btnLogout").innerText = languageData.profile.actions.logout;
+            // You can use the fetched data here
+          })
+          .catch((error) => console.error("Error fetching language file:", error));
+      } else if (language === "es") {
+        fetch("../src/locale/lang/es.json")
+          .then((response) => response.json())
+          .then((data) => {
+            languageData = data;
+            document.getElementById("btnLogout").innerText = languageData.profile.actions.logout;
+            // You can use the fetched data here
+          })
+          .catch((error) => console.error("Error fetching language file:", error));
+      } else if (language === "pt") {
+        fetch("../src/locale/lang/pt.json")
+          .then((response) => response.json())
+          .then((data) => {
+            languageData = data;
+            // You can use the fetched data here
+          })
+          .catch((error) => console.error("Error fetching language file:", error));
+      }
 
       document.getElementById("btnLogout").addEventListener("click", () => {
         console.log("🔵 Logout button clicked");

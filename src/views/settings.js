@@ -371,6 +371,7 @@ function initLanguageSettings() {
                 event.preventDefault();
                 const selectedLanguage = document.getElementById('language-type').value;
                 localStorage.setItem('language', JSON.stringify({ lang: selectedLanguage }));
+                window.location.reload();
                 alert('Language updated successfully!');
         });
 
