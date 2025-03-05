@@ -667,10 +667,12 @@ export async function initializeHome() {
     let expenses = 0;
     let savings = goals.reduce((acc, goal) => acc + parseFloat(goal.amount), 0);
     transactions.forEach((transaction) => {
-      if (transaction.type === "goals" && goals.some(goal => goal.name === transaction.categoryId)) {
+      if (transaction.type === "Goals" && goals.some(goal => goal.name === transaction.categoryId)) {
       totalSavings += parseFloat(transaction.amount);
       }
     });
+    // totalSavings += parseFloat(currentAmount);
+
     let debt = 0;
 
     transactions.forEach((transaction) => {
@@ -678,7 +680,7 @@ export async function initializeHome() {
         income += parseFloat(transaction.amount);
       } else if (transaction.type === "Expense") {
         expenses += parseFloat(transaction.amount);
-      } else if (transaction.type === "goals") {
+      } else if (transaction.type === "Goals") {
         savings += parseFloat(transaction.amount);
       }
     });
@@ -819,7 +821,7 @@ export async function initializeHome() {
 
     goals.forEach((goal) => {
       const matchingTransactions = transactions.filter(transaction => transaction.category === goal.name);
-      const currentSavings = matchingTransactions.reduce((acc, transaction) => acc + parseFloat(transaction.amount), 0);
+      const currentSavings = goal.currentAmount;
       const remainingAmount = parseFloat(goal.amount) - parseFloat(currentSavings);
       const row = document.createElement("tr");
       row.innerHTML = `

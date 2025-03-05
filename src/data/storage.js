@@ -66,6 +66,44 @@ export async function syncLocalTransactionsWithAPI() {
     }
 }
 
+export async function checkAndStoreGoals() {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    const goals = await api.getGoals();
+    const userGoals = goals.filter(goal => goal.userId === user.id);
+
+    if (userGoals.length > 0) {
+        localStorage.setItem('goals', JSON.stringify(userGoals));
+    }
+}
+
+export async function syncLocalGoalsWithAPI() {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    const localGoals = JSON.parse(localStorage.getItem('goals')) || [];
+    const apiGoals = await api.getGoals();
+    const userApiGoals = apiGoals.filter(goal => goal.userId === user.id);
+
+    for (const localGoal of localGoals) {
+        const existsInAPI = userApiGoals.some(apiGoal => apiGoal.id === localGoal.id);
+        if (!existsInAPI) {
+            await api.addGoal(
+                user.id,
+                localGoal.name,
+                localGoal.amount,
+                localGoal.currentAmount,
+                localGoal.date
+            );
+        }
+    }
+}
+
 export async function addTransaction(amount, date, category, type, note, goalId) {
     const user = await getUserByNick();
     if (!user || !user.id) {
@@ -76,4 +114,48 @@ export async function addTransaction(amount, date, category, type, note, goalId)
     const userTransactions = JSON.parse(localStorage.getItem('transactions')) || [];
     userTransactions.push(newTransaction);
     localStorage.setItem('transactions', JSON.stringify(userTransactions));
+}
+
+// export async function checkAndStoreGoals() {
+//     const user = await getUserByNick();
+//     if (!user || !user.id) {
+//         throw new Error('User not found or invalid user ID');
+//     }
+
+//     const goals = await api.getGoals();
+//     const userGoals = goals.filter(goal => goal.userId === user.id);
+
+//     if (userGoals.length > 0) {
+//         localStorage.setItem('goals', JSON.stringify(userGoals));
+//     }
+// }
+
+export async function addGoal(name, amount, currentAmount, date) {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    const newGoal = await api.addGoal(user.id, name, amount, currentAmount, date);
+    const userGoals = JSON.parse(localStorage.getItem('goals')) || [];
+    userGoals.push(newGoal);
+    localStorage.setItem('goals', JSON.stringify(userGoals));
+}
+
+export async function updateGoal(id, name, amount, currentAmount, date) {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    const updatedGoal = await api.updateGoal(id, user.id, name, amount, currentAmount, date);
+    const userGoals = JSON.parse(localStorage.getItem('goals')) || [];
+    const goalIndex = userGoals.findIndex(goal => goal.id === id);
+
+    if (goalIndex !== -1) {
+        userGoals[goalIndex] = updatedGoal;
+        localStorage.setItem('goals', JSON.stringify(userGoals));
+    } else {
+        throw new Error('Goal not found in local storage');
+    }
 }

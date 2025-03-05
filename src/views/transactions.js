@@ -1,4 +1,4 @@
-import { addTransaction } from "../data/storage.js";
+import { addTransaction, updateGoal } from "../data/storage.js";
 export function transactions() {
   return /*HTML*/ `
     <div class="container-transactions">
@@ -331,7 +331,8 @@ export async function funcTransactions() {
     }
     selectCategory.addEventListener("change", (event) => {
       const selectedCategory = event.target.value;
-      const category = budgetCategories[selectType.value.toLowerCase()].find(cat => cat.name === selectedCategory);
+      const categoryType = budgetCategories[selectType.value.toLowerCase()];
+      const category = categoryType ? categoryType.find(cat => cat.name === selectedCategory) : null;
       const inputNote = document.getElementById("input-note");
       inputNote.value = category ? category.description : "";
     });
@@ -401,6 +402,20 @@ export async function funcTransactions() {
       if (tracking) {
         tracking.actualSpent += parseFloat(newTransaction.amount);
         localStorage.setItem('budgetTracking', JSON.stringify(budgetTracking));
+      }
+
+      if (newTransaction.type.toLowerCase() === 'goals') {
+        const goals = JSON.parse(localStorage.getItem('goals')) || [];
+        const goal = goals.find(goal => goal.name === newTransaction.category);
+        if (goal) {
+          goal.currentAmount += parseFloat(newTransaction.amount);
+          updateGoal(goal.id, goal.name, goal.amount, goal.currentAmount, goal.date).then(() => {
+        localStorage.setItem('goals', JSON.stringify(goals));
+        renderTransactions();
+          }).catch(error => {
+        console.error('Error updating goal:', error);
+          });
+        }
       }
       // localStorage.setItem('transactions', JSON.stringify(transactions));
       addTransaction(newTransaction.amount, newTransaction.date, newTransaction.category, newTransaction.type, newTransaction.note, null).then(() => {

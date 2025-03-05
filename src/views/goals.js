@@ -1,4 +1,5 @@
 import { useState } from '../scripts/useState.js';
+import { addGoal } from '../data/storage.js';
 export function goals() {
 return /*HTML*/`
             <div class="container-goals">
@@ -55,7 +56,7 @@ export async function initializeGoals() {
 
     console.log(currencySymbol);
 
-    document.getElementById('btn-add-goal').addEventListener('click', addGoal);
+    document.getElementById('btn-add-goal').addEventListener('click', setGoal);
     document.getElementById('btn-cancel-goal').addEventListener('click', clearForm);
 
     const btnNewGoal = document.getElementById('btn-new-goals');
@@ -76,7 +77,7 @@ export async function initializeGoals() {
         });
     })
 
-    function addGoal() {
+    function setGoal() {
         const goalName = document.getElementById('goal-name').value;
         const goalAmount = document.getElementById('goal-amount').value;
         const goalDate = document.getElementById('goal-date').value;
@@ -89,16 +90,23 @@ export async function initializeGoals() {
         const goal = {
             name: goalName,
             amount: goalAmount,
+            currentAmount: 0,
             date: goalDate,
             type: 'goals'
         };
 
-        let goals = JSON.parse(localStorage.getItem('goals')) || [];
-        goals.push(goal);
-        localStorage.setItem('goals', JSON.stringify(goals));
-        goalForm.style.display = 'none';
+        addGoal(goal.name, goal.amount, goal.currentAmount, goal.date).then(() => {
+            renderGoals();
+        }
+        );
+        // let goals = JSON.parse(localStorage.getItem('goals')) || [];
+        // goals.push(goal);
+        // localStorage.setItem('goals', JSON.stringify(goals));
+        if (window.innerWidth <= 768) {
+            goalForm.style.display = 'none';
+        }
 
-        renderGoals();
+        // renderGoals();
         clearForm();
     }
 
@@ -117,10 +125,7 @@ export async function initializeGoals() {
 
         goals.forEach((goal, index) => {
             const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-            const currentAmount = transactions
-                .filter(transaction => transaction.category === goal.name)
-                .reduce((sum, transaction) => sum + parseFloat(transaction.amount), 0);
-
+            const currentAmount = goal.currentAmount;
             // console.log(currentAmount);
             const row = document.createElement('tr');
             row.innerHTML = `

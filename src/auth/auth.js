@@ -56,3 +56,4 @@ export async function loginUser(nick, password) {
     }
     return false;
 }
+
