@@ -10,6 +10,22 @@ async function getUserByNick() {
     return users.find(user => user.nick === userData.nick);
 }
 
+export async function updateUserInLocalStorage() {
+    const userData = JSON.parse(localStorage.getItem('userData'));
+    if (!userData || !userData.nick) {
+        throw new Error('No user data found in localStorage');
+    }
+
+    const userFromAPI = await getUserByNick();
+    if (!userFromAPI) {
+        throw new Error('User not found in API');
+    }
+
+    if (JSON.stringify(userData) !== JSON.stringify(userFromAPI)) {
+        localStorage.setItem('userData', JSON.stringify(userFromAPI));
+    }
+}
+
 export async function checkAndStoreTransactions() {
     const user = await getUserByNick();
     if (!user || !user.id) {

@@ -1,7 +1,14 @@
 import { LoginPage } from "../public/loginPage.js";
-import { checkAndStoreTransactions, syncLocalTransactionsWithAPI } from "../data/storage.js";
+import { checkAndStoreTransactions, syncLocalTransactionsWithAPI, updateUserInLocalStorage } from "../data/storage.js";
 
 checkAndStoreTransactions();
+updateUserInLocalStorage();
+
+function startSyncInterval() {
+  setInterval(syncLocalTransactionsWithAPI, 20 * 60 * 1000);
+}
+
+startSyncInterval();
 
 if (localStorage.getItem("currency") === null) {
 	localStorage.setItem("currency", JSON.stringify({ symbol: "$", name: "USD" }));
