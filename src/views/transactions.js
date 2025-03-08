@@ -311,12 +311,14 @@ export async function funcTransactions() {
     const selectCategory = document.getElementById("options-category");
     selectCategory.innerHTML = ""; // Clear existing options
 
-    if (budgetCategories && budgetCategories[type]) {
-      budgetCategories[type].forEach(category => {
-      const option = document.createElement("option");
-      option.value = category.name;
-      option.textContent = category.name;
-      selectCategory.appendChild(option);
+    if (budgetCategories) {
+      budgetCategories.forEach(category => {
+      if (category.type.toLowerCase() === type) {
+        const option = document.createElement("option");
+        option.value = category.name;
+        option.textContent = category.name;
+        selectCategory.appendChild(option);
+      }
       });
     }
 
@@ -328,11 +330,21 @@ export async function funcTransactions() {
       option.textContent = goal.name;
       selectCategory.appendChild(option);
       });
+    } else {
+      budgetCategories.forEach(category => {
+      if (category.type.toLowerCase() === type) {
+        const option = document.createElement("option");
+        option.value = category.name;
+        option.textContent = category.name;
+        selectCategory.appendChild(option);
+      }
+      });
     }
+
     selectCategory.addEventListener("change", (event) => {
       const selectedCategory = event.target.value;
-      const categoryType = budgetCategories[selectType.value.toLowerCase()];
-      const category = categoryType ? categoryType.find(cat => cat.name === selectedCategory) : null;
+      const categories = JSON.parse(localStorage.getItem('categories')) || [];
+      const category = categories.find(cat => cat.name === selectedCategory);
       const inputNote = document.getElementById("input-note");
       inputNote.value = category ? category.description : "";
     });
@@ -500,18 +512,14 @@ export async function funcTransactions() {
     const ul = document.querySelector(".cont-list-category ul");
     ul.innerHTML = ""; // Clear existing list
 
-    if (budgetCategories) {
-      Object.keys(budgetCategories).forEach(type => {
-        budgetCategories[type].forEach(category => {
-          const li = document.createElement("li");
-          li.innerHTML = `
-            <input type="checkbox" name="${category.name}" id="${category.name}" />
-            <label for="${category.name}">${category.name}</label>
-          `;
-          ul.appendChild(li);
-        });
-      });
-    }
+    budgetCategories.forEach(category => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+      <input type="checkbox" name="${category.name}" id="${category.id}" />
+      <label for="${category.id}">${category.name}</label>
+      `;
+      ul.appendChild(li);
+    });
   }
 
   const btnAddCategory = document.getElementById("btn-add-category");
@@ -561,16 +569,14 @@ export async function funcTransactions() {
     const selectCategoryTracking = document.getElementById("options-category-tracking");
     selectCategoryTracking.innerHTML = ""; // Clear existing options
 
-    if (budgetCategories) {
-      Object.keys(budgetCategories).forEach(type => {
-        budgetCategories[type].forEach(category => {
-          const option = document.createElement("option");
-          option.value = category.name;
-          option.textContent = category.name;
-          selectCategoryTracking.appendChild(option);
-        });
-      });
-    }
+    budgetCategories.forEach(category => {
+      if (category.type.toLowerCase() === 'expense') {
+      const option = document.createElement("option");
+      option.value = category.name;
+      option.textContent = category.name;
+      selectCategoryTracking.appendChild(option);
+      }
+    });
   }
 
   const btnAddTracking = document.getElementById("btn-add-tracking");

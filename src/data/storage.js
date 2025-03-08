@@ -287,4 +287,95 @@ export async function deleteUserData() {
     localStorage.removeItem('transactions');
     localStorage.removeItem('goals');
     localStorage.removeItem('budgetTracking');
+    // Delete categories
+    const categories = await api.getCategories();
+    const userCategories = categories.filter(category => category.userId === user.id);
+    for (const category of userCategories) {
+        await api.deleteCategory(category.id);
+    }
+}
+
+export async function checkAndStoreCategories() {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    const categories = await api.getCategories();
+    const userCategories = categories.filter(category => category.userId === user.id);
+
+    const localCategories = JSON.parse(localStorage.getItem('budgetCategories')) || [];
+    const newCategories = userCategories.filter(category => 
+        !localCategories.some(localCategory => localCategory.id === category.id)
+    );
+
+    if (newCategories.length > 0) {
+        localStorage.setItem('budgetCategories', JSON.stringify([...localCategories, ...newCategories]));
+    }
+}
+
+export async function syncLocalCategoriesWithAPI() {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    const localCategories = JSON.parse(localStorage.getItem('budgetCategories')) || [];
+    const apiCategories = await api.getCategories();
+    const userApiCategories = apiCategories.filter(category => category.userId === user.id);
+
+    for (const localCategory of localCategories) {
+        const existsInAPI = userApiCategories.some(apiCategory => apiCategory.id === localCategory.id);
+        if (!existsInAPI) {
+            await api.addCategory(user.id, localCategory.name, localCategory.type);
+        }
+    }
+}
+
+export async function addCategory(name, type) {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    const userCategories = JSON.parse(localStorage.getItem('budgetCategories')) || [];
+    const categoryExists = userCategories.some(category => category.name === name && category.type === type);
+
+    if (categoryExists) {
+        throw new Error('Category with the same name and type already exists');
+    }
+
+    const newCategory = await api.addCategory(user.id, name, type);
+    userCategories.push(newCategory);
+    localStorage.setItem('budgetCategories', JSON.stringify(userCategories));
+}
+
+export async function updateCategory(id, name, type) {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    const updatedCategory = await api.updateCategory(id, user.id, name, type);
+    const userCategories = JSON.parse(localStorage.getItem('budgetCategories')) || [];
+    const categoryIndex = userCategories.findIndex(category => category.id === id);
+
+    if (categoryIndex !== -1) {
+        userCategories[categoryIndex] = updatedCategory;
+        localStorage.setItem('budgetCategories', JSON.stringify(userCategories));
+    } else {
+        throw new Error('Category not found in local storage');
+    }
+}
+
+export async function deleteCategory(id) {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    await api.deleteCategory(id);
+    const userCategories = JSON.parse(localStorage.getItem('budgetCategories')) || [];
+    const updatedCategories = userCategories.filter(category => category.id !== id);
+    localStorage.setItem('budgetCategories', JSON.stringify(updatedCategories));
 }

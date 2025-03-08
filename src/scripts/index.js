@@ -1,5 +1,5 @@
 import { LoginPage } from "../public/loginPage.js";
-import { checkAndStoreTransactions, syncLocalTransactionsWithAPI, updateUserInLocalStorage, checkAndStoreGoals, syncLocalGoalsWithAPI} from "../data/storage.js";
+import { addCategory, checkAndStoreCategories } from "../data/storage.js";
 
 if (localStorage.getItem("currency") === null) {
 	localStorage.setItem("currency", JSON.stringify({ symbol: "$", name: "USD" }));
@@ -73,13 +73,7 @@ const budgetCategories = {
   ],
 };
 
-console.log(budgetCategories);
-
 function init() {
-  // checkAndStoreTransactions();
-  // updateUserInLocalStorage();
-  // checkAndStoreGoals();
-
   const loader = document.getElementById("loader");
   
   const userLogged = localStorage.getItem("userLogged");
@@ -89,9 +83,13 @@ function init() {
     LoginPage();
   } else if (userLogged === "true") {
     loadAppHTML();
-    localStorage.setItem("budgetCategories", JSON.stringify(budgetCategories));
+    // localStorage.setItem("budgetCategories", JSON.stringify(budgetCategories));
+    Object.keys(budgetCategories).forEach((type) => {
+      budgetCategories[type].forEach((category) => {
+        addCategory(category.name, type);
+      });
+    });
   } else {
-    // window.location.href = "../public/login.html";
     LoginPage();
   }
 }
