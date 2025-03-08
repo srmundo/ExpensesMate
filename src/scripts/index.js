@@ -1,13 +1,6 @@
 import { LoginPage } from "../public/loginPage.js";
 import { checkAndStoreTransactions, syncLocalTransactionsWithAPI, updateUserInLocalStorage, checkAndStoreGoals, syncLocalGoalsWithAPI} from "../data/storage.js";
 
-
-
-function startSyncInterval() {
-  setInterval(syncLocalTransactionsWithAPI, 10 * 60 * 1000);
-}
-
-
 if (localStorage.getItem("currency") === null) {
 	localStorage.setItem("currency", JSON.stringify({ symbol: "$", name: "USD" }));
 }
@@ -86,8 +79,6 @@ function init() {
   checkAndStoreTransactions();
   updateUserInLocalStorage();
   checkAndStoreGoals();
-  syncLocalTransactionsWithAPI();
-  startSyncInterval();
 
   const loader = document.getElementById("loader");
   
@@ -95,36 +86,9 @@ function init() {
 
   if (userLogged === null) {
     localStorage.setItem("userLogged", "false");
-    // window.location.href = "../public/login.html";
-    const loader = document.createElement("div");
-  loader.id = "app-loader";
-  loader.innerHTML = `
-      <div class="loader-container">
-          <div class="spinner"></div>
-          <p>Cargando...</p>
-      </div>
-  `;
-  document.body.appendChild(loader);
     LoginPage();
   } else if (userLogged === "true") {
-    // 🔵 Crear el loader y agregarlo al body
-  const loader = document.createElement("div");
-  loader.id = "app-loader";
-  loader.innerHTML = `
-      <div class="loader-container">
-          <div class="spinner"></div>
-          <p>Cargando...</p>
-      </div>
-  `;
-  document.body.appendChild(loader);
     loadAppHTML();
-    // 🔵 Ocultar loader después de cargar todo el contenido
-    setTimeout(() => {
-      loader.style.opacity = "0";
-      setTimeout(() => {
-        loader.remove();
-      }, 500);
-    }, 1000);
     localStorage.setItem("budgetCategories", JSON.stringify(budgetCategories));
   } else {
     // window.location.href = "../public/login.html";
