@@ -76,9 +76,9 @@ const budgetCategories = {
 console.log(budgetCategories);
 
 function init() {
-  checkAndStoreTransactions();
-  updateUserInLocalStorage();
-  checkAndStoreGoals();
+  // checkAndStoreTransactions();
+  // updateUserInLocalStorage();
+  // checkAndStoreGoals();
 
   const loader = document.getElementById("loader");
   
