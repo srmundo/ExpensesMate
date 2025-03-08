@@ -89,15 +89,42 @@ function init() {
   syncLocalTransactionsWithAPI();
   startSyncInterval();
 
+  const loader = document.getElementById("loader");
   
   const userLogged = localStorage.getItem("userLogged");
 
   if (userLogged === null) {
     localStorage.setItem("userLogged", "false");
     // window.location.href = "../public/login.html";
+    const loader = document.createElement("div");
+  loader.id = "app-loader";
+  loader.innerHTML = `
+      <div class="loader-container">
+          <div class="spinner"></div>
+          <p>Cargando...</p>
+      </div>
+  `;
+  document.body.appendChild(loader);
     LoginPage();
   } else if (userLogged === "true") {
+    // 🔵 Crear el loader y agregarlo al body
+  const loader = document.createElement("div");
+  loader.id = "app-loader";
+  loader.innerHTML = `
+      <div class="loader-container">
+          <div class="spinner"></div>
+          <p>Cargando...</p>
+      </div>
+  `;
+  document.body.appendChild(loader);
     loadAppHTML();
+    // 🔵 Ocultar loader después de cargar todo el contenido
+    setTimeout(() => {
+      loader.style.opacity = "0";
+      setTimeout(() => {
+        loader.remove();
+      }, 500);
+    }, 1000);
     localStorage.setItem("budgetCategories", JSON.stringify(budgetCategories));
   } else {
     // window.location.href = "../public/login.html";
@@ -105,9 +132,18 @@ function init() {
   }
 }
 
-
-
 export function loadAppHTML() {
+
+  // Crear el loader y agregarlo al body
+  const loader = document.createElement("div");
+  loader.id = "app-loader";
+  loader.innerHTML = `
+      <div class="loader-container">
+          <div class="spinner"></div>
+          <p>Cargando...</p>
+      </div>
+  `;
+  document.body.appendChild(loader);
 
   fetch("./src/app.html")
     .then((response) => response.text())
@@ -139,7 +175,6 @@ export function loadAppHTML() {
         }
       });
 
-      // Reemplazar el contenido del body con el HTML cargado
       document.body.innerHTML = tempDiv.innerHTML;
 
       // Forzar la recarga de estilos con un pequeño retraso
@@ -147,7 +182,7 @@ export function loadAppHTML() {
         document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
           link.href = link.href; // Esto fuerza al navegador a recargar los estilos
         });
-      }, 20);
+      }, 10);
 
       // Asegurar que los scripts de la app se ejecuten después de inyectar el HTML
       loadAppScripts();
@@ -236,16 +271,17 @@ export function loadAppHTML() {
         function logout() {
           localStorage.removeItem("userLogged");
           localStorage.removeItem("userData");
+          localStorage.removeItem('currency');
+          localStorage.removeItem('budgetCategories');
           localStorage.clear();
           window.location.reload();
         }
 
         document.getElementById("btnLogout").addEventListener("click", logout);
         // Simular un pequeño retraso antes de ocultar el loader (para asegurar que los estilos cargan bien)
-      setTimeout(() => {
-        loader.style.display = "none";
-      }, 500); // Se oculta el loader después de 500ms
       
+        
+
     })
     .catch((error) => console.error("Error loading app.html:", error));
 }

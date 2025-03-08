@@ -1,4 +1,5 @@
 import { getUsers, deleteUser, updateUser } from "../auth/auth.js";
+import { deleteUserData } from "../data/storage.js";
 export function settings() {
 	return `
                     <div class="container-settings">
@@ -352,7 +353,14 @@ function initDeleteAccount(){
                                         alert('User not found. Please log in again.');
                                         return;
                                 }
-                                await deleteUser(userNick);
+                                await deleteUserData();
+                                // await deleteUser(userNick);
+                                localStorage.removeItem('userLogged');
+                                localStorage.removeItem('currency');
+                                localStorage.removeItem('budgetCategories');
+
+
+
                                 alert('Account deleted successfully!');
                                 // Redirect to login or home page after account deletion
                                 window.location.reload();

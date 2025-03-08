@@ -251,3 +251,40 @@ export async function deleteTransaction(id) {
     const updatedTransactions = userTransactions.filter(transaction => transaction.id !== id);
     localStorage.setItem('transactions', JSON.stringify(updatedTransactions));
 }
+
+export async function deleteUserData() {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    // Delete transactions
+    const transactions = await api.getTransactions();
+    const userTransactions = transactions.filter(transaction => transaction.userId === user.id);
+    for (const transaction of userTransactions) {
+        await api.deleteTransaction(transaction.id);
+    }
+
+    // Delete goals
+    const goals = await api.getGoals();
+    const userGoals = goals.filter(goal => goal.userId === user.id);
+    for (const goal of userGoals) {
+        await api.deleteGoal(goal.id);
+    }
+
+    // Delete budget tracking
+    const budgetTracking = await api.getBudgetTracking();
+    const userBudgetTracking = budgetTracking.filter(item => item.userId === user.id);
+    for (const item of userBudgetTracking) {
+        await api.deleteBudgetTracking(item.id);
+    }
+
+    // Delete user
+    await api.deleteUser(user.id);
+
+    // Clear local storage
+    localStorage.removeItem('userData');
+    localStorage.removeItem('transactions');
+    localStorage.removeItem('goals');
+    localStorage.removeItem('budgetTracking');
+}
