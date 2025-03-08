@@ -403,9 +403,9 @@ export async function funcTransactions() {
       const tracking = budgetTracking.find(track => track.category === newTransaction.category);
 
       if (tracking) {
-        tracking.actualSpent += parseFloat(newTransaction.budgetedAmount);
-        const difference = tracking.budgetedAmount - tracking.actualSpent;
-        updateBudgetTracking(tracking.id, tracking.category, tracking.budgetedAmount, tracking.actualSpent, difference).then(() => {
+        tracking.actualSpent += parseFloat(newTransaction.amount);
+        const difference = parseFloat(tracking.budgetedAmount) - tracking.actualSpent;
+        updateBudgetTracking(tracking.id, tracking.category, parseFloat(tracking.budgetedAmount), tracking.actualSpent, difference).then(() => {
           // localStorage.setItem('budgetTracking', JSON.stringify(budgetTracking));
           renderBudgetTracking();
         }).catch(error => {
