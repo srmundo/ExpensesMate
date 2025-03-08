@@ -159,3 +159,83 @@ export async function updateGoal(id, name, amount, currentAmount, date) {
         throw new Error('Goal not found in local storage');
     }
 }
+
+export async function checkAndStoreBudgetTracking() {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    const budgetTracking = await api.getBudgetTracking();
+    const userBudgetTracking = budgetTracking.filter(item => item.userId === user.id);
+
+    if (userBudgetTracking.length > 0) {
+        localStorage.setItem('budgetTracking', JSON.stringify(userBudgetTracking));
+    }
+}
+
+export async function syncLocalBudgetTrackingWithAPI() {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    const localBudgetTracking = JSON.parse(localStorage.getItem('budgetTracking')) || [];
+    const apiBudgetTracking = await api.getBudgetTracking();
+    const userApiBudgetTracking = apiBudgetTracking.filter(item => item.userId === user.id);
+
+    for (const localItem of localBudgetTracking) {
+        const existsInAPI = userApiBudgetTracking.some(apiItem => apiItem.id === localItem.id);
+        if (!existsInAPI) {
+            await api.addBudgetTracking(
+                user.id,
+                localItem.category,
+                localItem.budgetedAmount,
+                localItem.actualSpent,
+                localItem.difference
+            );
+        }
+    }
+}
+
+export async function addBudgetTracking(category, budgetedAmount, actualSpent, difference) {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    const newBudgetTracking = await api.addBudgetTracking(user.id, category, budgetedAmount, actualSpent, difference);
+    const userBudgetTracking = JSON.parse(localStorage.getItem('budgetTracking')) || [];
+    userBudgetTracking.push(newBudgetTracking);
+    localStorage.setItem('budgetTracking', JSON.stringify(userBudgetTracking));
+}
+
+export async function updateBudgetTracking(id, category, budgetedAmount, actualSpent, difference) {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    const updatedBudgetTracking = await api.updateBudgetTracking(id, user.id, category, budgetedAmount, actualSpent, difference);
+    const userBudgetTracking = JSON.parse(localStorage.getItem('budgetTracking')) || [];
+    const itemIndex = userBudgetTracking.findIndex(item => item.id === id);
+
+    if (itemIndex !== -1) {
+        userBudgetTracking[itemIndex] = updatedBudgetTracking;
+        localStorage.setItem('budgetTracking', JSON.stringify(userBudgetTracking));
+    } else {
+        throw new Error('Budget tracking item not found in local storage');
+    }
+}
+
+export async function deleteBudgetTracking(id) {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    await api.deleteBudgetTracking(id);
+    const userBudgetTracking = JSON.parse(localStorage.getItem('budgetTracking')) || [];
+    const updatedBudgetTracking = userBudgetTracking.filter(item => item.id !== id);
+    localStorage.setItem('budgetTracking', JSON.stringify(updatedBudgetTracking));
+}
