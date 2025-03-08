@@ -1,3 +1,4 @@
+import { syncLocalTransactionsWithAPI } from "../data/storage.js";
 export function home() {
   return /*html*/ `
     <div class="container-home">
@@ -392,6 +393,7 @@ let languageData = {};
 
 
 export async function initializeHome() {
+  syncLocalTransactionsWithAPI();
   const currencyData = JSON.parse(localStorage.getItem('currency')) || {};
     const currencySymbol = currencyData.symbol;
   const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
