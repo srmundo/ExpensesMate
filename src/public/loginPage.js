@@ -1,5 +1,11 @@
 import { addUser, getUsers, loginUser } from "../auth/auth.js";
 export const LoginPage = function() {
+    setTimeout(() => {
+        const loader = document.getElementById('loader2');
+        if (loader) {
+            loader.style.display = 'none';
+        }
+    }, 800);
     const app = document.getElementById('app');
     const style = document.createElement('style');
     style.innerHTML = `

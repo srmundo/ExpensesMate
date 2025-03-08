@@ -97,17 +97,12 @@ function init() {
 }
 
 export function loadAppHTML() {
-
-  // Crear el loader y agregarlo al body
-  const loader = document.createElement("div");
-  loader.id = "app-loader";
-  loader.innerHTML = `
-      <div class="loader-container">
-          <div class="spinner"></div>
-          <p>Cargando...</p>
-      </div>
-  `;
-  document.body.appendChild(loader);
+  setTimeout(() => {
+    const loader = document.getElementById('loader2');
+    if (loader) {
+        loader.style.display = 'none';
+    }
+  }, 2000);
 
   fetch("./src/app.html")
     .then((response) => response.text())
@@ -115,7 +110,7 @@ export function loadAppHTML() {
       // Crear un elemento temporal para procesar el HTML
       const tempDiv = document.createElement("div");
       tempDiv.innerHTML = html;
-
+      tempDiv.innerHTML += '<div id="loader2"><h2>Expenses open</h2><div class="bars2"></div><h4>Loading...</h4></div>';
       // Extraer y aplicar los estilos manualmente antes de modificar el body
       const styles = tempDiv.querySelectorAll('link[rel="stylesheet"]');
       const additionalStyles = [
