@@ -1,4 +1,4 @@
-import { addTransaction, updateGoal } from "../data/storage.js";
+import { addTransaction, updateGoal, addBudgetTracking } from "../data/storage.js";
 export function transactions() {
   return /*HTML*/ `
     <div class="container-transactions">
@@ -401,7 +401,13 @@ export async function funcTransactions() {
       const tracking = budgetTracking.find(track => track.category === newTransaction.category);
       if (tracking) {
         tracking.actualSpent += parseFloat(newTransaction.amount);
-        localStorage.setItem('budgetTracking', JSON.stringify(budgetTracking));
+        // localStorage.setItem('budgetTracking', JSON.stringify(budgetTracking));
+        const difference = tracking.amount - tracking.actualSpent;
+        addBudgetTracking(tracking.category, tracking.amount, tracking.actualSpent, difference).then(() => {
+          renderBudgetTracking();
+        }).catch(error => {
+          console.error('Error updating budget tracking:', error);
+        });
       }
 
       if (newTransaction.type.toLowerCase() === 'goals') {
