@@ -2,7 +2,9 @@ import { syncLocalTransactionsWithAPI, checkAndStoreGoals, checkAndStoreTransact
 export function home() {
   return /*html*/ `
     <div class="container-home">
-      <div id="loader">🔄 Cargando datos...</div>
+      <div id="loader">
+        <div class="bars"></div>
+      </div>
       <div id="home-content">
       <div class="container-summary">
         <div class="container-summary-exp-inc">
