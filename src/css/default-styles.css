@@ -2387,7 +2387,6 @@ input[type="number"]::-webkit-inner-spin-button,
   }
 
   .nav-transactions-tracking .cont-btn-add-cancel-tracking {
-    flex-direction: column;
     gap: 10px;
   }
 
@@ -2396,8 +2395,9 @@ input[type="number"]::-webkit-inner-spin-button,
   }
 
   .cont-list-tracking {
-    height: auto;
+    height: 200px;
     max-height: 100%;
+    overflow-y: auto;
   }
 
   .cont-table-tracking {
