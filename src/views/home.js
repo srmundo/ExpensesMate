@@ -1,7 +1,9 @@
-import { syncLocalTransactionsWithAPI } from "../data/storage.js";
+import { syncLocalTransactionsWithAPI, checkAndStoreGoals, checkAndStoreTransactions } from "../data/storage.js";
 export function home() {
   return /*html*/ `
     <div class="container-home">
+      <div id="loader">🔄 Cargando datos...</div>
+      <div id="home-content">
       <div class="container-summary">
         <div class="container-summary-exp-inc">
           <div class="cont-summary-income summary">
@@ -353,6 +355,7 @@ export function home() {
         
         </div>
       </div>
+      </div>
     </div>
   `;
 }
@@ -393,7 +396,27 @@ let languageData = {};
 
 
 export async function initializeHome() {
-  syncLocalTransactionsWithAPI();
+  const content = document.getElementById("home-content");
+  content.style.display = "none";
+  async function cargarDatos() {
+    const loader = document.getElementById("loader");
+
+    try {
+        // Obtener los datos
+        await checkAndStoreTransactions();
+        await checkAndStoreGoals();
+        await syncLocalTransactionsWithAPI();
+        
+        // Ocultar el loader y mostrar el contenido
+        loader.style.display = "none";
+        content.style.display = "block";
+        content.textContent = data;
+    } catch (error) {
+        loader.textContent = "❌ Error al cargar los datos";
+    }
+  }
+  cargarDatos();
+
   const currencyData = JSON.parse(localStorage.getItem('currency')) || {};
     const currencySymbol = currencyData.symbol;
   const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
