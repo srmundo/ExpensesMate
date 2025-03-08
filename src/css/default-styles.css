@@ -2373,7 +2373,7 @@ input[type="number"]::-webkit-inner-spin-button,
 
   .nav-transactions-tracking {
     width: 90%;
-    height: auto;
+    height: 67vh;
     border-radius: 0px;
   }
 
