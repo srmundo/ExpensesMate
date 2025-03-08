@@ -1,4 +1,4 @@
-import { syncLocalTransactionsWithAPI, checkAndStoreGoals, checkAndStoreTransactions } from "../data/storage.js";
+import { syncLocalTransactionsWithAPI, checkAndStoreGoals, checkAndStoreTransactions, checkAndStoreBudgetTracking } from "../data/storage.js";
 export function home() {
   return /*html*/ `
     <div class="container-home">
@@ -408,7 +408,8 @@ export async function initializeHome() {
         // Obtener los datos
         await checkAndStoreTransactions();
         await checkAndStoreGoals();
-        await syncLocalTransactionsWithAPI();
+        // await syncLocalTransactionsWithAPI();
+        await checkAndStoreBudgetTracking();
         
         // Ocultar el loader y mostrar el contenido
         loader.style.display = "none";
