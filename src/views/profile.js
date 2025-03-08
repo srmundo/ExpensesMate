@@ -2,7 +2,9 @@ import { editUser,updateUser, getUsers } from "../auth/auth.js";
 export function profile() {
     return `
                 <div class="container-profile">
-                        <h1>Profile</h1>
+                        <div id="loader"><div class="bars"></div></div>
+                        <div id="content-profile">
+                            <h1>Profile</h1>
                         <div class="profile-details">
                                 <div id="image-preview-container">
                                     <div class="profile-image-preview">
@@ -10,7 +12,7 @@ export function profile() {
                                     </div>
                                     <div class="profile-field profile-image-field">
                                         <label id="label-profile-image" for="profile-image"><span class='icon-edit'></span></label>
-                                        <input type="file" id="profile-image" name="profile-image" accept="image/*" style="display: none;" onchange="previewImage(event)">
+                                        <input type="file" id="profile-image" name="profile-image" accept="image/*" style="display: none;">
                                     </div>
                                 </div>
                                 <div class="profile-fields">
@@ -62,22 +64,67 @@ export function profile() {
                                 </table>
                             </div>
                         </div>
+                        </div>
                 </div>
         `;
 }
 
 function previewImage(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
     const reader = new FileReader();
-    reader.onload = function() {
-        const imagePreview = document.getElementById('image-preview');
-        imagePreview.src = reader.result;
-        imagePreview.style.display = 'block';
+    reader.onload = function () {
+        const img = new Image();
+        img.src = reader.result;
+        img.onload = function () {
+            // Reducir la imagen
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+
+            const maxWidth = 300; // Ajusta el tamaño máximo
+            const maxHeight = 300;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > maxWidth || height > maxHeight) {
+                if (width > height) {
+                    height *= maxWidth / width;
+                    width = maxWidth;
+                } else {
+                    width *= maxHeight / height;
+                    height = maxHeight;
+                }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // Convertir a Base64 y mostrar
+            const imagePreview = document.getElementById("image-preview");
+            imagePreview.src = canvas.toDataURL("image/jpeg", 0.7); // 0.7 = calidad
+        };
     };
-    reader.readAsDataURL(event.target.files[0]);
+    reader.readAsDataURL(file);
 }
 
+
 export async function initializeProfile() {
-    const currencyData = JSON.parse(localStorage.getItem('currency')) || {};
+    const content = document.getElementById("content-profile");
+      content.style.display = "none";
+    
+      async function loadData() {
+        const loader = document.getElementById("loader");
+    
+        try {
+            // // Obtener los datos
+            // await checkAndStoreTransactions();
+            // await checkAndStoreGoals();
+            // // await syncLocalTransactionsWithAPI();
+            // await checkAndStoreBudgetTracking();
+
+            const currencyData = JSON.parse(localStorage.getItem('currency')) || {};
     const currencySymbol = currencyData.symbol;
 const userData = JSON.parse(localStorage.getItem('userData'));
 const users = await getUsers();
@@ -119,7 +166,11 @@ if (userData) {
     document.getElementById('image-preview').src = userData.photo;
 }
 
-document.getElementById('profile-image').addEventListener('change', previewImage);
+try {
+    document.getElementById('profile-image').addEventListener('change', previewImage);
+} catch (error) {
+    
+}
 
 document.querySelector('button[type="submit"]').addEventListener('click', async (event) => {
     event.preventDefault();
@@ -142,5 +193,16 @@ document.querySelector('button[type="submit"]').addEventListener('click', async 
         alert('Failed to update profile. Please try again.');
     }
 });
+            
+            // Ocultar el loader y mostrar el contenido
+            loader.style.display = "none";
+            content.style.display = "block";
+            content.textContent = data;
+            
+        } catch (error) {
+            loader.textContent = "❌ error loading data";
+        }
+      }
+      loadData();
 
 }
