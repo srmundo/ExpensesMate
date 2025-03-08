@@ -2328,7 +2328,7 @@ input[type="number"]::-webkit-inner-spin-button,
     display: flex;
     flex-direction: column;
     gap: 10;
-    background-color: rebeccapurple;
+    /* background-color: rebeccapurple; */
   }
   .account-deleted {
     width: 90%;
