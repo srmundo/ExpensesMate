@@ -1,4 +1,4 @@
-import { addTransaction, updateGoal, addBudgetTracking } from "../data/storage.js";
+import { addTransaction, updateGoal, addBudgetTracking, updateBudgetTracking, deleteBudgetTracking, deleteTransaction } from "../data/storage.js";
 export function transactions() {
   return /*HTML*/ `
     <div class="container-transactions">
@@ -387,7 +387,7 @@ export async function funcTransactions() {
 
     if (isValid) {
       // Proceed with adding the transaction
-      console.log("Transaction added successfully");
+      // console.log("Transaction added successfully");
       const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
       const newTransaction = {
         amount: inputAmount.value,
@@ -396,15 +396,17 @@ export async function funcTransactions() {
         category: selectCategory.value,
         note: inputNote.value
       };
+
       transactions.push(newTransaction);
+
       const budgetTracking = JSON.parse(localStorage.getItem('budgetTracking')) || [];
       const tracking = budgetTracking.find(track => track.category === newTransaction.category);
-      
+
       if (tracking) {
-        tracking.actualSpent += parseFloat(newTransaction.amount);
-        // localStorage.setItem('budgetTracking', JSON.stringify(budgetTracking));
-        const difference = tracking.amount - tracking.actualSpent;
-        addBudgetTracking(tracking.category, tracking.amount, tracking.actualSpent, difference).then(() => {
+        tracking.actualSpent += parseFloat(newTransaction.budgetedAmount);
+        const difference = tracking.budgetedAmount - tracking.actualSpent;
+        updateBudgetTracking(tracking.id, tracking.category, tracking.budgetedAmount, tracking.actualSpent, difference).then(() => {
+          // localStorage.setItem('budgetTracking', JSON.stringify(budgetTracking));
           renderBudgetTracking();
         }).catch(error => {
           console.error('Error updating budget tracking:', error);
@@ -417,7 +419,7 @@ export async function funcTransactions() {
         if (goal) {
           goal.currentAmount += parseFloat(newTransaction.amount);
           updateGoal(goal.id, goal.name, goal.amount, goal.currentAmount, goal.date).then(() => {
-        localStorage.setItem('goals', JSON.stringify(goals));
+        // localStorage.setItem('goals', JSON.stringify(goals));
         renderTransactions();
           }).catch(error => {
         console.error('Error updating goal:', error);
@@ -430,7 +432,7 @@ export async function funcTransactions() {
         renderTransactions();
       }
       );
-      console.log("Transaction saved to localStorage");
+      // console.log("Transaction saved to localStorage");
       // Clear the form
       inputAmount.value = "";
       inputDate.value = "";
@@ -475,11 +477,19 @@ export async function funcTransactions() {
       const btnRemoveTransaction = row.querySelector('.btn-remove-transaction');
       btnRemoveTransaction.addEventListener('click', () => {
       const index = transactions.indexOf(transaction);
-      if (index > -1) {
-      transactions.splice(index, 1);
-      localStorage.setItem('transactions', JSON.stringify(transactions));
-      renderTransactions();
-      }
+
+      deleteTransaction(transaction.id).then(() => {
+        renderTransactions();
+      }).catch(error => {
+        console.error('Error deleting transaction:', error);
+      });
+
+      // if (index > -1) {
+      // transactions.splice(index, 1);
+      // // localStorage.setItem('transactions', JSON.stringify(transactions));
+      // // renderTransactions();
+      
+      // }
     });
     });
 
@@ -593,7 +603,13 @@ export async function funcTransactions() {
         actualSpent: 0
       };
       budgetTracking.push(newTracking);
-      localStorage.setItem('budgetTracking', JSON.stringify(budgetTracking));
+      // localStorage.setItem('budgetTracking', JSON.stringify(budgetTracking));
+        addBudgetTracking(newTracking.category, parseFloat(newTracking.amount), parseFloat(newTracking.actualSpent), parseFloat(newTracking.amount)).then(() => {
+        // console.log("Tracking saved to API");
+        renderBudgetTracking();
+      }).catch(error => {
+        console.error('Error saving tracking:', error);
+      });
       renderBudgetTracking();
       // containerFormTracking.style.display = 'none';
       selectCategoryTracking.value = "";
@@ -614,7 +630,7 @@ export async function funcTransactions() {
 
       row.innerHTML = `
         <td class="col-table-tracking" data-label="Category">${tracking.category}</td>
-        <td class="col-table-tracking" data-label="Budgeted Amount">${currencySymbol} ${tracking.amount}</td>
+        <td class="col-table-tracking" data-label="Budgeted Amount">${currencySymbol} ${tracking.budgetedAmount}</td>
         <td class="col-table-tracking col-btn" data-label="Action">
           <div class="col-btn">
             <button class="btn-remove-tracking">Remove</button>
@@ -627,11 +643,16 @@ export async function funcTransactions() {
       const btnRemoveTracking = row.querySelector('.btn-remove-tracking');
       btnRemoveTracking.addEventListener('click', () => {
         const index = budgetTracking.indexOf(tracking);
-        if (index > -1) {
-          budgetTracking.splice(index, 1);
-          localStorage.setItem('budgetTracking', JSON.stringify(budgetTracking));
+        deleteBudgetTracking(tracking.id).then(() => {
           renderBudgetTracking();
-        }
+        }).catch(error => {
+          console.error('Error deleting tracking:', error);
+        });
+        // if (index > -1) {
+        //   budgetTracking.splice(index, 1);
+        //   localStorage.setItem('budgetTracking', JSON.stringify(budgetTracking));
+        //   renderBudgetTracking();
+        // }
       });
     });
   }

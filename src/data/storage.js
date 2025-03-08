@@ -239,3 +239,15 @@ export async function deleteBudgetTracking(id) {
     const updatedBudgetTracking = userBudgetTracking.filter(item => item.id !== id);
     localStorage.setItem('budgetTracking', JSON.stringify(updatedBudgetTracking));
 }
+
+export async function deleteTransaction(id) {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    await api.deleteTransaction(id);
+    const userTransactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    const updatedTransactions = userTransactions.filter(transaction => transaction.id !== id);
+    localStorage.setItem('transactions', JSON.stringify(updatedTransactions));
+}

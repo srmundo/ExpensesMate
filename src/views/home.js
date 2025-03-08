@@ -822,14 +822,14 @@ export async function initializeHome() {
     `;
 
     budgetTracking.forEach((item) => {
-      console.log(item)
-      const difference = parseFloat(item.amount) - parseFloat(item.actualSpent);
+      // console.log(item)
+      // const difference = parseFloat(item.budgetedAmount) - parseFloat(item.actualSpent);
       const row = document.createElement("tr");
       row.innerHTML = `
         <td>${item.category}</td>
-        <td>${currencySymbol} ${item.amount}</td>
+        <td>${currencySymbol} ${item.budgetedAmount}</td>
         <td>${currencySymbol} ${item.actualSpent}</td>
-        <td style="color:${difference >= 0 ? "green" : "red"};">${difference >= 0 ? "+" : ""}$${difference.toFixed(2)}</td>
+        <td style="color:${item.difference >= 0 ? "green" : "red"};">${item.difference >= 0 ? "+" : ""}$${parseFloat(item.difference).toFixed(2)}</td>
       `;
       budgetTable.appendChild(row);
     });
