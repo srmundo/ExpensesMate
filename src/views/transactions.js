@@ -399,6 +399,7 @@ export async function funcTransactions() {
       transactions.push(newTransaction);
       const budgetTracking = JSON.parse(localStorage.getItem('budgetTracking')) || [];
       const tracking = budgetTracking.find(track => track.category === newTransaction.category);
+      
       if (tracking) {
         tracking.actualSpent += parseFloat(newTransaction.amount);
         // localStorage.setItem('budgetTracking', JSON.stringify(budgetTracking));
