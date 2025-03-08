@@ -108,7 +108,6 @@ function init() {
 
 
 export function loadAppHTML() {
-  console.log("🔵 Cargando app.html...");
 
   fetch("./src/app.html")
     .then((response) => response.text())
@@ -148,7 +147,7 @@ export function loadAppHTML() {
         document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
           link.href = link.href; // Esto fuerza al navegador a recargar los estilos
         });
-      }, 50);
+      }, 20);
 
       // Asegurar que los scripts de la app se ejecuten después de inyectar el HTML
       loadAppScripts();
@@ -242,6 +241,10 @@ export function loadAppHTML() {
         }
 
         document.getElementById("btnLogout").addEventListener("click", logout);
+        // Simular un pequeño retraso antes de ocultar el loader (para asegurar que los estilos cargan bien)
+      setTimeout(() => {
+        loader.style.display = "none";
+      }, 500); // Se oculta el loader después de 500ms
       
     })
     .catch((error) => console.error("Error loading app.html:", error));
