@@ -398,7 +398,8 @@ let languageData = {};
 export async function initializeHome() {
   const content = document.getElementById("home-content");
   content.style.display = "none";
-  async function cargarDatos() {
+
+  async function loadData() {
     const loader = document.getElementById("loader");
 
     try {
@@ -412,10 +413,10 @@ export async function initializeHome() {
         content.style.display = "block";
         content.textContent = data;
     } catch (error) {
-        loader.textContent = "❌ Error al cargar los datos";
+        loader.textContent = "❌ error loading data";
     }
   }
-  cargarDatos();
+  loadData();
 
   const currencyData = JSON.parse(localStorage.getItem('currency')) || {};
     const currencySymbol = currencyData.symbol;
