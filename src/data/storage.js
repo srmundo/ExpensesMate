@@ -160,6 +160,18 @@ export async function updateGoal(id, name, amount, currentAmount, date) {
     }
 }
 
+export async function deleteGoal(id) {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    await api.deleteGoal(id);
+    const userGoals = JSON.parse(localStorage.getItem('goals')) || [];
+    const updatedGoals = userGoals.filter(goal => goal.id !== id);
+    localStorage.setItem('goals', JSON.stringify(updatedGoals));
+}
+
 export async function checkAndStoreBudgetTracking() {
     const user = await getUserByNick();
     if (!user || !user.id) {
@@ -306,7 +318,9 @@ export async function checkAndStoreCategories() {
 
     const localCategories = JSON.parse(localStorage.getItem('budgetCategories')) || [];
     const newCategories = userCategories.filter(category => 
-        !localCategories.some(localCategory => localCategory.id === category.id)
+        !localCategories.some(localCategory => 
+            localCategory.name === category.name && localCategory.type === category.type
+        )
     );
 
     if (newCategories.length > 0) {
@@ -325,7 +339,9 @@ export async function syncLocalCategoriesWithAPI() {
     const userApiCategories = apiCategories.filter(category => category.userId === user.id);
 
     for (const localCategory of localCategories) {
-        const existsInAPI = userApiCategories.some(apiCategory => apiCategory.id === localCategory.id);
+        const existsInAPI = userApiCategories.some(apiCategory => 
+            apiCategory.name === localCategory.name && apiCategory.type === localCategory.type
+        );
         if (!existsInAPI) {
             await api.addCategory(user.id, localCategory.name, localCategory.type);
         }

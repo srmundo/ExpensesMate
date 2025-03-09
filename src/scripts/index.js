@@ -1,6 +1,7 @@
 import { LoginPage } from "../public/loginPage.js";
-import { addCategory, checkAndStoreCategories } from "../data/storage.js";
-
+import { addCategory, checkAndStoreCategories, syncLocalCategoriesWithAPI } from "../data/storage.js";
+import { notify } from "./notifications.js";
+import { checkNotifications } from "../views/settings.js";
 if (localStorage.getItem("currency") === null) {
 	localStorage.setItem("currency", JSON.stringify({ symbol: "$", name: "USD" }));
 }
@@ -10,68 +11,86 @@ if (localStorage.getItem("language") === null) {
 const language = JSON.parse(localStorage.getItem("language")).lang;
 let languageData = {};
 
-const budgetCategories = {
-  income: [
-    {
-      name: "Salary",
-      description: "Income from a regular job or employment.",
-    },
-    {
-      name: "Freelance",
-      description: "Income from freelance or self-employment work.",
-    },
-    {
-      name: "Investments",
-      description: "Income from investments like stocks, bonds, or dividends.",
-    },
-    {
-      name: "Other Income",
-      description: "Any other form of income not categorized elsewhere.",
-    },
-  ],
-  expense: [
-    {
-      name: "Housing",
-      description: "Rent, mortgage payments, and home maintenance.",
-    },
-    {
-      name: "Food",
-      description: "Groceries, dining out, and other food-related expenses.",
-    },
-    {
-      name: "Transportation",
-      description: "Public transportation, fuel, car maintenance, and parking.",
-    },
-    {
-      name: "Utilities",
-      description: "Electricity, water, gas, internet, and other essential services.",
-    },
-    {
-      name: "Healthcare",
-      description: "Medical expenses, health insurance, prescriptions, and treatments.",
-    },
-    {
-      name: "Education",
-      description: "Tuition fees, books, courses, and other educational costs.",
-    },
-    {
-      name: "Entertainment",
-      description: "Movies, concerts, subscriptions to streaming services, hobbies.",
-    },
-    {
-      name: "Savings",
-      description: "Money set aside for future savings or investments.",
-    },
-    {
-      name: "Debt Repayments",
-      description: "Payments for loans, credit cards, mortgages, and other debts.",
-    },
-    {
-      name: "Other Expenses",
-      description: "Expenses that don't fit into the above categories.",
-    },
-  ],
-};
+if (localStorage.getItem("notifications") === null) {
+  localStorage.setItem("notifications", JSON.stringify([]));
+}
+
+const budgetCategories = [
+  {
+    type: "income",
+    name: "Salary",
+    description: "Income from a regular job or employment.",
+  },
+  {
+    type: "income",
+    name: "Freelance",
+    description: "Income from freelance or self-employment work.",
+  },
+  {
+    type: "income",
+    name: "Investments",
+    description: "Income from investments like stocks, bonds, or dividends.",
+  },
+  {
+    type: "income",
+    name: "Other Income",
+    description: "Any other form of income not categorized elsewhere.",
+  },
+  {
+    type: "expense",
+    name: "Housing",
+    description: "Rent, mortgage payments, and home maintenance.",
+  },
+  {
+    type: "expense",
+    name: "Food",
+    description: "Groceries, dining out, and other food-related expenses.",
+  },
+  {
+    type: "expense",
+    name: "Transportation",
+    description: "Public transportation, fuel, car maintenance, and parking.",
+  },
+  {
+    type: "expense",
+    name: "Utilities",
+    description: "Electricity, water, gas, internet, and other essential services.",
+  },
+  {
+    type: "expense",
+    name: "Healthcare",
+    description: "Medical expenses, health insurance, prescriptions, and treatments.",
+  },
+  {
+    type: "expense",
+    name: "Education",
+    description: "Tuition fees, books, courses, and other educational costs.",
+  },
+  {
+    type: "expense",
+    name: "Entertainment",
+    description: "Movies, concerts, subscriptions to streaming services, hobbies.",
+  },
+  {
+    type: "expense",
+    name: "Savings",
+    description: "Money set aside for future savings or investments.",
+  },
+  {
+    type: "expense",
+    name: "Debt Repayments",
+    description: "Payments for loans, credit cards, mortgages, and other debts.",
+  },
+  {
+    type: "expense",
+    name: "Other Expenses",
+    description: "Expenses that don't fit into the above categories.",
+  },
+];
+
+// checkNotifications();
+
+checkAndStoreCategories();
 
 function init() {
   const loader = document.getElementById("loader");
@@ -83,18 +102,16 @@ function init() {
     LoginPage();
   } else if (userLogged === "true") {
     loadAppHTML();
-    // localStorage.setItem("budgetCategories", JSON.stringify(budgetCategories));
-    Object.keys(budgetCategories).forEach((type) => {
-      budgetCategories[type].forEach((category) => {
-        addCategory(category.name, type);
-      });
-    });
+    
   } else {
     LoginPage();
   }
 }
 
 export function loadAppHTML() {
+
+  syncLocalCategoriesWithAPI();
+
   setTimeout(() => {
     const loader = document.getElementById('loader2');
     if (loader) {
@@ -143,6 +160,104 @@ export function loadAppHTML() {
 
       // Asegurar que los scripts de la app se ejecuten después de inyectar el HTML
       loadAppScripts();
+
+      const windowNotification = document.querySelector(".notification-window");
+
+      windowNotification.style.display = "none";
+
+      function toggleNotificationWindow(e) {
+        e.stopPropagation();
+        const windowNotification = document.querySelector(".notification-window");
+        const isMobile = window.innerWidth <= 768;
+
+
+
+        if (windowNotification.style.display === "none" || windowNotification.style.display === "") {
+          windowNotification.style.display = "block";
+          notify();
+          if (isMobile) {
+            anime({
+              targets: windowNotification,
+              translateX: [-windowNotification.offsetWidth, 0],
+              duration: 500,
+              easing: "easeOutQuad",
+            });
+          } else {
+            anime({
+              targets: windowNotification,
+              opacity: [0, 1],
+              duration: 500,
+              easing: "easeOutQuad",
+            });
+          }
+        } else {
+          if (isMobile) {
+            anime({
+              targets: windowNotification,
+              translateX: [0, -windowNotification.offsetWidth],
+              duration: 500,
+              easing: "easeOutQuad",
+              complete: () => {
+                windowNotification.style.display = "none";
+              },
+            });
+          } else {
+            anime({
+              targets: windowNotification,
+              opacity: [1, 0],
+              duration: 500,
+              easing: "easeOutQuad",
+              complete: () => {
+                windowNotification.style.display = "none";
+              },
+            });
+          }
+        }
+      }
+
+      document.getElementById("btnNotification").addEventListener("click", toggleNotificationWindow);
+
+      document.addEventListener("click", (e) => {
+        const windowNotification = document.querySelector(".notification-window");
+        const btnNotification = document.getElementById("btnNotification");
+
+        if (windowNotification.style.display === "block" && !btnNotification.contains(e.target) && !windowNotification.contains(e.target)) {
+          const isMobile = window.innerWidth <= 768;
+
+          if (isMobile) {
+            anime({
+              targets: windowNotification,
+              translateX: [0, -windowNotification.offsetWidth],
+              duration: 500,
+              easing: "easeOutQuad",
+              complete: () => {
+                windowNotification.style.display = "none";
+              },
+            });
+          } else {
+            anime({
+              targets: windowNotification,
+              opacity: [1, 0],
+              duration: 500,
+              easing: "easeOutQuad",
+              complete: () => {
+                windowNotification.style.display = "none";
+              },
+            });
+          }
+        }
+      });
+
+      document.getElementById("btnBack").addEventListener("click", () => {
+        const windowNotification = document.querySelector(".notification-window");
+        windowNotification.style.display = "none";
+        
+      });
+
+      document.getElementById("btnCloseNotification").addEventListener("click", () => {
+        const windowNotification = document.querySelector(".notification-window");
+        windowNotification.style.display = "none";
+      });
 
       const userSession = JSON.parse(localStorage.getItem("userData"));
 
@@ -211,10 +326,19 @@ export function loadAppHTML() {
         anime({
           targets: menu,
           opacity: [0, 1],
-          translateY: [-20, 0],
           duration: 500,
           easing: "easeOutQuad",
         });
+      });
+
+      document.addEventListener("click", (event) => {
+        const menu = document.querySelector(".menuFloatOptions");
+        const btnProfileOpt = document.getElementById("btnProfileOpt");
+
+        if (menu && !btnProfileOpt.contains(event.target) && !menu.contains(event.target)) {
+          menu.classList.remove("menuFloatOptions");
+          menu.classList.add("menuFloatOptionsNone");
+        }
       });
 
 
@@ -252,6 +376,7 @@ function loadAppScripts() {
     "./src/lib/exceljs.min.js",
     "./src/lib/xlsx.full.min.js",
     "./src/app.js",
+    "./src/scripts/notifications.js"
   ];
 
   scripts.forEach((src) => {

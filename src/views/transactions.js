@@ -1,4 +1,4 @@
-import { addTransaction, updateGoal, addBudgetTracking, updateBudgetTracking, deleteBudgetTracking, deleteTransaction } from "../data/storage.js";
+import { addTransaction, updateGoal, addBudgetTracking, updateBudgetTracking, deleteBudgetTracking, deleteTransaction, addCategory, deleteCategory } from "../data/storage.js";
 export function transactions() {
   return /*HTML*/ `
     <div class="container-transactions">
@@ -318,6 +318,7 @@ export async function funcTransactions() {
         option.value = category.name;
         option.textContent = category.name;
         selectCategory.appendChild(option);
+        console.log(option);
       }
       });
     }
@@ -330,24 +331,15 @@ export async function funcTransactions() {
       option.textContent = goal.name;
       selectCategory.appendChild(option);
       });
-    } else {
-      budgetCategories.forEach(category => {
-      if (category.type.toLowerCase() === type) {
-        const option = document.createElement("option");
-        option.value = category.name;
-        option.textContent = category.name;
-        selectCategory.appendChild(option);
-      }
-      });
     }
 
-    selectCategory.addEventListener("change", (event) => {
-      const selectedCategory = event.target.value;
-      const categories = JSON.parse(localStorage.getItem('categories')) || [];
-      const category = categories.find(cat => cat.name === selectedCategory);
-      const inputNote = document.getElementById("input-note");
-      inputNote.value = category ? category.description : "";
-    });
+    // selectCategory.addEventListener("change", (event) => {
+    //   const selectedCategory = event.target.value;
+    //   const categories = JSON.parse(localStorage.getItem('categories')) || [];
+    //   const category = categories.find(cat => cat.name === selectedCategory);
+    //   const inputNote = document.getElementById("input-note");
+    //   inputNote.value = category ? category.description : "";
+    // });
   }
 
   selectType.addEventListener("change", (event) => {
@@ -477,7 +469,6 @@ export async function funcTransactions() {
         <td class="col-table-transaction" data-label="Description">${transaction.note}</td>
         <td class="col-table-transaction col-btn" data-label="Action">
           <div class="col-btn">
-            <button class="btn-edit-transaction">Edit</button>
             <button class="btn-remove-transaction">Remove</button>
           </div>
         </td>
@@ -511,8 +502,9 @@ export async function funcTransactions() {
   function renderCategoryList() {
     const ul = document.querySelector(".cont-list-category ul");
     ul.innerHTML = ""; // Clear existing list
+    let getCategories = JSON.parse(localStorage.getItem('budgetCategories'));
 
-    budgetCategories.forEach(category => {
+    getCategories.forEach(category => {
       const li = document.createElement("li");
       li.innerHTML = `
       <input type="checkbox" name="${category.name}" id="${category.id}" />
@@ -529,19 +521,17 @@ export async function funcTransactions() {
 
     if (inputAddCat.value && selectTypeC.value) {
       const newCategory = {
-        name: inputAddCat.value,
-        description: ""
+      name: inputAddCat.value,
+      type: selectTypeC.value.toLowerCase()
       };
 
-      if (!budgetCategories[selectTypeC.value.toLowerCase()]) {
-        budgetCategories[selectTypeC.value.toLowerCase()] = [];
-      }
-
-      budgetCategories[selectTypeC.value.toLowerCase()].push(newCategory);
-      localStorage.setItem('budgetCategories', JSON.stringify(budgetCategories));
+      addCategory(newCategory.name, newCategory.type).then(() => {
       renderCategoryList();
       renderCategories(selectType.value.toLowerCase());
       inputAddCat.value = "";
+      }).catch(error => {
+      console.error('Error adding category:', error);
+      });
     }
   });
 
@@ -550,15 +540,21 @@ export async function funcTransactions() {
     const checkboxes = document.querySelectorAll(".cont-list-category ul input[type='checkbox']:checked");
 
     checkboxes.forEach(checkbox => {
-      const type = Object.keys(budgetCategories).find(type => budgetCategories[type].some(cat => cat.name === checkbox.name));
-      if (type) {
-        budgetCategories[type] = budgetCategories[type].filter(cat => cat.name !== checkbox.name);
+      const category = budgetCategories.find(cat => cat.name === checkbox.name);
+      if (category) {
+      deleteCategory(category.id).then(() => {
+        const index = budgetCategories.indexOf(category);
+        if (index > -1) {
+        budgetCategories.splice(index, 1);
+        localStorage.setItem('budgetCategories', JSON.stringify(budgetCategories));
+        renderCategoryList();
+        renderCategories(selectType.value.toLowerCase());
+        }
+      }).catch(error => {
+        console.error('Error deleting category:', error);
+      });
       }
     });
-
-    localStorage.setItem('budgetCategories', JSON.stringify(budgetCategories));
-    renderCategoryList();
-    renderCategories(selectType.value.toLowerCase());
   });
 
   renderCategoryList();
@@ -673,7 +669,7 @@ export async function funcTransactions() {
     const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
     const filteredTransactions = transactions.filter(transaction => {
       return (
-        transaction.category.toLowerCase().includes(searchTerm) ||
+        (transaction.categoryId && transaction.categoryId.toLowerCase().includes(searchTerm)) ||
         transaction.note.toLowerCase().includes(searchTerm) ||
         transaction.type.toLowerCase().includes(searchTerm)
       );
@@ -692,12 +688,11 @@ export async function funcTransactions() {
       row.innerHTML = `
         <td class="col-table-transaction" data-label="Amount">${currencySymbol} ${transaction.amount}</td>
         <td class="col-table-transaction" data-label="Date">${transaction.date}</td>
-        <td class="col-table-transaction" data-label="Category">${transaction.category}</td>
+        <td class="col-table-transaction" data-label="Category">${transaction.categoryId}</td>
         <td class="col-table-transaction" data-label="Type">${transaction.type}</td>
         <td class="col-table-transaction" data-label="Description">${transaction.note}</td>
         <td class="col-table-transaction col-btn" data-label="Action">
           <div class="col-btn">
-            <button class="btn-edit-transaction">Edit</button>
             <button class="btn-remove-transaction">Remove</button>
           </div>
         </td>
@@ -709,12 +704,13 @@ export async function funcTransactions() {
       const btnRemoveTransaction = row.querySelector('.btn-remove-transaction');
       btnRemoveTransaction.addEventListener('click', () => {
         const index = transactions.indexOf(transaction);
-        if (index > -1) {
-          transactions.splice(index, 1);
-          localStorage.setItem('transactions', JSON.stringify(transactions));
-          renderFilteredTransactions(transactions);
-        }
+        deleteTransaction(transaction.id).then(() => {
+          renderTransactions();
+        }).catch(error => {
+          console.error('Error deleting transaction:', error);
+        });
       });
+      
     });
   }
 }

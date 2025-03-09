@@ -1495,10 +1495,12 @@ td {
   position: relative;
 }
 .menuFloatOptionsNone{
+  z-index: 5000;
   display: none;
 }
 .menuFloatOptions {
   position: absolute;
+  z-index: 5000;
   top: 100%;
   right: 0%;
   width: 200px;
@@ -2466,7 +2468,7 @@ input[type="number"]::-webkit-inner-spin-button,
     border-radius: 0px;
   }
   
-    .main-app .nav-app ul{
+    .main-app .nav-app .menu-nav-app{
       display: flex;
       align-items: center;
       gap: 20px;
@@ -2963,4 +2965,207 @@ input[type="number"]::-webkit-inner-spin-button,
     }
   }
 
+}
+
+
+.notification {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  margin: 10px 0;
+  background-color: #ffeb3b;
+  color: #333;
+  border-left: 5px solid #f44336;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-family: poppins-regular;
+  font-size: 14px;
+  position: absolute;
+  top: 0;
+  z-index: 3000;
+  transition: all 0.3s;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.notification .notification-icon {
+  margin-right: 10px;
+  font-size: 20px;
+  color: #f44336;
+}
+
+.notification .notification-message {
+  flex: 1;
+}
+
+.notification .notification-close {
+  cursor: pointer;
+  font-size: 16px;
+  color: #333;
+  transition: color 0.3s;
+}
+
+.notification .notification-close:hover {
+  color: #f44336;
+}
+
+/*Notification app*/
+.notification-window {
+  position: fixed;
+  top: 10%;
+  right: 10%;
+  width: 400px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  z-index: 3000;
+  overflow: hidden;
+  font-family: poppins-regular;
+  transition: transform 0.3s, opacity 0.3s;
+  display: none;
+}
+
+.notification-window.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: #643df2;
+  color: #fff;
+}
+
+.notification-header h4 {
+  margin: 0;
+  font-family: poppins-bold;
+  font-size: 16px;
+}
+
+.btn-close-notification {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+#btnBack {
+  display: none;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.btn-close-notification:hover, #btnBack:hover {
+  color: #ffeb3b;
+}
+
+.notification-content {
+  padding: 15px;
+}
+
+.notification-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 50vh;
+  overflow-y: auto;
+  display: block;
+}
+
+.notification-item {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  font-size: 14px;
+  color: #000000;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-item {
+  display: flex;
+  flex-direction: column;
+  background-color: #dcf8c6;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 5px 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-family: poppins-regular;
+}
+
+.notification-item h5 {
+  margin: 0;
+  font-size: 14px;
+  font-family: poppins-bold;
+  color: #075e54;
+}
+
+.notification-item p {
+  margin: 5px 0 0;
+  font-size: 12px;
+  color: #4a4a4a;
+}
+
+.id-notify {
+  display: none;
+  width: 6px;
+  height: 6px;
+  background-color: #eb0a0a;
+  border-radius: 50%;
+  position: absolute;
+  top: 0%;
+  right: 0%;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+.icon-bell{
+  position: relative;
+}
+@media (max-width: 768px) {
+  .notification-window {
+    width: 100%;
+    height: 100vh;
+    top: 0%;
+    right: 0%;
+    border-radius: 0%;
+  }
+
+  .notification-header h4 {
+    font-size: 14px;
+  }
+
+  .btn-close-notification {
+    font-size: 18px;
+  }
+
+  #btnBack {
+    display: block;
+    font-size: 18px;
+  }
+
+  .notification-content {
+    padding: 10px;
+    /* height: 80vh; */
+  }
+
+  .notification-item {
+    font-size: 12px;
+  }
+
+  .notification-content .notification-list{
+    display: block;
+    height: 90vh;
+    max-height: 100vh;
+
+  }
 }

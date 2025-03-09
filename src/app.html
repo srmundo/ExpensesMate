@@ -4,8 +4,20 @@
         <ul class="menu-nav-app">
           <li>
             <button class="btn-nav-app" id="btnNotification">
-              <span class="icon-bell"></span>
+              <span class="icon-bell"><i class="id-notify"></i></span>
             </button>
+            <div id="notificationWindow" class="notification-window">
+              <div class="notification-header">
+                <button id="btnBack"><span class="icon-arrow-left"></span></button>
+                <h4>Notifications</h4>
+                <button id="btnCloseNotification" class="btn-close-notification">&times;</button>
+              </div>
+              <div class="notification-content">
+                <ul class="notification-list">
+                  <li class="notification-item">No new notifications</li>
+                </ul>
+              </div>
+            </div>
           </li>
           <li id="cont-btn-propile-nav">
             <button class="btn-nav-app" id="btnProfileOpt">

@@ -1,5 +1,5 @@
 import { useState } from '../scripts/useState.js';
-import { addGoal } from '../data/storage.js';
+import { addGoal, deleteGoal } from '../data/storage.js';
 export function goals() {
 return /*HTML*/`
             <div class="container-goals">
@@ -139,11 +139,22 @@ export async function initializeGoals() {
         });
     }
 
-    function removeGoal(index) {
-        let goals = JSON.parse(localStorage.getItem('goals')) || [];
-        goals.splice(index, 1);
-        localStorage.setItem('goals', JSON.stringify(goals));
-        renderGoals();
+    async function removeGoal(index) {
+        const goals = JSON.parse(localStorage.getItem('goals')) || [];
+        const goal = goals[index];
+        if (!goal || !goal.id) {
+            console.error('Goal not found or invalid goal ID');
+            return;
+        }
+
+        try {
+            await deleteGoal(goal.id);
+            goals.splice(index, 1);
+            localStorage.setItem('goals', JSON.stringify(goals));
+            renderGoals();
+        } catch (error) {
+            console.error('Error deleting goal:', error);
+        }
     }
 
     document.getElementById('body-table-goals').addEventListener('click', (event) => {
