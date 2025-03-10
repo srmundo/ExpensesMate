@@ -1,5 +1,6 @@
 import { useState } from '../scripts/useState.js';
 import { addGoal, deleteGoal } from '../data/storage.js';
+import { checkNotifications } from './settings.js';
 export function goals() {
 return /*HTML*/`
             <div class="container-goals">
@@ -97,6 +98,7 @@ export async function initializeGoals() {
 
         addGoal(goal.name, goal.amount, goal.currentAmount, goal.date).then(() => {
             renderGoals();
+            checkNotifications();
         }
         );
         // let goals = JSON.parse(localStorage.getItem('goals')) || [];

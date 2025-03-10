@@ -1,4 +1,5 @@
 import { addTransaction, updateGoal, addBudgetTracking, updateBudgetTracking, deleteBudgetTracking, deleteTransaction, addCategory, deleteCategory } from "../data/storage.js";
+import { checkNotifications } from "./settings.js";
 export function transactions() {
   return /*HTML*/ `
     <div class="container-transactions">
@@ -305,7 +306,7 @@ export async function funcTransactions() {
   }
   )
 
-  const budgetCategories = JSON.parse(localStorage.getItem('budgetCategories'));
+  const budgetCategories = JSON.parse(localStorage.getItem('budgetCategories')) || [];
 
   function renderCategories(type) {
     const selectCategory = document.getElementById("options-category");
@@ -412,6 +413,7 @@ export async function funcTransactions() {
         updateBudgetTracking(tracking.id, tracking.category, parseFloat(tracking.budgetedAmount), tracking.actualSpent, difference).then(() => {
           // localStorage.setItem('budgetTracking', JSON.stringify(budgetTracking));
           renderBudgetTracking();
+          checkNotifications();
         }).catch(error => {
           console.error('Error updating budget tracking:', error);
         });
@@ -425,6 +427,7 @@ export async function funcTransactions() {
           updateGoal(goal.id, goal.name, goal.amount, goal.currentAmount, goal.date).then(() => {
         // localStorage.setItem('goals', JSON.stringify(goals));
         renderTransactions();
+        checkNotifications();
           }).catch(error => {
         console.error('Error updating goal:', error);
           });
@@ -434,6 +437,7 @@ export async function funcTransactions() {
       addTransaction(newTransaction.amount, newTransaction.date, newTransaction.category, newTransaction.type, newTransaction.note, null).then(() => {
         // console.log("Transaction saved to API");
         renderTransactions();
+        checkNotifications();
       }
       );
       // console.log("Transaction saved to localStorage");
@@ -502,7 +506,7 @@ export async function funcTransactions() {
   function renderCategoryList() {
     const ul = document.querySelector(".cont-list-category ul");
     ul.innerHTML = ""; // Clear existing list
-    let getCategories = JSON.parse(localStorage.getItem('budgetCategories'));
+    let getCategories = JSON.parse(localStorage.getItem('budgetCategories')) || [];
 
     getCategories.forEach(category => {
       const li = document.createElement("li");

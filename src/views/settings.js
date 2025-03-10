@@ -376,7 +376,7 @@ function initDeleteAccount() {
           localStorage.removeItem("userLogged");
           localStorage.removeItem("currency");
           localStorage.removeItem("budgetCategories");
-
+          localStorage.clear();
           alert("Account deleted successfully!");
           // Redirect to login or home page after account deletion
           window.location.reload();
@@ -513,6 +513,19 @@ if (goals) {
                 const existingNotification = notifications.find(
                         (notif) => notif.message.includes(goal.name) && notif.exec === false
                 );
+
+          //       if (goal.amount === goal.currentAmount) {
+          //         const message = `Goal achieved: ${goal.name}`;
+          //         createNotification(message);
+          //         saveNotification("Goals", message);
+          //         notify();
+          // } else {
+          //         const remainingAmount = goal.amount - goal.currentAmount;
+          //         const message = `Keep going! You need $${remainingAmount} more to achieve your goal "${goal.name}".`;
+          //         createNotification(message);
+          //         saveNotification("Goals", message);
+          //         notify();
+          // }
 
                 if (!existingNotification) {
                         if (goal.amount === goal.currentAmount) {

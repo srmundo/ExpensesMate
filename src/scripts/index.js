@@ -88,7 +88,13 @@ const budgetCategories = [
   },
 ];
 
-// checkNotifications();
+budgetCategories.forEach(category => {
+  addCategory(category.name, category.type).catch(error => {
+    console.error(`Error adding category ${category.name}:`, error);
+  });
+});
+
+checkNotifications();
 
 checkAndStoreCategories();
 
