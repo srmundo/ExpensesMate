@@ -398,12 +398,8 @@ function initDeleteAccount() {
             alert("User not found. Please log in again.");
             return;
           }
+          createFullPagePopup("We are deleting your account. Please wait...");
           await deleteUserData();
-          // await deleteUser(userNick);
-          localStorage.removeItem("userLogged");
-          localStorage.removeItem("currency");
-          localStorage.removeItem("budgetCategories");
-          localStorage.clear();
           alert("Account deleted successfully!");
           // Redirect to login or home page after account deletion
           window.location.reload();
@@ -416,6 +412,86 @@ function initDeleteAccount() {
       }
     });
 }
+
+function createFullPagePopup(message) {
+  const overlay = document.createElement("div");
+  overlay.className = "full-page-overlay";
+
+  const popup = document.createElement("div");
+  popup.className = "full-page-popup";
+  popup.innerHTML = `<p>${message}</p><div class="spinner-3"></div>`;
+
+  // const closeButton = document.createElement("button");
+  // closeButton.className = "close-full-page-popup";
+  // closeButton.innerText = "Close";
+  // closeButton.addEventListener("click", () => {
+  //   document.body.removeChild(overlay);
+  // });
+
+  // popup.appendChild(closeButton);
+  overlay.appendChild(popup);
+  document.body.appendChild(overlay);
+}
+
+// CSS for the full-page popup
+const fullPageStyle = document.createElement("style");
+fullPageStyle.innerHTML = `
+  .full-page-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  .full-page-popup {
+    background-color: #fff;
+    color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 80%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  .close-full-page-popup {
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 16px;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+
+  .spinner-3 {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto;
+    position: relative;
+    border: 3px solid transparent;
+    border-top-color: #333;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spinner-3 {
+      animation: none;
+    }
+  }
+
+  
+`;
+document.head.appendChild(fullPageStyle);
 
 function initLanguageSettings() {
   document
