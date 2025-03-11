@@ -1,5 +1,5 @@
 import { LoginPage } from "../public/loginPage.js";
-import { addCategory, checkAndStoreCategories, syncApiNotificationFrequenciesWithLocal, syncApiNotificationPreferencesWithLocal, syncLocalCategoriesWithAPI, syncLocalNotificationFrequenciesWithAPI, syncLocalNotificationPreferencesWithAPI } from "../data/storage.js";
+import { addCategory, checkAndStoreCategories, syncApiNotificationFrequenciesWithLocal, syncApiNotificationPreferencesWithLocal, syncLocalCategoriesWithAPI, syncLocalNotificationFrequenciesWithAPI, syncLocalNotificationPreferencesWithAPI, checkAndStoreNotifications } from "../data/storage.js";
 import { notify } from "./notifications.js";
 // import { checkNotifications, checkUnviewedNotifications } from "../views/settings.js";
 if (localStorage.getItem("currency") === null) {
@@ -150,6 +150,8 @@ export async function loadAppHTML() {
 
   syncApiNotificationFrequenciesWithLocal();
   syncApiNotificationPreferencesWithLocal();
+  checkAndStoreNotifications();
+
 
   setTimeout(() => {
     const loader = document.getElementById('loader2');

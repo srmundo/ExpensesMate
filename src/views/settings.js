@@ -1,5 +1,5 @@
 import { getUsers, deleteUser, updateUser } from "../auth/auth.js";
-import { deleteUserData, updateNotificationFrequency, updateNotificationPreferences } from "../data/storage.js";
+import { deleteUserData, updateNotificationFrequency, updateNotificationPreferences, addNotification } from "../data/storage.js";
 import { notify } from "../scripts/notifications.js";
 
 export function settings() {
@@ -593,7 +593,8 @@ function createNotification(functionName, exec, message, view, date) {
   createFloatingPopup(message);
   notifications.push(newNotification);
 
-  localStorage.setItem("notifications", JSON.stringify(notifications));
+  // localStorage.setItem("notifications", JSON.stringify(notifications));
+  addNotification(new Date(), true, functionName, message, view);
 
   const audio = new Audio("./src/assets/notification-sound.mp3");
 
