@@ -17,8 +17,12 @@ if (localStorage.getItem("notifications") === null) {
 
 if (localStorage.getItem("notificationFrequency") === null) {
   localStorage.setItem("notificationFrequency", JSON.stringify({frequency: 24 * 60 * 60 * 1000}));
-  syncLocalNotificationFrequenciesWithAPI();
+  //syncLocalNotificationFrequenciesWithAPI();
+}
 
+if (localStorage.getItem("notificationFrequency")) {
+  //localStorage.setItem("notificationFrequency", JSON.stringify({frequency: 24 * 60 * 60 * 1000}));
+  syncLocalNotificationFrequenciesWithAPI();
 }
 
 
@@ -26,8 +30,16 @@ if (localStorage.getItem("notificationFrequency") === null) {
 
 if (localStorage.getItem("notificationPreferences") === null) {
   localStorage.setItem("notificationPreferences", JSON.stringify({ notifyGoals: false, notifyBudgetTracking: false, notifyOverspending: false, notifyTopCategories: false }));
-  syncLocalNotificationPreferencesWithAPI();
+  //syncLocalNotificationPreferencesWithAPI();
 }
+
+if (localStorage.getItem("notificationPreferences")) {
+  //localStorage.setItem("notificationPreferences", JSON.stringify({ notifyGoals: false, notifyBudgetTracking: false, notifyOverspending: false, notifyTopCategories: false }));
+  
+  syncLocalNotificationPreferencesWithAPI();
+
+}
+
 
 const budgetCategories = [
   {
@@ -107,7 +119,6 @@ const budgetCategories = [
 
 // checkNotifications();
 
-checkAndStoreCategories();
 
 function init() {
   const loader = document.getElementById("loader");
@@ -126,14 +137,15 @@ function init() {
 
 export async function loadAppHTML() {
 
-  syncLocalCategoriesWithAPI();
   syncApiNotificationFrequenciesWithLocal();
-  // syncApiNotificationPreferencesWithLocal();
+  syncApiNotificationPreferencesWithLocal();
 
 
   try {
     budgetCategories.forEach(category => {
       addCategory(category.name, category.type);
+      checkAndStoreCategories();
+
     });
   } catch (error) {
     

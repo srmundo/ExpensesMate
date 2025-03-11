@@ -1,5 +1,5 @@
 import { getUsers, deleteUser, updateUser } from "../auth/auth.js";
-import { deleteUserData } from "../data/storage.js";
+import { deleteUserData, updateNotificationFrequency, updateNotificationPreferences } from "../data/storage.js";
 import { notify } from "../scripts/notifications.js";
 
 export function settings() {
@@ -509,8 +509,21 @@ function initNotificationPreferences() {
 
       
 
-      localStorage.setItem("notificationPreferences", JSON.stringify(notificationPreferences));
+      // localStorage.setItem("notificationPreferences", JSON.stringify(notificationPreferences));
+      
       let notificationStorage = JSON.parse(localStorage.getItem("notificationPreferences"));
+      console.log(notificationStorage);
+
+      const notificationId = notificationStorage.map((notification) => {
+        // if (notification.userId === JSON.parse(localStorage.getItem("userData")).id) {
+          return notification.id;
+        // }
+      }
+      );
+
+      console.log(notificationId[0]);
+
+      updateNotificationPreferences(notificationId[0], notificationPreferences.notifyBudgetTracking, notificationPreferences.notifyGoals, notificationPreferences.notifyOverspending, notificationPreferences.notifyTopCategories)
 
       // Cancelar notificaciones activas antes de iniciar nuevas
       clearAllNotifications();
@@ -525,11 +538,12 @@ function initNotificationPreferences() {
     });
 
   const savedPreferences = JSON.parse(localStorage.getItem("notificationPreferences"));
-  if (savedPreferences) {
-    document.getElementById("notify-goals").checked = savedPreferences.notifyGoals;
-    document.getElementById("notify-budget-tracking").checked = savedPreferences.notifyBudgetTracking;
-    document.getElementById("notify-overspending").checked = savedPreferences.notifyOverspending;
-    document.getElementById("notify-top-categories").checked = savedPreferences.notifyTopCategories;
+  if (savedPreferences && savedPreferences.length > 0) {
+    const preferences = savedPreferences[0];
+    document.getElementById("notify-goals").checked = preferences.notifyGoals;
+    document.getElementById("notify-budget-tracking").checked = preferences.notifyBudgetTracking;
+    document.getElementById("notify-overspending").checked = preferences.notifyOverspending;
+    document.getElementById("notify-top-categories").checked = preferences.notifyTopCategories;
   }
 }
 

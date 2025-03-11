@@ -587,15 +587,15 @@ export async function syncLocalNotificationFrequenciesWithAPI() {
     const apiFrequencies = await api.getNotificationFrequency();
     const userApiFrequencies = apiFrequencies.filter(frequency => frequency.userId === user.id);
 
-    for (const key in localFrequencies) {
-        if (localFrequencies.hasOwnProperty(key)) {
-            const localFrequency = localFrequencies[key];
-            console.log(localFrequency);
-            const existsInAPI = userApiFrequencies.some(apiFrequency => apiFrequency.frequency === localFrequency);
-            if (!existsInAPI) {
+    if (userApiFrequencies.length === 0) {
+        for (const key in localFrequencies) {
+            if (localFrequencies.hasOwnProperty(key)) {
+                const localFrequency = localFrequencies[key];
                 await api.addNotificationFrequency(user.id, localFrequency);
             }
         }
+    } else {
+        console.log('User already has notification frequencies in the API');
     }
 }
 
@@ -620,7 +620,15 @@ export async function syncApiNotificationPreferencesWithLocal() {
     const apiPreferences = await api.getNotificationPreferences();
     const userApiPreferences = apiPreferences.filter(preference => preference.userId === user.id);
 
-    localStorage.setItem('notificationPreferences', JSON.stringify(userApiPreferences));
+    const booleanPreferences = userApiPreferences.map(preference => ({
+        ...preference,
+        notifyBudgetTracking: !!preference.notifyBudgetTracking,
+        notifyGoals: !!preference.notifyGoals,
+        notifyOverspending: !!preference.notifyOverspending,
+        notifyTopCategories: !!preference.notifyTopCategories
+    }));
+
+    localStorage.setItem('notificationPreferences', JSON.stringify(booleanPreferences));
 }
 
 export async function syncLocalNotificationPreferencesWithAPI() {
@@ -634,14 +642,7 @@ export async function syncLocalNotificationPreferencesWithAPI() {
     const apiPreferences = await api.getNotificationPreferences();
     const userApiPreferences = apiPreferences.filter(preference => preference.userId === user.id);
 
-    const existsInAPI = userApiPreferences.some(apiPreference => 
-        apiPreference.notifyBudgetTracking === localPreferences.notifyBudgetTracking &&
-        apiPreference.notifyGoals === localPreferences.notifyGoals &&
-        apiPreference.notifyOverspending === localPreferences.notifyOverspending &&
-        apiPreference.notifyTopCategories === localPreferences.notifyTopCategories
-    );
-
-    if (!existsInAPI) {
+    if (userApiPreferences.length === 0) {
         await api.addNotificationPreferences(
             user.id,
             localPreferences.notifyBudgetTracking,
@@ -649,5 +650,7 @@ export async function syncLocalNotificationPreferencesWithAPI() {
             localPreferences.notifyOverspending,
             localPreferences.notifyTopCategories
         );
+    } else {
+        console.log('User already has notification preferences in the API');
     }
 }
