@@ -640,7 +640,6 @@ export async function initializeHome() {
   let totalBalance = 0;
 
   transactions.forEach((transaction) => {
-    console.log(transaction.type)
     if (transaction.type === "Income") {
       totalIncome += parseFloat(transaction.amount);
     } else if (transaction.type === "Expense") {

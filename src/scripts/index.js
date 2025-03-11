@@ -1,7 +1,7 @@
 import { LoginPage } from "../public/loginPage.js";
 import { addCategory, checkAndStoreCategories, syncLocalCategoriesWithAPI } from "../data/storage.js";
 import { notify } from "./notifications.js";
-import { checkNotifications } from "../views/settings.js";
+// import { checkNotifications, checkUnviewedNotifications } from "../views/settings.js";
 if (localStorage.getItem("currency") === null) {
 	localStorage.setItem("currency", JSON.stringify({ symbol: "$", name: "USD" }));
 }
@@ -88,13 +88,10 @@ const budgetCategories = [
   },
 ];
 
-budgetCategories.forEach(category => {
-  addCategory(category.name, category.type).catch(error => {
-    console.error(`Error adding category ${category.name}:`, error);
-  });
-});
 
-checkNotifications();
+
+
+// checkNotifications();
 
 checkAndStoreCategories();
 
@@ -114,9 +111,17 @@ function init() {
   }
 }
 
-export function loadAppHTML() {
+export async function loadAppHTML() {
 
   syncLocalCategoriesWithAPI();
+
+  try {
+    budgetCategories.forEach(category => {
+      addCategory(category.name, category.type);
+    });
+  } catch (error) {
+    
+  }
 
   setTimeout(() => {
     const loader = document.getElementById('loader2');
@@ -364,6 +369,7 @@ export function loadAppHTML() {
           window.location.reload();
         }
 
+        // checkUnviewedNotifications(); 
         document.getElementById("btnLogout").addEventListener("click", logout);
         // Simular un pequeño retraso antes de ocultar el loader (para asegurar que los estilos cargan bien)
       

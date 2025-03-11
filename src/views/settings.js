@@ -174,7 +174,7 @@ function renderLanguageSettingsSection() {
 }
 
 function renderNotificationPreferencesSection() {
-  return `
+  return /*html*/`
                 <div class="notification-preferences-section">
                         <h3>Notification Preferences</h3>
                         <form id="notification-preferences-form">
@@ -193,6 +193,33 @@ function renderNotificationPreferencesSection() {
                                 <div class="form-group">
                                         <label for="notify-top-categories">Notify for Top Spending Categories:</label>
                                         <input type="checkbox" id="notify-top-categories" name="notify-top-categories">
+                                </div>
+                                <div class="form-group">
+                                  <label for="notification-frequency">Notification Frequency:</label>
+                                  <div>
+                                    <input type="radio" id="every-day" name="notification-frequency" value="1" disabled>
+                                    <label for="every-day">Every day</label>
+                                  </div>
+                                  <div>
+                                    <input type="radio" id="every-2-days" name="notification-frequency" value="2" disabled>
+                                    <label for="every-2-days">Every 2 days</label>
+                                  </div>
+                                  <div>
+                                    <input type="radio" id="every-3-days" name="notification-frequency" value="3" disabled>
+                                    <label for="every-3-days">Every 3 days</label>
+                                  </div>
+                                  <div>
+                                    <input type="radio" id="every-week" name="notification-frequency" value="7" disabled>
+                                    <label for="every-week">Every week</label>
+                                  </div>
+                                  <div>
+                                    <input type="radio" id="every-15-days" name="notification-frequency" value="15" disabled>
+                                    <label for="every-15-days">Every 15 days</label>
+                                  </div>
+                                  <div>
+                                    <input type="radio" id="every-month" name="notification-frequency" value="30" disabled>
+                                    <label for="every-month">Every month</label>
+                                  </div>
                                 </div>
                                 <button type="submit" class="btn-save-notifications">Save Notifications</button>
                         </form>
@@ -410,258 +437,258 @@ function initLanguageSettings() {
   }
 }
 
+// Almacenar identificadores de temporizadores
+let goalNotificationTimeouts = [];
+let generalNotificationTimeouts = [];
+
+// Función para cancelar notificaciones programadas
+function clearAllNotifications() {
+  goalNotificationTimeouts.forEach(clearTimeout);
+  generalNotificationTimeouts.forEach(clearTimeout);
+  goalNotificationTimeouts = [];
+  generalNotificationTimeouts = [];
+}
+let selectedFrequency = null;
+
+function saveNotificationFrequency() {
+  const radios = document.querySelectorAll('input[name="notification-frequency"]');
+  radios.forEach((radio) => {
+    radio.addEventListener("change", () => {
+      if (radio.checked) {
+        selectedFrequency = parseInt(radio.value) * 24 * 60 * 60 * 1000; // Convert days to milliseconds
+        localStorage.setItem("notificationFrequency", selectedFrequency);
+      }
+    });
+  });
+
+  const savedFrequency = localStorage.getItem("notificationFrequency");
+  if (savedFrequency) {
+    selectedFrequency = savedFrequency ;
+    document.querySelector(`input[name="notification-frequency"][value="${(parseInt(savedFrequency) / (24 * 60 * 60 * 1000)).toString()}"]`).checked = true;
+  }
+}
+
+
 function initNotificationPreferences() {
+  saveNotificationFrequency();
+
+
+  const savedFrequency = localStorage.getItem("notificationFrequency") || 1;
+  if (savedFrequency) {
+    document.querySelector(`input[name="notification-frequency"][value="${(parseInt(savedFrequency) / (24 * 60 * 60 * 1000)).toString()}"]`).checked = true;
+  }
+
+
+  const checkboxes = document.querySelectorAll('#notification-preferences-form input[type="checkbox"]');
+  checkboxes.forEach((checkbox) => {
+    checkbox.addEventListener('change', () => {
+      const anyChecked = Array.from(checkboxes).some((cb) => cb.checked);
+      document.querySelectorAll('input[name="notification-frequency"]').forEach((radio) => {
+        radio.disabled = !anyChecked;
+      });
+    });
+  });
+  
+
   document
     .getElementById("notification-preferences-form")
     .addEventListener("submit", (event) => {
       event.preventDefault();
       const notifyGoals = document.getElementById("notify-goals").checked;
-      const notifyBudgetTracking = document.getElementById(
-        "notify-budget-tracking"
-      ).checked;
-      const notifyOverspending = document.getElementById(
-        "notify-overspending"
-      ).checked;
-      const notifyTopCategories = document.getElementById(
-        "notify-top-categories"
-      ).checked;
+      const notifyBudgetTracking = document.getElementById("notify-budget-tracking").checked;
+      const notifyOverspending = document.getElementById("notify-overspending").checked;
+      const notifyTopCategories = document.getElementById("notify-top-categories").checked;
 
-      const preferences = {
+      const notificationPreferences = {
         notifyGoals,
         notifyBudgetTracking,
         notifyOverspending,
         notifyTopCategories,
       };
-      localStorage.setItem(
-        "notificationPreferences",
-        JSON.stringify(preferences)
-      );
 
-      if (notifyGoals) checkGoals();
-      if (notifyBudgetTracking) checkBudgetTracking();
-      if (notifyOverspending) checkBudgetCategories();
-      if (notifyTopCategories) checkTransactions();
+      
+
+      localStorage.setItem("notificationPreferences", JSON.stringify(notificationPreferences));
+      let notificationStorage = JSON.parse(localStorage.getItem("notificationPreferences"));
+
+      // Cancelar notificaciones activas antes de iniciar nuevas
+      clearAllNotifications();
+
+      // Verificar qué notificaciones deben ejecutarse
+      // console.log(selectedFrequency);
+      checkNotifications(selectedFrequency);
+      
+      alert("Notification preferences saved successfully!");
+      
+
     });
 
-  const preferencesSel = getLocalStorageData("notificationPreferences");
-  if (preferencesSel) {
-    document.getElementById("notify-goals").checked =
-      preferencesSel.notifyGoals;
-    document.getElementById("notify-budget-tracking").checked =
-      preferencesSel.notifyBudgetTracking;
-    document.getElementById("notify-overspending").checked =
-      preferencesSel.notifyOverspending;
-    document.getElementById("notify-top-categories").checked =
-      preferencesSel.notifyTopCategories;
+  const savedPreferences = JSON.parse(localStorage.getItem("notificationPreferences"));
+  if (savedPreferences) {
+    document.getElementById("notify-goals").checked = savedPreferences.notifyGoals;
+    document.getElementById("notify-budget-tracking").checked = savedPreferences.notifyBudgetTracking;
+    document.getElementById("notify-overspending").checked = savedPreferences.notifyOverspending;
+    document.getElementById("notify-top-categories").checked = savedPreferences.notifyTopCategories;
   }
 }
 
-function getLocalStorageData(key) {
-  return JSON.parse(localStorage.getItem(key));
+// Modificar checkNotifications para usar los nuevos temporizadores
+function checkNotifications(interval = null) {
+  const preferences = JSON.parse(localStorage.getItem("notificationPreferences"));
+  if (!preferences) return;
+
+  if (preferences.notifyGoals) {
+    startGoalNotifications(interval);
+    notify();
+  }
+  if (preferences.notifyBudgetTracking) {
+    const timeout = setTimeout(() => {
+      createNotification("notify budget tracking", true, "Keep track of your budget!", false, new Date().toLocaleString());
+    }, 10000);
+    generalNotificationTimeouts.push(timeout);
+    notify();
+  }
+  if (preferences.notifyOverspending) {
+    const timeout = setTimeout(() => {
+      createNotification("notify overspending", true, "You are overspending!", false, new Date().toLocaleString());
+    }, 15000);
+    generalNotificationTimeouts.push(timeout);
+    notify();
+  }
+  if (preferences.notifyTopCategories) {
+    const timeout = setTimeout(() => {
+      createNotification("notify top categories", true, "Check your top spending categories!", false, new Date().toLocaleString());
+    }, 20000);
+    generalNotificationTimeouts.push(timeout);
+    notify();
+  }
 }
 
-function createNotification(message) {
-  if (Notification.permission === "granted") {
-    new Notification("Expenses mate open", { body: message });
-  } else if (Notification.permission !== "denied") {
-    Notification.requestPermission().then((permission) => {
-      if (permission === "granted") {
-        new Notification("Expenses mate open", { body: message });
-      }
-    });
-  }
+function createNotification(functionName, exec, message, view, date) {
+  const notifications = JSON.parse(localStorage.getItem("notifications")) || [];
+  const newNotification = { functionName, exec, message, view, date };
+  createFloatingPopup(message);
+  notifications.push(newNotification);
+
+  localStorage.setItem("notifications", JSON.stringify(notifications));
 
   const audio = new Audio("./src/assets/notification-sound.mp3");
+
   var playPromise = audio.play();
 
   if (playPromise !== undefined) {
-    playPromise
-      .then((_) => {
-        // Automatic playback started!
-        // Show playing UI.
-      })
-      .catch((error) => {
-        // Auto-play was prevented
-        // Show paused UI.
-      });
-  }
-
-  const notificationElement = document.createElement("div");
-  notificationElement.className = "notification";
-  notificationElement.innerText = message;
-  document.body.appendChild(notificationElement);
-
-  const existingNotifications = document.querySelectorAll(".notification");
-  existingNotifications.forEach((notification, index) => {
-    notification.style.marginBottom = `${index * 200}px`; // Adjust the spacing as needed
-  });
-
-  setTimeout(() => {
-    notificationElement.remove();
-  }, 5000);
-}
-
-function checkGoals() {
-  const goals = getLocalStorageData("goals");
-if (goals) {
-        goals.forEach((goal) => {
-                const goalDate = new Date(goal.date);
-                const currentDate = new Date();
-                const daysDifference = Math.floor((currentDate - goalDate) / (1000 * 60 * 60 * 24));
-
-                const notifications = getLocalStorageData("notifications") || [];
-                const existingNotification = notifications.find(
-                        (notif) => notif.message.includes(goal.name) && notif.exec === false
-                );
-
-          //       if (goal.amount === goal.currentAmount) {
-          //         const message = `Goal achieved: ${goal.name}`;
-          //         createNotification(message);
-          //         saveNotification("Goals", message);
-          //         notify();
-          // } else {
-          //         const remainingAmount = goal.amount - goal.currentAmount;
-          //         const message = `Keep going! You need $${remainingAmount} more to achieve your goal "${goal.name}".`;
-          //         createNotification(message);
-          //         saveNotification("Goals", message);
-          //         notify();
-          // }
-
-                if (!existingNotification) {
-                        if (goal.amount === goal.currentAmount) {
-                                const message = `Goal achieved: ${goal.name}`;
-                                createNotification(message);
-                                saveNotification("Goals", message);
-                                notify();
-                        } else {
-                                const remainingAmount = goal.amount - goal.currentAmount;
-                                const message = `Keep going! You need $${remainingAmount} more to achieve your goal "${goal.name}".`;
-                                createNotification(message);
-                                saveNotification("Goals", message);
-                                notify();
-                        }
-                }
-        });
-}
-}
-
-function checkTransactions() {
-  const transactions = getLocalStorageData("transactions");
-if (transactions) {
-        transactions.forEach((transaction) => {
-                if (transaction.amount > 1000) {
-                        // Example condition
-                        const message = `High transaction: ${transaction.categoryId} - $${transaction.amount}`;
-                        const notifications = getLocalStorageData("notifications") || [];
-                        const existingNotification = notifications.find(
-                                (notif) => notif.message === message && notif.exec === false
-                        );
-
-                        if (!existingNotification) {
-                                createNotification(message);
-                                saveNotification("Transactions", message);
-                                notify();
-                        }
-                }
-        });
-}
-}
-
-function checkBudgetCategories() {
-  const budgetCategories = getLocalStorageData("budgetCategories");
-  if (budgetCategories) {
-    budgetCategories.forEach((category) => {
-      if (category.actualSpent > category.budgetedAmount) {
-        const message = `Overspending in category: ${category.name}`;
-        createNotification(message);
-        saveNotification("Budget categories", message);
-        notify();
-      }
+    playPromise.then(_ => {
+      // Automatic playback started!
+      // Show playing UI.
+    })
+    .catch(error => {
+      // Auto-play was prevented
+      // Show paused UI.
     });
   }
+  notify();
+
 }
 
-function checkBudgetTracking() {
-  const budgetTracking = getLocalStorageData("budgetTracking");
-if (budgetTracking) {
-        const difference = budgetTracking.budgetedAmount - budgetTracking.ActualSpent;
-        if (difference <= 10 && difference > 0) {
-                const message = `You are close to exceeding your budget for ${budgetTracking.category}. Only $${difference} left.`;
-                createNotification(message);
-                saveNotification("Budget tracking", message);
-                notify();
-        } else if (difference <= 0) {
-                const message = `You have exceeded your budget for ${budgetTracking.category} by $${Math.abs(difference)}!`;
-                createNotification(message);
-                saveNotification("Budget tracking", message);
-                notify();
-        }
-}
-}
-
-function saveNotification(functionName, message) {
-  const notifications = getLocalStorageData("notifications") || [];
-  const notification = {
-    functionName,
-    message,
-    view: false,
-    exec: false,
-    date: new Date().toLocaleString(),
-  };
-  notifications.push(notification);
-  localStorage.setItem("notifications", JSON.stringify(notifications));
-}
-
-window.onload = () => {
-  checkNotifications();
-  setInterval(checkNotifications, 1000); // Verificar cada 60 segundos
-};
-
-window.onload = () => {
-  notificationsReminder();
-};
-
-export function notificationsReminder() {
-        function checkGoalsEveryTwoDays() {
-                const goals = getLocalStorageData("goals");
-                if (goals) {
-                        goals.forEach((goal) => {
-                                const goalDate = new Date(goal.date);
-                                const currentDate = new Date();
-                                const daysDifference = Math.floor((currentDate - goalDate) / (1000 * 60 * 60 * 24));
-        
-                                const notifications = getLocalStorageData("notifications") || [];
-                                const existingNotification = notifications.find(
-                                        (notif) => notif.message.includes(goal.name) && notif.exec === false
-                                );
-        
-                                if (!existingNotification && daysDifference % 2 === 0) {
-                                        if (goal.amount === goal.currentAmount) {
-                                                const message = `Goal achieved: ${goal.name}`;
-                                                createNotification(message);
-                                                saveNotification("Goals", message);
-                                                notify();
-                                        } else {
-                                                const remainingAmount = goal.amount - goal.currentAmount;
-                                                const message = `Reminder: Keep saving for your goal "${goal.name}". You still need $${remainingAmount}. Don't give up!`;
-                                                createNotification(message);
-                                                saveNotification("Goals", message);
-                                                notify();
-                                        }
-                                }
-                        });
-                }
-        }
-        
-        setInterval(checkGoalsEveryTwoDays, 2 * 24 * 60 * 60 * 1000); // Check every 2 days
-}
-
-export function checkNotifications() {
-  const preferences = getLocalStorageData("notificationPreferences");
-  if (preferences) {
-    if (preferences.notifyGoals) checkGoals();
-    if (preferences.notifyBudgetTracking) checkBudgetTracking();
-    if (preferences.notifyOverspending) checkBudgetCategories();
-    if (preferences.notifyTopCategories) checkTransactions();
+function createGoalNotification(goal, remainingAmount) {
+  if (Notification.permission === "granted") {
+    const message = `Don't forget to complete your goal: ${goal}. You need to save ${remainingAmount} more!`;
+    new Notification(message);
+    createNotification("create goal notification", true, message, false, new Date().toLocaleString());
   }
 }
+
+function startGoalNotifications(interval = null) {
+  const goals = JSON.parse(localStorage.getItem("goals")) || [];
+  let notifiedGoals = new Set();
+
+  function notifyGoals() {
+    goals.forEach((goal, index) => {
+      if (!notifiedGoals.has(goal.name)) {
+        const remainingAmount = goal.amount - goal.currentAmount;
+        let timeout = setTimeout(() => {
+          createGoalNotification(goal.name, remainingAmount);
+          notifiedGoals.add(goal.name);
+        }, index * 3600000);
+        goalNotificationTimeouts.push(timeout);
+      }
+    });
+
+    let timeout = setTimeout(() => {
+      notifiedGoals.clear();
+      notifyGoals();
+    }, interval || 3600000 * 2);
+    goalNotificationTimeouts.push(timeout);
+
+  }
+
+  notifyGoals();
+
+  console.log("Goal notifications started");
+}
+
+if (Notification.permission === "granted") {
+  checkNotifications();
+} else if (Notification.permission !== "denied") {
+  Notification.requestPermission().then((permission) => {
+    if (permission === "granted") {
+      checkNotifications();
+    }
+  });
+}
+
+
+function createFloatingPopup(message) {
+  const popup = document.createElement("div");
+  popup.className = "floating-popup";
+  popup.innerText = message;
+
+  const closeButton = document.createElement("button");
+  closeButton.className = "close-popup";
+  closeButton.innerText = "X";
+  closeButton.addEventListener("click", () => {
+    document.body.removeChild(popup);
+  });
+
+  popup.appendChild(closeButton);
+  document.body.appendChild(popup);
+
+  setTimeout(() => {
+    if (document.body.contains(popup)) {
+      document.body.removeChild(popup);
+    }
+  }, 5000); // Popup will disappear after 5 seconds
+}
+
+// CSS for the floating popup
+const style = document.createElement("style");
+style.innerHTML = `
+  .floating-popup {
+    position: fixed;
+    top: 20px;
+    left: 10px;
+    background-color: #333;
+    color: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+  .close-popup {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+  }
+`;
+document.head.appendChild(style);
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  initializeSettings();
+  checkNotifications();
+});
