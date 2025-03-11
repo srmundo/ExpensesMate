@@ -462,9 +462,9 @@ function saveNotificationFrequency() {
   });
 
   const savedFrequency = JSON.parse(localStorage.getItem("notificationFrequency"));
-  if (savedFrequency) {
-    selectedFrequency = savedFrequency ;
-    document.querySelector(`input[name="notification-frequency"][value="${(parseInt(savedFrequency.frequency) / (24 * 60 * 60 * 1000)).toString()}"]`).checked = true;
+  if (savedFrequency && savedFrequency.length > 0) {
+    selectedFrequency = savedFrequency[0].frequency;
+    document.querySelector(`input[name="notification-frequency"][value="${(parseInt(selectedFrequency) / (24 * 60 * 60 * 1000)).toString()}"]`).checked = true;
   }
 }
 
@@ -473,9 +473,10 @@ function initNotificationPreferences() {
   saveNotificationFrequency();
 
 
-  const savedFrequency = JSON.parse(localStorage.getItem("notificationFrequency")) || 1;
-  if (savedFrequency) {
-    document.querySelector(`input[name="notification-frequency"][value="${(parseInt(savedFrequency.frequency) / (24 * 60 * 60 * 1000)).toString()}"]`).checked = true;
+  const savedFrequency = JSON.parse(localStorage.getItem("notificationFrequency"));
+  if (savedFrequency && savedFrequency.length > 0) {
+    selectedFrequency = savedFrequency[0].frequency;
+    document.querySelector(`input[name="notification-frequency"][value="${(parseInt(selectedFrequency) / (24 * 60 * 60 * 1000)).toString()}"]`).checked = true;
   }
 
 

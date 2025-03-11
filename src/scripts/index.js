@@ -1,5 +1,5 @@
 import { LoginPage } from "../public/loginPage.js";
-import { addCategory, checkAndStoreCategories, syncLocalCategoriesWithAPI, syncLocalNotificationFrequenciesWithAPI } from "../data/storage.js";
+import { addCategory, checkAndStoreCategories, syncApiNotificationFrequenciesWithLocal, syncLocalCategoriesWithAPI, syncLocalNotificationFrequenciesWithAPI } from "../data/storage.js";
 import { notify } from "./notifications.js";
 // import { checkNotifications, checkUnviewedNotifications } from "../views/settings.js";
 if (localStorage.getItem("currency") === null) {
@@ -17,7 +17,10 @@ if (localStorage.getItem("notifications") === null) {
 
 if (localStorage.getItem("notificationFrequency") === null) {
   localStorage.setItem("notificationFrequency", JSON.stringify({frequency: 24 * 60 * 60 * 1000}));
+  syncLocalNotificationFrequenciesWithAPI();
+
 }
+
 
 
 
@@ -115,9 +118,7 @@ function init() {
     localStorage.setItem("userLogged", "false");
     LoginPage();
   } else if (userLogged === "true") {
-    loadAppHTML();
-    syncLocalNotificationFrequenciesWithAPI();
-    
+    loadAppHTML();    
   } else {
     LoginPage();
   }
@@ -126,7 +127,7 @@ function init() {
 export async function loadAppHTML() {
 
   syncLocalCategoriesWithAPI();
-
+  syncApiNotificationFrequenciesWithLocal();
 
 
   try {
