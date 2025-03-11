@@ -576,3 +576,69 @@ export async function deleteNotificationPreferences(id) {
 export async function getNotificationPreferencesById(id) {
     return api.getNotificationPreferencesById(id);
 }
+
+export async function syncLocalNotificationFrequenciesWithAPI() {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    const localFrequencies = JSON.parse(localStorage.getItem('notificationFrequency')) || [];
+    const apiFrequencies = await api.getNotificationFrequency();
+    const userApiFrequencies = apiFrequencies.filter(frequency => frequency.userId === user.id);
+
+    for (const localFrequency of localFrequencies) {
+        const existsInAPI = userApiFrequencies.some(apiFrequency => apiFrequency.id === localFrequency.id);
+        if (!existsInAPI) {
+            await api.addNotificationFrequency(user.id, localFrequency.frequency);
+        }
+    }
+}
+
+export async function syncApiNotificationFrequenciesWithLocal() {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    const apiFrequencies = await api.getNotificationFrequency();
+    const userApiFrequencies = apiFrequencies.filter(frequency => frequency.userId === user.id);
+
+    localStorage.setItem('notificationFrequency', JSON.stringify(userApiFrequencies));
+}
+
+export async function syncApiNotificationPreferencesWithLocal() {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    const apiPreferences = await api.getNotificationPreferences();
+    const userApiPreferences = apiPreferences.filter(preference => preference.userId === user.id);
+
+    localStorage.setItem('notificationPreferences', JSON.stringify(userApiPreferences));
+}
+
+export async function syncLocalNotificationPreferencesWithAPI() {
+    const user = await getUserByNick();
+    if (!user || !user.id) {
+        throw new Error('User not found or invalid user ID');
+    }
+
+    const localPreferences = JSON.parse(localStorage.getItem('notificationPreferences')) || [];
+    const apiPreferences = await api.getNotificationPreferences();
+    const userApiPreferences = apiPreferences.filter(preference => preference.userId === user.id);
+
+    for (const localPreference of localPreferences) {
+        const existsInAPI = userApiPreferences.some(apiPreference => apiPreference.id === localPreference.id);
+        if (!existsInAPI) {
+            await api.addNotificationPreferences(
+                user.id,
+                localPreference.notifyBudgetTracking,
+                localPreference.notifyGoals,
+                localPreference.notifyOverspending,
+                localPreference.notifyTopCategories
+            );
+        }
+    }
+}

@@ -456,15 +456,15 @@ function saveNotificationFrequency() {
     radio.addEventListener("change", () => {
       if (radio.checked) {
         selectedFrequency = parseInt(radio.value) * 24 * 60 * 60 * 1000; // Convert days to milliseconds
-        localStorage.setItem("notificationFrequency", selectedFrequency);
+        localStorage.setItem("notificationFrequency", JSON.stringify({ frequency: selectedFrequency }));
       }
     });
   });
 
-  const savedFrequency = localStorage.getItem("notificationFrequency");
+  const savedFrequency = JSON.parse(localStorage.getItem("notificationFrequency"));
   if (savedFrequency) {
     selectedFrequency = savedFrequency ;
-    document.querySelector(`input[name="notification-frequency"][value="${(parseInt(savedFrequency) / (24 * 60 * 60 * 1000)).toString()}"]`).checked = true;
+    document.querySelector(`input[name="notification-frequency"][value="${(parseInt(savedFrequency.frequency) / (24 * 60 * 60 * 1000)).toString()}"]`).checked = true;
   }
 }
 
@@ -473,9 +473,9 @@ function initNotificationPreferences() {
   saveNotificationFrequency();
 
 
-  const savedFrequency = localStorage.getItem("notificationFrequency") || 1;
+  const savedFrequency = JSON.parse(localStorage.getItem("notificationFrequency")) || 1;
   if (savedFrequency) {
-    document.querySelector(`input[name="notification-frequency"][value="${(parseInt(savedFrequency) / (24 * 60 * 60 * 1000)).toString()}"]`).checked = true;
+    document.querySelector(`input[name="notification-frequency"][value="${(parseInt(savedFrequency.frequency) / (24 * 60 * 60 * 1000)).toString()}"]`).checked = true;
   }
 
 
