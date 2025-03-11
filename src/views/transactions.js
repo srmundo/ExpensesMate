@@ -319,7 +319,6 @@ export async function funcTransactions() {
         option.value = category.name;
         option.textContent = category.name;
         selectCategory.appendChild(option);
-        console.log(option);
       }
       });
     }

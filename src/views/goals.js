@@ -55,7 +55,7 @@ export async function initializeGoals() {
     const currencyData = JSON.parse(localStorage.getItem('currency')) || {};
     const currencySymbol = currencyData.symbol;
 
-    console.log(currencySymbol);
+    // console.log(currencySymbol);
 
     document.getElementById('btn-add-goal').addEventListener('click', setGoal);
     document.getElementById('btn-cancel-goal').addEventListener('click', clearForm);

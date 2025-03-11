@@ -620,7 +620,6 @@ export async function syncLocalNotificationFrequenciesWithAPI() {
             }
         }
     } else {
-        console.log('User already has notification frequencies in the API');
     }
 }
 
@@ -663,7 +662,6 @@ export async function syncLocalNotificationPreferencesWithAPI() {
     }
 
     const localPreferences = JSON.parse(localStorage.getItem('notificationPreferences')) || {};
-    console.log(localPreferences);
     const apiPreferences = await api.getNotificationPreferences();
     const userApiPreferences = apiPreferences.filter(preference => preference.userId === user.id);
 
@@ -676,6 +674,6 @@ export async function syncLocalNotificationPreferencesWithAPI() {
             localPreferences.notifyTopCategories
         );
     } else {
-        console.log('User already has notification preferences in the API');
+        // console.log('User already has notification preferences in the API');
     }
 }

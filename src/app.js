@@ -37,7 +37,6 @@ if (language === "en") {
     .then((response) => response.json())
     .then((data) => {
       languageData = data;
-      console.log(languageData)
       document.querySelector("#btn-home p").innerText = languageData.aside.home;
       document.querySelector("#btn-transactions p").innerText = languageData.aside.transactions;
       document.querySelector("#btn-reports p").innerText = languageData.aside.reports;

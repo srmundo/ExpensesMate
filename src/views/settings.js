@@ -489,7 +489,7 @@ fullPageStyle.innerHTML = `
     }
   }
 
-  
+
 `;
 document.head.appendChild(fullPageStyle);
 
@@ -724,7 +724,6 @@ function startGoalNotifications(interval = null) {
 
   notifyGoals();
 
-  console.log("Goal notifications started");
 }
 
 if (Notification.permission === "granted") {
