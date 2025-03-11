@@ -294,17 +294,42 @@ export async function deleteUserData() {
     // Delete user
     await api.deleteUser(user.id);
 
+    // Delete notification preferences
+    const notificationPreferences = await api.getNotificationPreferences();
+    const userNotificationPreferences = notificationPreferences.filter(preference => preference.userId === user.id);
+    for (const preference of userNotificationPreferences) {
+        await api.deleteNotificationPreferences(preference.id);
+    }
+
+    // Delete notifications
+    const notifications = await api.getNotifications();
+    const userNotifications = notifications.filter(notification => notification.userId === user.id);
+    for (const notification of userNotifications) {
+        await api.deleteNotification(notification.id);
+    }
+
+    // Delete notification frequencies
+    const notificationFrequencies = await api.getNotificationFrequency();
+    const userNotificationFrequencies = notificationFrequencies.filter(frequency => frequency.userId === user.id);
+    for (const frequency of userNotificationFrequencies) {
+        await api.deleteNotificationFrequency(frequency.id);
+    }
     // Clear local storage
-    localStorage.removeItem('userData');
-    localStorage.removeItem('transactions');
-    localStorage.removeItem('goals');
-    localStorage.removeItem('budgetTracking');
+    // localStorage.removeItem('userData');
+    // localStorage.removeItem('transactions');
+    // localStorage.removeItem('goals');
+    // localStorage.removeItem('budgetTracking');
+    
     // Delete categories
     const categories = await api.getCategories();
     const userCategories = categories.filter(category => category.userId === user.id);
     for (const category of userCategories) {
         await api.deleteCategory(category.id);
     }
+
+    localStorage.clear();
+    window.location.reload();
+
 }
 
 export async function checkAndStoreCategories() {
