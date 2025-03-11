@@ -557,30 +557,33 @@ function checkNotifications(interval = null) {
 
   const userPreferences = preferences[0];
 
-  if (userPreferences.notifyGoals) {
-    startGoalNotifications(interval);
-    notify();
-  }
-  if (userPreferences.notifyBudgetTracking) {
-    const timeout = setTimeout(() => {
-      createNotification("notify budget tracking", true, "Keep track of your budget!", false, new Date().toLocaleString());
-    }, 10000);
-    generalNotificationTimeouts.push(timeout);
-    notify();
-  }
-  if (userPreferences.notifyOverspending) {
-    const timeout = setTimeout(() => {
-      createNotification("notify overspending", true, "You are overspending!", false, new Date().toLocaleString());
-    }, 15000);
-    generalNotificationTimeouts.push(timeout);
-    notify();
-  }
-  if (userPreferences.notifyTopCategories) {
-    const timeout = setTimeout(() => {
-      createNotification("notify top categories", true, "Check your top spending categories!", false, new Date().toLocaleString());
-    }, 20000);
-    generalNotificationTimeouts.push(timeout);
-    notify();
+  if(userPreferences){
+    if (userPreferences.notifyGoals) {
+      startGoalNotifications(interval);
+      notify();
+    }
+  
+    if (userPreferences.notifyBudgetTracking) {
+      const timeout = setTimeout(() => {
+        createNotification("notify budget tracking", true, "Keep track of your budget!", false, new Date().toLocaleString());
+      }, 10000);
+      generalNotificationTimeouts.push(timeout);
+      notify();
+    }
+    if (userPreferences.notifyOverspending) {
+      const timeout = setTimeout(() => {
+        createNotification("notify overspending", true, "You are overspending!", false, new Date().toLocaleString());
+      }, 15000);
+      generalNotificationTimeouts.push(timeout);
+      notify();
+    }
+    if (userPreferences.notifyTopCategories) {
+      const timeout = setTimeout(() => {
+        createNotification("notify top categories", true, "Check your top spending categories!", false, new Date().toLocaleString());
+      }, 20000);
+      generalNotificationTimeouts.push(timeout);
+      notify();
+    }
   }
 }
 
