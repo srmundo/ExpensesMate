@@ -456,7 +456,11 @@ function saveNotificationFrequency() {
     radio.addEventListener("change", () => {
       if (radio.checked) {
         selectedFrequency = parseInt(radio.value) * 24 * 60 * 60 * 1000; // Convert days to milliseconds
-        localStorage.setItem("notificationFrequency", JSON.stringify({ frequency: selectedFrequency }));
+        const savedFrequency = JSON.parse(localStorage.getItem("notificationFrequency"));
+        let frequencyId = savedFrequency[0].id;
+        // const frequencyId = savedFrequency[0].id;
+        updateNotificationFrequency(frequencyId, selectedFrequency);
+        //localStorage.setItem("notificationFrequency", JSON.stringify({ frequency: selectedFrequency }));
       }
     });
   });
@@ -521,7 +525,6 @@ function initNotificationPreferences() {
       }
       );
 
-      console.log(notificationId[0]);
 
       updateNotificationPreferences(notificationId[0], notificationPreferences.notifyBudgetTracking, notificationPreferences.notifyGoals, notificationPreferences.notifyOverspending, notificationPreferences.notifyTopCategories)
 
@@ -529,7 +532,7 @@ function initNotificationPreferences() {
       clearAllNotifications();
 
       // Verificar qué notificaciones deben ejecutarse
-      // console.log(selectedFrequency);
+      console.log(selectedFrequency);
       checkNotifications(selectedFrequency);
       
       alert("Notification preferences saved successfully!");
@@ -550,27 +553,29 @@ function initNotificationPreferences() {
 // Modificar checkNotifications para usar los nuevos temporizadores
 function checkNotifications(interval = null) {
   const preferences = JSON.parse(localStorage.getItem("notificationPreferences"));
-  if (!preferences) return;
+  if (!preferences || preferences.length === 0) return;
 
-  if (preferences.notifyGoals) {
+  const userPreferences = preferences[0];
+
+  if (userPreferences.notifyGoals) {
     startGoalNotifications(interval);
     notify();
   }
-  if (preferences.notifyBudgetTracking) {
+  if (userPreferences.notifyBudgetTracking) {
     const timeout = setTimeout(() => {
       createNotification("notify budget tracking", true, "Keep track of your budget!", false, new Date().toLocaleString());
     }, 10000);
     generalNotificationTimeouts.push(timeout);
     notify();
   }
-  if (preferences.notifyOverspending) {
+  if (userPreferences.notifyOverspending) {
     const timeout = setTimeout(() => {
       createNotification("notify overspending", true, "You are overspending!", false, new Date().toLocaleString());
     }, 15000);
     generalNotificationTimeouts.push(timeout);
     notify();
   }
-  if (preferences.notifyTopCategories) {
+  if (userPreferences.notifyTopCategories) {
     const timeout = setTimeout(() => {
       createNotification("notify top categories", true, "Check your top spending categories!", false, new Date().toLocaleString());
     }, 20000);

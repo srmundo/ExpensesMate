@@ -488,9 +488,9 @@ export async function addNotificationFrequency(frequency) {
     }
 
     const newFrequency = await api.addNotificationFrequency(user.id, frequency);
-    const userFrequencies = JSON.parse(localStorage.getItem('notificationFrequencies')) || [];
+    const userFrequencies = JSON.parse(localStorage.getItem('notificationFrequency')) || [];
     userFrequencies.push(newFrequency);
-    localStorage.setItem('notificationFrequencies', JSON.stringify(userFrequencies));
+    localStorage.setItem('notificationFrequency', JSON.stringify(userFrequencies));
 }
 
 export async function updateNotificationFrequency(id, frequency) {
@@ -500,12 +500,12 @@ export async function updateNotificationFrequency(id, frequency) {
     }
 
     const updatedFrequency = await api.updateNotificationFrequency(id, user.id, frequency);
-    const userFrequencies = JSON.parse(localStorage.getItem('notificationFrequencies')) || [];
+    const userFrequencies = JSON.parse(localStorage.getItem('notificationFrequency')) || [];
     const frequencyIndex = userFrequencies.findIndex(f => f.id === id);
 
     if (frequencyIndex !== -1) {
         userFrequencies[frequencyIndex] = updatedFrequency;
-        localStorage.setItem('notificationFrequencies', JSON.stringify(userFrequencies));
+        localStorage.setItem('notificationFrequency', JSON.stringify(userFrequencies));
     } else {
         throw new Error('Notification frequency not found in local storage');
     }
@@ -518,9 +518,9 @@ export async function deleteNotificationFrequency(id) {
     }
 
     await api.deleteNotificationFrequency(id);
-    const userFrequencies = JSON.parse(localStorage.getItem('notificationFrequencies')) || [];
+    const userFrequencies = JSON.parse(localStorage.getItem('notificationFrequency')) || [];
     const updatedFrequencies = userFrequencies.filter(f => f.id !== id);
-    localStorage.setItem('notificationFrequencies', JSON.stringify(updatedFrequencies));
+    localStorage.setItem('notificationFrequency', JSON.stringify(updatedFrequencies));
 }
 
 export async function getNotificationFrequencyById(id) {
