@@ -15,6 +15,10 @@ if (localStorage.getItem("notifications") === null) {
   localStorage.setItem("notifications", JSON.stringify([]));
 }
 
+if (localStorage.getItem("notificationFrequency") === null) {
+  localStorage.setItem("notificationFrequency", JSON.stringify(24 * 60 * 60 * 1000));
+}
+
 const budgetCategories = [
   {
     type: "income",
