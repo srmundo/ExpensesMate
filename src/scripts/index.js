@@ -270,6 +270,18 @@ export async function loadAppHTML() {
         windowNotification.style.display = "none";
       });
 
+      // const btnDropNotification = document.getElementById("btnDropNotification");
+      // btnDropNotification.style.display = "none";
+      // const notifications = JSON.parse(localStorage.getItem("notifications"));
+      // if (notifications.length > 0) {
+      //   const btnDropNotification = document.getElementById("btnDropNotification");
+      //   btnDropNotification.style.display = "block";
+      //   btnDropNotification.addEventListener("click", () => {
+      //     localStorage.setItem("notifications", JSON.stringify([]));
+      //     windowNotification.style.display = "none";
+      //   });
+      // }
+
       const userSession = JSON.parse(localStorage.getItem("userData"));
 
       // Crear el menú flotante

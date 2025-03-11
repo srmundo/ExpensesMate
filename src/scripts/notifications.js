@@ -38,6 +38,16 @@ export function notify() {
       }
   } catch (error) {
   }
+
+  const fiveDaysAgo = new Date();
+  fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
+
+  const updatedNotifications = notifications.filter(notification => {
+    return new Date(notification.date) >= fiveDaysAgo;
+  });
+
+  localStorage.setItem("notifications", JSON.stringify(updatedNotifications));
+
 }
 
 notify();
