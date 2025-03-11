@@ -587,10 +587,14 @@ export async function syncLocalNotificationFrequenciesWithAPI() {
     const apiFrequencies = await api.getNotificationFrequency();
     const userApiFrequencies = apiFrequencies.filter(frequency => frequency.userId === user.id);
 
-    for (const localFrequency of localFrequencies) {
-        const existsInAPI = userApiFrequencies.some(apiFrequency => apiFrequency.id === localFrequency.id);
-        if (!existsInAPI) {
-            await api.addNotificationFrequency(user.id, localFrequency.frequency);
+    for (const key in localFrequencies) {
+        if (localFrequencies.hasOwnProperty(key)) {
+            const localFrequency = localFrequencies[key];
+            console.log(localFrequency);
+            const existsInAPI = userApiFrequencies.some(apiFrequency => apiFrequency.frequency === localFrequency);
+            if (!existsInAPI) {
+                await api.addNotificationFrequency(user.id, localFrequency);
+            }
         }
     }
 }

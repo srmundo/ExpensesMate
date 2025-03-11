@@ -116,6 +116,7 @@ function init() {
     LoginPage();
   } else if (userLogged === "true") {
     loadAppHTML();
+    syncLocalNotificationFrequenciesWithAPI();
     
   } else {
     LoginPage();
@@ -125,7 +126,7 @@ function init() {
 export async function loadAppHTML() {
 
   syncLocalCategoriesWithAPI();
-  syncLocalNotificationFrequenciesWithAPI();
+
 
 
   try {
