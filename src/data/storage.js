@@ -629,20 +629,25 @@ export async function syncLocalNotificationPreferencesWithAPI() {
         throw new Error('User not found or invalid user ID');
     }
 
-    const localPreferences = JSON.parse(localStorage.getItem('notificationPreferences')) || [];
+    const localPreferences = JSON.parse(localStorage.getItem('notificationPreferences')) || {};
+    console.log(localPreferences);
     const apiPreferences = await api.getNotificationPreferences();
     const userApiPreferences = apiPreferences.filter(preference => preference.userId === user.id);
 
-    for (const localPreference of localPreferences) {
-        const existsInAPI = userApiPreferences.some(apiPreference => apiPreference.id === localPreference.id);
-        if (!existsInAPI) {
-            await api.addNotificationPreferences(
-                user.id,
-                localPreference.notifyBudgetTracking,
-                localPreference.notifyGoals,
-                localPreference.notifyOverspending,
-                localPreference.notifyTopCategories
-            );
-        }
+    const existsInAPI = userApiPreferences.some(apiPreference => 
+        apiPreference.notifyBudgetTracking === localPreferences.notifyBudgetTracking &&
+        apiPreference.notifyGoals === localPreferences.notifyGoals &&
+        apiPreference.notifyOverspending === localPreferences.notifyOverspending &&
+        apiPreference.notifyTopCategories === localPreferences.notifyTopCategories
+    );
+
+    if (!existsInAPI) {
+        await api.addNotificationPreferences(
+            user.id,
+            localPreferences.notifyBudgetTracking,
+            localPreferences.notifyGoals,
+            localPreferences.notifyOverspending,
+            localPreferences.notifyTopCategories
+        );
     }
 }

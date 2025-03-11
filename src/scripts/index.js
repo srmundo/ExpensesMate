@@ -1,5 +1,5 @@
 import { LoginPage } from "../public/loginPage.js";
-import { addCategory, checkAndStoreCategories, syncApiNotificationFrequenciesWithLocal, syncLocalCategoriesWithAPI, syncLocalNotificationFrequenciesWithAPI } from "../data/storage.js";
+import { addCategory, checkAndStoreCategories, syncApiNotificationFrequenciesWithLocal, syncApiNotificationPreferencesWithLocal, syncLocalCategoriesWithAPI, syncLocalNotificationFrequenciesWithAPI, syncLocalNotificationPreferencesWithAPI } from "../data/storage.js";
 import { notify } from "./notifications.js";
 // import { checkNotifications, checkUnviewedNotifications } from "../views/settings.js";
 if (localStorage.getItem("currency") === null) {
@@ -25,8 +25,8 @@ if (localStorage.getItem("notificationFrequency") === null) {
 
 
 if (localStorage.getItem("notificationPreferences") === null) {
-  localStorage.setItem("notificationPreferences", JSON.stringify({ notifyGoals: true, notifyBudgetTracking: true, notifyOverspending: true, notifyTopCategories: true }));
-
+  localStorage.setItem("notificationPreferences", JSON.stringify({ notifyGoals: false, notifyBudgetTracking: false, notifyOverspending: false, notifyTopCategories: false }));
+  syncLocalNotificationPreferencesWithAPI();
 }
 
 const budgetCategories = [
@@ -128,6 +128,7 @@ export async function loadAppHTML() {
 
   syncLocalCategoriesWithAPI();
   syncApiNotificationFrequenciesWithLocal();
+  // syncApiNotificationPreferencesWithLocal();
 
 
   try {
