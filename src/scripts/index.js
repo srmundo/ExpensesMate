@@ -118,17 +118,7 @@ if (localStorage.getItem("budgetCategories") === null) {
   localStorage.setItem("budgetCategories", JSON.stringify(budgetCategories));
 } else {
   checkAndStoreCategories();
-  // const storedCategories = JSON.parse(localStorage.getItem("budgetCategories"));
-  // const newCategories = budgetCategories.filter(category => 
-  //   !storedCategories.some(storedCategory => storedCategory.name === category.name)
-  // );
-  // if (newCategories.length > 0) {
-  //   localStorage.setItem("budgetCategories", JSON.stringify([...storedCategories, ...newCategories]));
-  // }
 }
-
-
-// checkNotifications();
 
 
 function init() {
